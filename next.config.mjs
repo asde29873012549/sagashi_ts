@@ -1,6 +1,28 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
+	reactStrictMode: false,
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "storage.googleapis.com",
+				port: "",
+				pathname: "/sagashi_designer/**",
+			},
+			{
+				protocol: "https",
+				hostname: "storage.googleapis.com",
+				port: "",
+				pathname: "/sagashi_curations/**",
+			},
+			{
+				protocol: "https",
+				hostname: "storage.googleapis.com",
+				port: "",
+				pathname: "/sagashi_products_data/**",
+			},
+		],
+	},
 };
 
-export default nextConfig;
+module.exports = nextConfig;
