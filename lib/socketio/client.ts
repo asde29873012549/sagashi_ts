@@ -8,11 +8,20 @@ interface Message {
 }
 
 interface ServerToClientEvents {
-	"client-new": (chatroom_id: string) => void;
+	"client-new": (chatroom_id: string[]) => void;
 	getMessage: ({ message, sender }: { message: Message; sender: string }) => void;
 }
 
-interface ClientToServerEvents {}
+interface ClientToServerMessage {
+	created_at: string;
+	text: string;
+	sender_name: string;
+	message_id: string;
+}
+
+interface ClientToServerEvents {
+	message: (message: { message: ClientToServerMessage; client: string }) => void;
+}
 
 // Setup the Socket
 const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(":8081", {

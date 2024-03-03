@@ -8,7 +8,7 @@ dotenv.config();
 interface SocketInitializer {
 	queryClient: ReturnType<typeof useQueryClient>;
 	chatroom_id: string;
-	setId: React.Dispatch<React.SetStateAction<string>>;
+	setId?: React.Dispatch<React.SetStateAction<string[]>>;
 	fetchQuery: typeof fetchQuery;
 }
 

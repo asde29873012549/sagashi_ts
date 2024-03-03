@@ -3,6 +3,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { refreshAccessToken } from "@/lib/utils/utils";
+import { UserJWTtype } from "@/lib/types/global";
 
 import { genericError, loginError } from "@/lib/utils/userMessage";
 
@@ -13,12 +14,16 @@ const JWT_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
 
-export const authOptions = {
+export default NextAuth({
 	session: {
 		maxAge: 60 * 60 * 24 * 30, // 30 days
 	},
 	providers: [
 		CredentialsProvider({
+			credentials: {
+				username: { label: "Username", type: "text" },
+				password: { label: "Password", type: "password" },
+			},
 			async authorize(credentials) {
 				try {
 					const response = await fetch(`${BACKEND_SERVER}/user/login`, {
@@ -48,13 +53,13 @@ export const authOptions = {
 			},
 		}),
 		GoogleProvider({
-			clientId: GOOGLE_CLIENT_ID,
-			clientSecret: GOOGLE_CLIENT_SECRET,
+			clientId: GOOGLE_CLIENT_ID!,
+			clientSecret: GOOGLE_CLIENT_SECRET!,
 		}),
 	],
 	callbacks: {
 		async signIn({ user, account, profile }) {
-			if (account.provider === "google") {
+			if (account?.provider === "google" && "name" in user) {
 				try {
 					const response = await fetch(`${BACKEND_SERVER}/user/register`, {
 						method: "POST",
@@ -65,7 +70,7 @@ export const authOptions = {
 							name: user.name,
 							email: user.email,
 							avatar: user.image,
-							locale: profile.locale,
+							locale: profile?.locale,
 						}),
 					});
 
@@ -84,13 +89,17 @@ export const authOptions = {
 		async jwt({ token, user }) {
 			if (user) {
 				//  if user obj exists, check if its google or credential, and then make the returned user obj the token
-				token = user.google ? user.google : user;
+				if ("google" in user && user.google) {
+					token = user.google;
+				} else {
+					token = user as UserJWTtype;
+				}
 			}
 
 			const unixTimeInSeconds = Math.floor(Date.now() / 1000);
 
 			// if token expired, refresh the access token and return it, or return the token directly otherwise
-			return unixTimeInSeconds < token.accessTokenExpireTime
+			return unixTimeInSeconds < Number(token.accessTokenExpireTime)
 				? token
 				: await refreshAccessToken(token);
 		},
@@ -100,6 +109,4 @@ export const authOptions = {
 		},
 	},
 	secret: JWT_TOKEN_SECRET,
-};
-
-export default NextAuth(authOptions);
+});

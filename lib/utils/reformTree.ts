@@ -1,75 +1,12 @@
-interface SubCategoryArrayType {
-	id: number;
-	name: string;
-}
-
-interface SubCategoryType {
-	id: number;
-	sub: SubCategoryArrayType[];
-}
-
-interface CommonCategory {
-	Tops: SubCategoryType;
-	Bottoms: SubCategoryType;
-	Outerwear: SubCategoryType;
-	Footwear: SubCategoryType;
-	Accessories: SubCategoryType;
-}
-
-interface WomenswearCategory extends CommonCategory {
-	Dresses: SubCategoryType;
-	"Bags & Lugguage": SubCategoryType;
-}
-
-interface MenswearCategory extends CommonCategory {
-	Tailoring: SubCategoryType;
-}
-
-type MenswearSizeType = {
-	[S in keyof MenswearCategory]: string[];
-};
-
-type WomenswearSizeType = {
-	[S in keyof WomenswearCategory]: string[];
-};
-
-interface OriginTreeData {
-	Department: ["Menswear", "Womenswear"];
-	NewArrivals: null;
-	Category: {
-		Menswear: MenswearCategory;
-		Womenswear: WomenswearCategory;
-	};
-	Sizes: {
-		Menswear: MenswearSizeType;
-		Womenswear: WomenswearSizeType;
-	};
-	Designer: string[];
-	Condition: ["New/Never Worn", "Gently Used", "Used", "Very Worn"];
-}
-
-interface FilterOptionType {
-	department: ("Menswear" | "Womenswear")[] | null;
-	category: {
-		Menswear?: (keyof MenswearCategory)[];
-		Womenswear?: (keyof WomenswearCategory)[];
-	};
-}
-
-interface FilteredTreeData {
-	Department: ("Menswear" | "Womenswear")[] | null;
-	NewArrivals: null;
-	Category: {
-		Menswear?: MenswearCategory;
-		Womenswear?: WomenswearCategory;
-	};
-	Sizes: {
-		Menswear?: { [S in keyof MenswearCategory]?: string[] };
-		Womenswear?: { [S in keyof WomenswearCategory]?: string[] };
-	};
-	Designer: string[];
-	Condition: ("New/Never Worn" | "Gently Used" | "Used" | "Very Worn")[];
-}
+import {
+	OriginTreeData,
+	WomenswearCategory,
+	MenswearCategory,
+	WomenswearSizeType,
+	MenswearSizeType,
+	FilterOptionType,
+	FilteredTreeData,
+} from "../types/global";
 
 export default function reformTree(treeData: OriginTreeData, opts: FilterOptionType) {
 	const { department, category } = opts;

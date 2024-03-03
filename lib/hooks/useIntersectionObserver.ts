@@ -2,7 +2,7 @@ import { useRef, useCallback, ReactNode } from "react";
 
 interface IntersectionObserverProps {
 	isFetchingNextPage: boolean;
-	hasNextPage: boolean;
+	hasNextPage: boolean | undefined;
 	fetchNextPage: () => void;
 }
 
@@ -10,15 +10,14 @@ function useInterSectionObserver({
 	isFetchingNextPage,
 	hasNextPage,
 	fetchNextPage,
-}: IntersectionObserverProps) {
-	const observer = useRef<IntersectionObserver>();
+}: IntersectionObserverProps): (node: HTMLElement | null) => void {
+	const observer = useRef<IntersectionObserver | null>(null);
 
 	const lastElement = useCallback(
-		(node: HTMLElement) => {
+		(node: HTMLElement | null) => {
 			if (isFetchingNextPage) return;
-			if (observer.current) {
-				observer.current.disconnect();
-			}
+			if (observer.current) observer.current.disconnect();
+
 			observer.current = new IntersectionObserver((entries) => {
 				if (entries[0].isIntersecting && hasNextPage) {
 					fetchNextPage();

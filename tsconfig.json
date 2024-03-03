@@ -15,7 +15,8 @@
 		"paths": {
 			"@/*": ["./*"],
 		},
+		// "typeRoots": ["./node_modules/@types", "./types"],
 	},
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/auth/[...nextauth].js"],
 	"exclude": ["node_modules"],
 }

@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { centerCrop, makeAspectCrop } from "react-image-crop";
 import { Shirt, Wallet } from "lucide-react";
 import { formatDistanceToNow, parseISO, differenceInMinutes, format } from "date-fns";
-import { ApiResponse } from "./types";
+import { ApiResponse, UserJWTtype } from "../types/global";
 
 dotenv.config();
 
@@ -19,15 +19,6 @@ type IconCategory =
 	| "Accessories"
 	| "Dresses"
 	| "Bags & Lugguage";
-
-type RefreshTokenType = {
-	username: string;
-	avatar: string | null;
-	accessToken: string;
-	accessTokenExpireTime: string;
-	refreshToken: string;
-	refreshTokenExpireTime: string;
-};
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -82,7 +73,7 @@ export function generateCategoryIcon(category: IconCategory) {
 	return icon;
 }
 
-export async function refreshAccessToken(token: string): Promise<RefreshTokenType> {
+export async function refreshAccessToken(token: UserJWTtype): Promise<UserJWTtype> {
 	const response = await fetch(`${backend_server}/user/refreshToken`, {
 		method: "POST",
 		headers: {
@@ -91,7 +82,7 @@ export async function refreshAccessToken(token: string): Promise<RefreshTokenTyp
 		body: JSON.stringify({ token }),
 	});
 
-	const res: ApiResponse<RefreshTokenType> = await response.json();
+	const res: ApiResponse<UserJWTtype> = await response.json();
 	const newToken = res.data;
 
 	return newToken;
