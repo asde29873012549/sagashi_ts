@@ -2,10 +2,10 @@ import * as dotenv from "dotenv";
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { refreshAccessToken } from "@/lib/utils/utils";
+import { refreshAccessToken } from "@/lib/utility/utils";
 import { UserJWTtype } from "@/lib/types/global";
 
-import { genericError, loginError } from "@/lib/utils/userMessage";
+import { genericError, loginError } from "@/lib/utility/userMessage";
 
 dotenv.config();
 

@@ -1,17 +1,17 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
+import { Alert, AlertDescription, AlertTitle } from "@/components/base/alert";
 import {
 	Accordion,
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/components/ui/accordion";
-import SheetWrapper from "@/components/User/Sheets/SheetWrapper";
+} from "@/components/base/accordion";
+import SheetWrapper from "@/components/user/editSheets/SheetWrapper";
 
-import ProfileInfo from "@/components/User/ProfileInfo";
-import LanguageInfo from "@/components/User/LanguageInfo";
-import AddressInfo from "@/components/User/AddressInfo";
-import CountryInfo from "@/components/User/CountryInfo";
+import ProfileInfo from "@/components/user/profile/ProfileInfo";
+import LanguageInfo from "@/components/user/profile/LanguageInfo";
+import AddressInfo from "@/components/user/profile/AddressInfo";
+import CountryInfo from "@/components/user/profile/CountryInfo";
 // import About from "@/components/User/About";
 
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";

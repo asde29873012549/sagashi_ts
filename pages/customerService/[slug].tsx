@@ -3,11 +3,11 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "@/components/base/accordion";
 import { useRouter } from "next/router";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/button";
 import { useState, useEffect, useRef, MutableRefObject } from "react";
-import SheetWrapper from "@/components/User/Sheets/SheetWrapper";
+import SheetWrapper from "@/components/user/editSheets/SheetWrapper";
 
 export default function Info() {
 	const router = useRouter();

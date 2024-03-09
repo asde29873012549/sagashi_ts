@@ -3,8 +3,8 @@ import {
 	AccordionContent,
 	AccordionItem,
 	AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Checkbox } from "@/components/ui/checkbox";
+} from "@/components/base/accordion";
+import { Checkbox } from "@/components/base/checkbox";
 import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getAllDesigners from "@/lib/queries/fetchQuery";
@@ -24,10 +24,10 @@ import {
 	CommandInput,
 	CommandItem,
 	CommandList,
-} from "@/components/ui/command";
-import { Input } from "@/components/ui/input";
+} from "@/components/base/command";
+import { Input } from "@/components/base/input";
 import { Check } from "lucide-react";
-import debounce from "@/lib/utils/utils";
+import { cn } from "@/lib/utility/utils";
 
 interface TreeProps {
 	treeData: OriginTreeData | FilteredTreeData;

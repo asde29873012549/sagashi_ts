@@ -1,8 +1,37 @@
+// API Response Types
 export interface ApiResponse<Data> {
 	status: "success" | "fail";
 	data: Data;
 }
 
+export interface InfiniteQueryType<Data> {
+	pageParams: (undefined | number)[];
+	pages: Data[];
+}
+
+// User Types Definitions
+export interface UserData {
+	username: string;
+	avatar: string;
+	created_at: string;
+	fullname: string | null;
+	email: string | null;
+	birth_date: string | null;
+	gender: string | null;
+	country: string | null;
+	follower_count: string | null;
+}
+
+export type UserJWTtype = {
+	username: string;
+	avatar: string;
+	accessToken: string;
+	refreshToken: string;
+	accessTokenExpireTime: string;
+	refreshTokenExpireTime: string;
+};
+
+// Sell Features Types Definitions
 export type PhotoBlobKey = "1" | "2" | "3" | "4" | "5" | "6";
 
 type PhotoBlob = {
@@ -29,8 +58,10 @@ export interface SellFormInputType {
 }
 
 export interface PartialSellFormInputType extends Partial<SellFormInputType> {}
+export type EditProductFormInput = Omit<SellFormInputType, "designer_id">;
 
-export interface ProductData {
+// Products related Types Definitions
+interface BaseProductData {
 	prod_id: number;
 	name: string;
 	tags: string;
@@ -38,8 +69,6 @@ export interface ProductData {
 	size: string;
 	color: string;
 	price: number;
-	department: "Menswear" | "Womenswear";
-	category: keyof MenswearCategory | keyof WomenswearCategory;
 	condition: Condition;
 	subCategory: string;
 	designer: string;
@@ -54,18 +83,19 @@ export interface ProductData {
 	sort?: [number];
 }
 
-export interface UserData {
-	fullname: string | null;
-	email: string | null;
-	birth_date: string | null;
-	gender: string | null;
-	avatar: string;
-	country: string | null;
-	created_at: string;
-	follower_count: string | null;
-	username: string;
+interface MenswearProductData extends BaseProductData {
+	department: "Menswear";
+	category: keyof MenswearCategory;
 }
 
+interface WomenswearProductData extends BaseProductData {
+	department: "Womenswear";
+	category: keyof WomenswearCategory;
+}
+
+export type ProductData = MenswearProductData | WomenswearProductData;
+
+// Category Tree related Types Definitions
 export interface SubCategorySubType {
 	id: number;
 	name: string;
@@ -111,6 +141,11 @@ export interface DeptCategorySize {
 	Womenswear: WomenswearSizeType;
 }
 
+interface DeptCategorySizePartial {
+	Menswear: Partial<MenswearSizeType>;
+	Womenswear: Partial<WomenswearSizeType>;
+}
+
 export type Condition = "New/Never Worn" | "Gently Used" | "Used" | "Very Worn";
 
 export interface OriginTreeData {
@@ -125,25 +160,13 @@ export interface OriginTreeData {
 export interface FilteredTreeData {
 	Department: ("Menswear" | "Womenswear")[] | null;
 	NewArrivals: null;
-	Category: {
-		Menswear?: MenswearCategory;
-		Womenswear?: WomenswearCategory;
-	};
-	Sizes: {
-		Menswear?: { [S in keyof MenswearCategory]?: string[] };
-		Womenswear?: { [S in keyof WomenswearCategory]?: string[] };
-	};
+	Category: Partial<DeptCategory>;
+	Sizes: Partial<DeptCategorySizePartial>;
 	Designer: string[];
 	Condition: Condition[];
 }
 
-interface TreeFilterSubCategory<C, D extends keyof C> {
-	name: string;
-	dept: D;
-	cat: keyof C[D];
-}
-
-interface TreeFilterSize<C, D extends keyof C> {
+interface CategoryFilterObj<C, D extends keyof C> {
 	name: string;
 	dept: D;
 	cat: keyof C[D];
@@ -153,12 +176,12 @@ export interface TreeFilterType {
 	newArrivals?: boolean;
 	department?: ("Menswear" | "Womenswear")[];
 	subCategory?: (
-		| TreeFilterSubCategory<DeptCategory, "Menswear">
-		| TreeFilterSubCategory<DeptCategory, "Womenswear">
+		| CategoryFilterObj<DeptCategory, "Menswear">
+		| CategoryFilterObj<DeptCategory, "Womenswear">
 	)[];
 	sizes?: (
-		| TreeFilterSize<DeptCategorySize, "Menswear">
-		| TreeFilterSize<DeptCategorySize, "Womenswear">
+		| CategoryFilterObj<DeptCategorySize, "Menswear">
+		| CategoryFilterObj<DeptCategorySize, "Womenswear">
 	)[];
 	designers?: string[];
 	condition?: Condition[];
@@ -172,7 +195,8 @@ export interface FilterOptionType {
 	};
 }
 
-export interface SizeType {
+// Get Size API Response Types
+export interface SizeOptions {
 	category_id: number;
 	Size: {
 		id: number;
@@ -180,48 +204,20 @@ export interface SizeType {
 	};
 }
 
-export interface EditProductFormInput {
-	item_name: string;
-	tags: string;
-	desc: string;
-	size: string;
-	color: string;
-	price: string;
-	department: string;
-	category: string;
-	category_id: string;
-	condition: string;
-	subCategory: string;
-	designer: string;
-	subCategory_id: string;
-	size_id: string;
-	photos: {
-		[K in PhotoBlobKey]?: Blob | string;
-	};
-}
-
-export interface DraftProductData {
-	prod_id: number;
-	name: string | null;
-	price: string | null;
-	condition: Condition | null;
-	color: string | null;
-	desc: string | null;
-	tags: string | null;
-	primary_image: string | null;
-	secondary_image: string | null;
+// Get Draft Product API Response Types
+export type DraftProductData = WithNullableProperties<ProductData> & {
 	status: "0";
 	stock: 1;
 	seller_name: string;
 	created_at: string;
 	updated_at: string;
-	department: "Menswear" | "Womenswear" | null;
-	category: keyof MenswearCategory | keyof WomenswearCategory | null;
-	subCategory: string | null;
-	designer: string | null;
-	size: string | null;
-}
+};
 
+type WithNullableProperties<T> = {
+	[P in keyof T]: T[P] | null;
+};
+
+// Get Recently Viewed Product API Response Types
 export interface RecentlyViewedProductData {
 	name: string;
 	price: string;
@@ -240,6 +236,7 @@ export interface RecentlyViewedProductDataType {
 	Product: RecentlyViewedProductData;
 }
 
+// Get Cart API Response Types
 export interface CartData {
 	product_id: number;
 	created_at: string;
@@ -258,25 +255,17 @@ export interface CartData {
 	Offer?: string | null;
 }
 
-export type UserJWTtype = {
-	username: string;
-	avatar: string;
-	accessToken: string;
-	refreshToken: string;
-	accessTokenExpireTime: string;
-	refreshTokenExpireTime: string;
-};
-
+// Messages related Types Definitions
 export interface ChatroomType {
-	buyer_name: string;
-	chatroom_avatar: string;
 	id: string;
-	last_message: number;
-	last_sent_user_name: string;
-	link: string;
-	read_at: string | null;
+	buyer_name: string;
 	seller_name: string;
 	text: string;
+	last_message: number;
+	last_sent_user_name: string;
+	chatroom_avatar: string;
+	link: string;
+	read_at: string | null;
 	updated_at: string;
 }
 
@@ -348,11 +337,6 @@ export interface WebSocketData {
 	username: string;
 	product_id: number;
 	listingOwner: string;
-}
-
-export interface InfiniteQueryType<Data> {
-	pageParams: (undefined | number)[];
-	pages: Data[];
 }
 
 export type Feature =

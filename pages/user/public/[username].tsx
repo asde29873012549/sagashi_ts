@@ -1,14 +1,19 @@
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Button } from "@/components/base/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
+import { Separator } from "@/components/base/separator";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@/components/base/tooltip";
 
 import { MapPin } from "lucide-react";
 import { useRouter } from "next/router";
 
 import { dehydrate, QueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import getUser from "@/lib/queries/fetchQuery";
-import { getDateDistance } from "@/lib/utils/utils";
+import { getDateDistance } from "@/lib/utility/utils";
 import Shop from "@/pages/shop/index";
 import getTree from "@/lib/queries/fetchQuery";
 import followUser from "@/lib/queries/fetchQuery";
@@ -17,8 +22,8 @@ import { getToken } from "next-auth/jwt";
 import { activate } from "@/redux/loadingSlice";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { genericError } from "@/lib/utils/userMessage";
+import { useToast } from "@/components/base/use-toast";
+import { genericError } from "@/lib/utility/userMessage";
 import { NextApiRequest } from "next";
 
 const JWT_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET;

@@ -1,12 +1,12 @@
-import ListingCard from "../../components/ListingCard";
+import ListingCard from "../../components/listingDisplay/ListingCard";
 import Tree from "@/components/Tree";
 import { dehydrate, QueryClient, useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import getTree from "@/lib/queries/fetchQuery";
 import getProducts from "@/lib/queries/fetchQuery";
 import getUserLikedListing from "@/lib/queries/fetchQuery";
 import useInterSectionObserver from "@/lib/hooks/useIntersectionObserver";
-import reformTree from "@/lib/utils/reformTree";
-import { Skeleton } from "@/components/ui/skeleton";
+import reformTree from "@/lib/utility/reformTree";
+import { Skeleton } from "@/components/base/skeleton";
 
 import FilterSection from "@/components/FilterSection";
 import { useState, useEffect } from "react";

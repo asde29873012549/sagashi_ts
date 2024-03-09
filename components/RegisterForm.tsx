@@ -1,11 +1,11 @@
 import { signIn } from "next-auth/react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import SmallSpinner from "./SmallSpinner";
-import { Checkbox } from "./ui/checkbox";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/base/tabs";
+import { Input } from "@/components/base/input";
+import { Label } from "@/components/base/label";
+import { Button } from "@/components/base/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/base/card";
+import SmallSpinner from "./layout/SmallSpinner";
+import { Checkbox } from "./base/checkbox";
 
 import { userSelector, toggleRegisterForm } from "../redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,7 +13,7 @@ import register from "@/lib/queries/fetchQuery";
 
 import { useState } from "react";
 import * as DOMPurify from "dompurify";
-import CheckSvg from "./checkSvg";
+import Check from "./svg/check";
 
 export default function RegisterForm() {
 	const dispatch = useDispatch();
@@ -107,7 +107,7 @@ export default function RegisterForm() {
 				// dispatch(toggleRegisterForm());
 				setRegisterFormInput({ username: "", password: "", email: "" });
 				setTimeout(() => {
-					setRegisterBtnText(<CheckSvg />);
+					setRegisterBtnText(<Check />);
 					setLoading(false);
 					setTimeout(() => {
 						setCurrentTab("login");

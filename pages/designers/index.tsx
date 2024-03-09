@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import DesignerAlphabaticSec from "@/components/DesignerAlphabaticSec";
+import { Button } from "@/components/base/button";
+import DesignerAlphabaticSec from "@/components/designerDisplay/DesignerAlphabaticSec";
 import { useRef } from "react";
 
 const designers = [

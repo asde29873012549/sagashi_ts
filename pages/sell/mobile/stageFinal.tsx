@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/button";
 import DesignerComboBox from "@/components/DesignerComboBox";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/base/input";
+import { Textarea } from "@/components/base/textarea";
 import { XCircle } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@/components/base/progress";
 
 import { useRef, Fragment } from "react";
 import { useRouter } from "next/router";
 import { v4 as uuid } from "uuid";
-import ImageUploadCard from "@/components/ui/image-upload-card";
+import ImageUploadCard from "@/components/ImageUploadCard";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 
 import {
@@ -21,12 +21,12 @@ import {
 import { activate } from "@/redux/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import getAllDesigners from "@/lib/queries/fetchQuery";
-import SaveDraftBtn from "@/components/SaveDraftBtn";
-import { genericError, uploadSuccess } from "@/lib/utils/userMessage";
+import SaveDraftBtn from "@/components/mobile/SaveDraftBtn";
+import { genericError, uploadSuccess } from "@/lib/utility/userMessage";
 import createDraft from "@/lib/queries/fetchQuery";
 
 import Link from "next/link";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/base/use-toast";
 import { PartialSellFormInputType, PhotoBlobKey } from "@/lib/types/global";
 import * as DOMPurify from "dompurify";
 

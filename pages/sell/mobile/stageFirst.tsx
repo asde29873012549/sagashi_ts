@@ -1,9 +1,9 @@
 import { Fragment } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/button";
 import Link from "next/link";
-import { generateCategoryIcon } from "@/lib/utils/utils";
-import { Progress } from "@/components/ui/progress";
-import SaveDraftBtn from "@/components/SaveDraftBtn";
+import { generateCategoryIcon } from "@/lib/utility/utils";
+import { Progress } from "@/components/base/progress";
+import SaveDraftBtn from "@/components/mobile/SaveDraftBtn";
 
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";

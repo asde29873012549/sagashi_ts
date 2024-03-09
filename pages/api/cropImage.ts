@@ -2,8 +2,8 @@ import fs from "fs";
 import sharp from "sharp";
 import { fileTypeFromFile } from "file-type";
 import formidable, { errors as formidableError } from "formidable";
-import { ValidationError } from "@/lib/utils/api_error";
-import Response from "@/lib/utils/response_template.js";
+import { ValidationError } from "@/lib/utility/api_error";
+import Response from "@/lib/utility/response_template.js";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {

@@ -4,14 +4,14 @@ import {
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-} from "@/components/ui/select";
+} from "@/components/base/select";
 import DesignerComboBox from "../../components/DesignerComboBox";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
+import { Input } from "@/components/base/input";
+import { Textarea } from "@/components/base/textarea";
+import { Button } from "@/components/base/button";
 import { XCircle } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
-import ImageUploadCard from "../../components/ui/image-upload-card";
+import { useToast } from "@/components/base/use-toast";
+import ImageUploadCard from "../../components/ImageUploadCard";
 import { useDispatch } from "react-redux";
 import { activate } from "@/redux/loadingSlice";
 
@@ -37,18 +37,18 @@ import {
 	saveDraftSuccess,
 	uploadSuccess,
 	submitEmptyDraft,
-} from "@/lib/utils/userMessage";
-import {
+} from "@/lib/utility/userMessage";
+import type {
 	DeptCategory,
 	ApiResponse,
 	SubCategorySubType,
-	SizeType,
+	SizeOptions,
 	Condition,
 	PhotoBlobKey,
 	PartialSellFormInputType,
 } from "@/lib/types/global";
 
-import * as DOMPurify from "dompurify";
+import DOMPurify from "dompurify";
 
 type SelectCategoryType =
 	| "department"
@@ -74,7 +74,7 @@ export default function Sell() {
 		cacheTime: 1000 * 60 * 35,
 	});
 
-	const { data: sizeData, refetch: fetchSize } = useQuery<ApiResponse<SizeType[]>, Error>({
+	const { data: sizeData, refetch: fetchSize } = useQuery<ApiResponse<SizeOptions[]>, Error>({
 		queryKey: ["size", formInput.category_id && formInput.category_id],
 		queryFn: (obj) => getAllSizes({ uri: `/category/size/${obj.queryKey[1]}` }),
 		enabled: false,

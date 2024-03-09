@@ -8,8 +8,8 @@ const BACKEND_SERVER = process.env.BACKEND_SERVER;
 
 interface FetchQueryOptions {
 	uri: string;
-	method?: "GET" | "POST" | "PUT" | "DELETE"; // Add other HTTP methods if needed
-	body?: any; // Specify a more precise type if possible
+	method?: "GET" | "POST" | "PUT" | "DELETE";
+	body?: unknown;
 	server?: boolean;
 	isFormData?: boolean;
 	token?: string | null;
@@ -31,7 +31,7 @@ const fetchQuery = async ({
 	if (method === "POST" || method === "PUT") {
 		if (!body) throw new Error(genericError);
 
-		configObj.body = isFormData ? body : JSON.stringify(body);
+		configObj.body = isFormData ? (body as FormData) : JSON.stringify(body);
 	}
 
 	if (!isFormData) {

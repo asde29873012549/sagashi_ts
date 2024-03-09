@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/base/button";
 import { Ban } from "lucide-react";
 import { MenswearCategory, WomenswearCategory } from "@/lib/types/global";
 

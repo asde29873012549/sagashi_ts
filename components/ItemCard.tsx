@@ -1,6 +1,6 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { getDateDistance } from "@/lib/utils/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
+import { Alert, AlertDescription } from "@/components/base/alert";
+import { getDateDistance } from "@/lib/utility/utils";
 import { useRef } from "react";
 import { Dot } from "lucide-react";
 import readMessage from "@/lib/queries/fetchQuery";

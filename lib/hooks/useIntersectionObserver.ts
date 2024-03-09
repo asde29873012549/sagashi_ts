@@ -1,4 +1,4 @@
-import { useRef, useCallback, ReactNode } from "react";
+import { useRef, useCallback } from "react";
 
 interface IntersectionObserverProps {
 	isFetchingNextPage: boolean;

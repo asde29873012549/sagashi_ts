@@ -1,20 +1,19 @@
-import ListingCard from "../../components/ListingCard";
+import ListingCard from "../../components/listingDisplay/ListingCard";
 import Tree from "@/components/Tree";
 import { dehydrate, QueryClient, useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import getTree from "@/lib/queries/fetchQuery";
 import getProducts from "@/lib/queries/fetchQuery";
 import getUserLikedListing from "@/lib/queries/fetchQuery";
 import useInterSectionObserver from "@/lib/hooks/useIntersectionObserver";
-import reformTree from "@/lib/utils/reformTree";
-import { Skeleton } from "@/components/ui/skeleton";
+import reformTree from "@/lib/utility/reformTree";
+import { Skeleton } from "@/components/base/skeleton";
 
 import FilterSection from "@/components/FilterSection";
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 
-import {
+import type {
 	ApiResponse,
-	Condition,
 	FilterOptionType,
 	MenswearCategory,
 	OriginTreeData,
@@ -79,7 +78,7 @@ export default function ShopSearch({ treeData }: { treeData: OriginTreeData }) {
 	const onChangeFilter = (filter: TreeFilterType) => {
 		setFilter(filter);
 		const department = filter.department ? [...filter.department] : null;
-		const category: Partial<FilterOptionType["category"]> = filter.subCategory && {};
+		const category: FilterOptionType["category"] = filter.subCategory && {};
 		//const subCategory = filter.subCategory ? [...filter.subCategory] : null;
 
 		const menswearSubCategory = filter.subCategory?.filter((obj) => obj.dept === "Menswear") || [];

@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
-import OderItem from "@/components/OrderItem";
-import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
+import OderItem from "@/components/shoppingCart/CartItem";
+import { Separator } from "@/components/base/separator";
+import { Button } from "@/components/base/button";
 import { useQuery, QueryClient, dehydrate } from "@tanstack/react-query";
 import getCart from "@/lib/queries/fetchQuery";
 import { getToken } from "next-auth/jwt";

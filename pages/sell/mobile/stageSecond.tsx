@@ -1,16 +1,16 @@
 import { Fragment } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/base/button";
+import { Input } from "@/components/base/input";
 import Link from "next/link";
 
 import { useRef } from "react";
-import { Progress } from "@/components/ui/progress";
+import { Progress } from "@/components/base/progress";
 import { useQuery } from "@tanstack/react-query";
 import getAllSizes from "@/lib/queries/fetchQuery";
 import getAllColor from "@/lib/queries/fetchQuery";
 import getAllCondition from "@/lib/queries/fetchQuery";
-import SaveDraftBtn from "@/components/SaveDraftBtn";
-import { useToast } from "@/components/ui/use-toast";
+import SaveDraftBtn from "@/components/mobile/SaveDraftBtn";
+import { useToast } from "@/components/base/use-toast";
 
 import { makeProgress, mobileFormInput, sellSelector } from "../../../redux/sellSlice";
 import { useDispatch, useSelector } from "react-redux";

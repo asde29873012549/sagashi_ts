@@ -1,18 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/base/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
+import { Separator } from "@/components/base/separator";
 
 //import MyItem from "../../components/User/Sheets/MyItemSheet";
-import ContactUs from "../../components/User/Sheets/ContactUsForm";
+import ContactUs from "../../components/user/editSheets/ContactUsForm";
 
-import ProfileInfo from "../../components/User/ProfileInfo";
-import Messages from "../../components/User/Messages";
-import MyItem from "../../components/User/MyItem";
-import AddressInfo from "../../components/User/AddressInfo";
-import LanguageInfo from "../../components/User/LanguageInfo";
-import CountryInfo from "../../components/User/CountryInfo";
-import Drafts from "../../components/User/Drafts";
-import SheetWrapper from "@/components/User/Sheets/SheetWrapper";
+import ProfileInfo from "../../components/user/profile/ProfileInfo";
+import Messages from "../../components/user/message/ChatSystem";
+import MyItem from "../../components/user/product/MyItem";
+import AddressInfo from "../../components/user/profile/AddressInfo";
+import LanguageInfo from "../../components/user/profile/LanguageInfo";
+import CountryInfo from "../../components/user/profile/CountryInfo";
+import Drafts from "../../components/user/drafts/DraftList";
+import SheetWrapper from "@/components/user/editSheets/SheetWrapper";
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
 import getUser from "@/lib/queries/fetchQuery";
 import { getToken } from "next-auth/jwt";

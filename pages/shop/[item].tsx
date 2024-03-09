@@ -1,8 +1,8 @@
-import Carousel from "../../components/Carousel";
-import { Button } from "@/components/ui/button";
-import ListingCard from "../../components/ListingCard";
-import SmallSpinner from "@/components/SmallSpinner";
-import MessageBoxDesktop from "../../components/MessageBoxDesktop";
+import Carousel from "../../components/listingDisplay/Carousel";
+import { Button } from "@/components/base/button";
+import ListingCard from "../../components/listingDisplay/ListingCard";
+import SmallSpinner from "@/components/layout/SmallSpinner";
+import MessageBoxDesktop from "../../components/messenger/MessageBoxDesktop";
 import {
 	dehydrate,
 	QueryClient,
@@ -18,13 +18,13 @@ import getUserLikedListing from "@/lib/queries/fetchQuery";
 import logRecentlyViewed from "@/lib/queries/fetchQuery";
 import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/router";
-import { useToast } from "@/components/ui/use-toast";
-import { genericError } from "@/lib/utils/userMessage";
-import CheckSvg from "@/components/checkSvg";
+import { useToast } from "@/components/base/use-toast";
+import { genericError } from "@/lib/utility/userMessage";
+import Check from "@/components/svg/check";
 import { setMobileMessageBoxData, setMobileMessageBoxOpen } from "@/redux/messageSlice";
 import { toggleRegisterForm } from "@/redux/userSlice";
 import { useDispatch } from "react-redux";
-import OfferDialog from "@/components/OfferDialog";
+import OfferDialog from "@/components/listingDisplay/OfferDialog";
 
 import { getToken } from "next-auth/jwt";
 
@@ -118,7 +118,7 @@ export default function ListingItem({
 		onSuccess: () => {
 			isAddShoppingCartApiSuccess.current = true;
 			if (addToCart !== "ADD TO CART" && addToCart.props.shouldNotCover) {
-				setAddToCart(<CheckSvg />);
+				setAddToCart(<Check />);
 				delayShowCartItem();
 			}
 		},
@@ -212,7 +212,7 @@ export default function ListingItem({
 		setAddToCart(<ShoppingCart className="animate-slide-shoppingCart" />);
 		timeoutId.current = setTimeout(() => {
 			if (isAddShoppingCartApiSuccess.current) {
-				setAddToCart(<CheckSvg />);
+				setAddToCart(<Check />);
 				delayShowCartItem();
 			} else {
 				setAddToCart(<SmallSpinner />);

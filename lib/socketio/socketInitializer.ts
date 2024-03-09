@@ -1,7 +1,7 @@
 import * as dotenv from "dotenv";
 import socket from "@/lib/socketio/client";
-import fetchQuery from "../queries/fetchQuery";
 import { useQueryClient } from "@tanstack/react-query";
+import { ApiResponse } from "../types/global";
 
 dotenv.config();
 
@@ -9,7 +9,7 @@ interface SocketInitializer {
 	queryClient: ReturnType<typeof useQueryClient>;
 	chatroom_id: string;
 	setId?: React.Dispatch<React.SetStateAction<string[]>>;
-	fetchQuery: typeof fetchQuery;
+	fetchQuery: (id: string) => Promise<ApiResponse<number[]>>;
 }
 
 export default async function socketInitializer({
@@ -52,23 +52,16 @@ export default async function socketInitializer({
 		chatroom_id && setId && setId(chatroom_id);
 	});
 
-	socket.on("getMessage", async ({ message, sender }) => {
-		// setter(["messages", "27-noah-asde29873012549@gmail.com"], (m) => [...m, message]);
-		/*setter.setQueryData(["messages", "27-noah-asde29873012549@gmail.com"], (oldData) => {
-			const newData = oldData;
-			newData.pages[0].data.unshift(message);
-			console.log("newData: ", newData)
-			return newData;
-		});*/
+	socket.on("getMessage", async ({ message }) => {
 		queryClient.invalidateQueries({ queryKey: ["messages", chatroom_id] });
 		console.log("getMessage: ", message);
 
-		// try {
-		// 	const result = await fetchQuery(message.message_id);
-		// 	if (result.status === "fail") throw new Error();
-		// } catch (err) {
-		// 	console.log(err);
-		// }
+		try {
+			const result = await fetchQuery(message.message_id);
+			if (result.status === "fail") throw new Error();
+		} catch (err) {
+			console.log(err);
+		}
 	});
 
 	// socket.on("client-count", (count) => {
