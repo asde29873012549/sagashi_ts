@@ -13,7 +13,7 @@ import MyLanguage from "./EditLanguageSheet";
 import MyCountry from "./EditCountrySheet";
 import ContactUs from "./ContactUsForm";
 import ChangePassword from "./ChangePasswordSheet";
-import { UserData, Feature } from "@/lib/types/global";
+import type { UserData, Feature } from "@/lib/types/global";
 
 interface SheetWrapperProps {
 	user?: UserData;

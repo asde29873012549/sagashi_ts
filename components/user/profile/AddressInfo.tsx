@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import generalFetch from "@/lib/queries/fetchQuery";
 import { useToast } from "@/components/base/use-toast";
 import { personalInfoUpdateSuccess, genericError } from "@/lib/utility/userMessage";
-import { UserData, Feature } from "@/lib/types/global";
+import type { UserData, Feature } from "@/lib/types/global";
 
 export default function AddressInfo({
 	sheet = "",

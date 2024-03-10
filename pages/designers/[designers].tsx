@@ -21,6 +21,7 @@ import { useDispatch } from "react-redux";
 import { NextApiRequest } from "next";
 
 import { useRouter } from "next/router";
+import { cn } from "@/lib/utility/utils";
 
 dotenv.config();
 
@@ -132,7 +133,7 @@ export default function SingleDesignerPage() {
 					</div>
 				</div>
 				<div className="relative h-fit w-full px-8 py-4 md:w-6/12 md:px-0">
-					<p className={`${designerIntroSecExpand ? "" : "line-clamp-6"} h-fit overflow-hidden `}>
+					<p className={cn("h-fit overflow-hidden", designerIntroSecExpand ? "" : "line-clamp-6")}>
 						{designerData?.data[0].story}
 					</p>
 					<Button

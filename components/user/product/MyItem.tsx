@@ -8,7 +8,7 @@ import { Button } from "@/components/base/button";
 import { Dot } from "lucide-react";
 import { useState } from "react";
 import EditProductDialog from "./EditProductDialog";
-import { ProductData } from "@/lib/types/global";
+import type { ProductData } from "@/lib/types/global";
 
 export default function MyItems({ user }: { user: string }) {
 	const {

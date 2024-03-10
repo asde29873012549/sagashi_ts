@@ -11,7 +11,7 @@ import { Skeleton } from "@/components/base/skeleton";
 import FilterSection from "@/components/FilterSection";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import {
+import type {
 	DeptCategory,
 	TreeFilterType,
 	FilterOptionType,
@@ -185,7 +185,7 @@ export default function Shop({
 						const pageData = page.data.result || [];
 						if (productData?.pages[0].data.result.length === 0)
 							return (
-								<div key={"noresultsfound"} className="absolute">
+								<div key="noresultsfound" className="absolute">
 									<p className="text-xl font-semibold">Sorry, no results found.</p>
 									<p>
 										Please consider modifying your search or filters to explore different results.

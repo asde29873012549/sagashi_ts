@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { personalInfoUpdateSuccess, genericError } from "@/lib/utility/userMessage";
 import ComboBox from "@/components/base/comboBox";
 import region from "@/lib/utility/countries";
-import * as DOMPurify from "dompurify";
+import DOMPurify from "dompurify";
 
 export default function AddAddressSheet({
 	setOpen,

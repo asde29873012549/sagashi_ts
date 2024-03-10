@@ -1,6 +1,6 @@
 import { Button } from "@/components/base/button";
 import { Ban } from "lucide-react";
-import { MenswearCategory, WomenswearCategory } from "@/lib/types/global";
+import type { MenswearCategory, WomenswearCategory } from "@/lib/types/global";
 
 type CategoryOpts = {
 	Menswear: MenswearCategory;

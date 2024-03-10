@@ -255,6 +255,15 @@ export interface CartData {
 	Offer?: string | null;
 }
 
+//Designer Api Response Types
+export interface FeaturedDesignerData {
+	id: number;
+	name: string;
+	logo: string;
+	created_at: string;
+	isFollow: boolean;
+}
+
 // Messages related Types Definitions
 export interface ChatroomType {
 	id: string;

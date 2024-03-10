@@ -27,8 +27,8 @@ import createDraft from "@/lib/queries/fetchQuery";
 
 import Link from "next/link";
 import { useToast } from "@/components/base/use-toast";
-import { PartialSellFormInputType, PhotoBlobKey } from "@/lib/types/global";
-import * as DOMPurify from "dompurify";
+import type { PartialSellFormInputType, PhotoBlobKey } from "@/lib/types/global";
+import DOMPurify from "dompurify";
 
 interface dataRefType {
 	designer: string | null;

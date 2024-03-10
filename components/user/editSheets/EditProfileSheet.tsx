@@ -8,8 +8,8 @@ import { personalInfoUpdateSuccess, genericError } from "@/lib/utility/userMessa
 import { useToast } from "@/components/base/use-toast";
 import generalFetch from "@/lib/queries/fetchQuery";
 import { Button } from "@/components/base/button";
-import * as DOMPurify from "dompurify";
-import { UserData } from "@/lib/types/global";
+import DOMPurify from "dompurify";
+import type { UserData } from "@/lib/types/global";
 
 export default function EditProfileSheet({
 	setOpen,

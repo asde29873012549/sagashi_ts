@@ -10,11 +10,11 @@ import getAllSizes from "@/lib/queries/fetchQuery";
 import getAllColor from "@/lib/queries/fetchQuery";
 import getAllCondition from "@/lib/queries/fetchQuery";
 import SaveDraftBtn from "@/components/mobile/SaveDraftBtn";
-import { useToast } from "@/components/base/use-toast";
 
 import { makeProgress, mobileFormInput, sellSelector } from "../../../redux/sellSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { ApiResponse, Condition, SizeType } from "@/lib/types/global";
+import type { ApiResponse, Condition, SizeOptions } from "@/lib/types/global";
+import { cn } from "@/lib/utility/utils";
 
 interface dataRefType {
 	condition: string | null;
@@ -40,7 +40,7 @@ export default function MobileMidInfo() {
 		price: null,
 	});
 
-	const { data: sizeData } = useQuery<ApiResponse<SizeType[]>, Error>({
+	const { data: sizeData } = useQuery<ApiResponse<SizeOptions[]>, Error>({
 		queryKey: ["size", formInput.category_id && formInput.category_id],
 		queryFn: (obj) => getAllSizes({ uri: `/category/size/${obj.queryKey[1]}` }),
 		refetchOnWindowFocus: false,
@@ -143,9 +143,10 @@ export default function MobileMidInfo() {
 						<Button
 							key={condition}
 							variant="outline"
-							className={`row-span-1 focus:bg-accent ${
-								formInput.condition === condition && "bg-slate-300"
-							}`}
+							className={cn(
+								"row-span-1 focus:bg-accent",
+								formInput.condition === condition && "bg-slate-300",
+							)}
 							onClick={(e) => onBtnSelect(e)}
 							ref={(node) => getNode(node, "condition", condition, btnRef)}
 						>
@@ -160,9 +161,10 @@ export default function MobileMidInfo() {
 							<Button
 								key={`${obj.Size.name}_${index}`}
 								variant="outline"
-								className={`row-span-1 focus:bg-accent ${
-									formInput.size === obj.Size.name && "bg-slate-300"
-								}`}
+								className={cn(
+									"row-span-1 focus:bg-accent",
+									formInput.size === obj.Size.name && "bg-slate-300",
+								)}
 								onClick={(e) => onBtnSelect(e, String(obj.Size.id))}
 								ref={(node) => getNode(node, "size", obj.Size.name, btnRef)}
 							>
@@ -179,9 +181,10 @@ export default function MobileMidInfo() {
 						<Button
 							key={color}
 							variant="outline"
-							className={`col-span-1 focus:bg-accent ${
-								formInput.color === color && "bg-slate-300"
-							}`}
+							className={cn(
+								"col-span-1 focus:bg-accent",
+								formInput.color === color && "bg-slate-300",
+							)}
 							onClick={(e) => onBtnSelect(e)}
 							ref={(node) => getNode(node, "color", color, btnRef)}
 						>

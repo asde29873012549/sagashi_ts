@@ -17,7 +17,7 @@ import { mobileFormInput } from "@/redux/sellSlice";
 import { useDispatch } from "react-redux";
 import { ScrollArea } from "@/components/base/scroll-area";
 import useInterSectionObserver from "@/lib/hooks/useIntersectionObserver";
-import { EditProductFormInput } from "@/lib/types/global";
+import type { EditProductFormInput } from "@/lib/types/global";
 
 interface BaseDesignerComboBoxProps {
 	onMakeProgress?: (progress: number) => void;

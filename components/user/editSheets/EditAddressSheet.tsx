@@ -8,8 +8,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { personalInfoUpdateSuccess, genericError } from "@/lib/utility/userMessage";
 import ComboBox from "@/components/base/comboBox";
 import region from "@/lib/utility/countries";
-import * as DOMPurify from "dompurify";
-import { Feature } from "@/lib/types/global";
+import DOMPurify from "dompurify";
+import type { Feature } from "@/lib/types/global";
 
 export default function EditAddressSheet({
 	setOpen,

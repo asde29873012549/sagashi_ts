@@ -1,118 +1,171 @@
+import { Fragment } from "react";
+import Banner from "@/components/layout/Banner";
+import ListingCard from "@/components/listingDisplay/ListingCard";
+import DesignerCard from "@/components/designerDisplay/DesignerCard";
+import { Button } from "@/components/base/button";
 import Image from "next/image";
-import { Inter } from "next/font/google";
+import Link from "next/link";
+import { dehydrate, QueryClient, useQuery } from "@tanstack/react-query";
+import getFeaturedDesigners from "@/lib/queries/fetchQuery";
+import getCurations from "@/lib/queries/fetchQuery";
+import getNewArrivalsProducts from "@/lib/queries/fetchQuery";
+import getUserLikedListing from "@/lib/queries/fetchQuery";
+import { useSession } from "next-auth/react";
+import type { ApiResponse, FeaturedDesignerData, ProductData } from "@/lib/types/global";
 
-const inter = Inter({ subsets: ["latin"] });
+interface Curation {
+	id: number;
+	theme: string;
+	slogan: string;
+	image: string;
+	create_at: string;
+}
 
 export default function Home() {
+	const { data: session } = useSession();
+
+	const { data: designerData, isFetching: isLoadingFeaturedDesigner } = useQuery<
+		ApiResponse<FeaturedDesignerData[]>,
+		Error
+	>({
+		queryKey: ["featuredDesingers"],
+		queryFn: () => getFeaturedDesigners({ uri: "/designer/featured" }),
+	});
+
+	const { data: curationData } = useQuery<ApiResponse<Curation[]>, Error>({
+		queryKey: ["curations"],
+		queryFn: () => getCurations({ uri: "/listing/curation" }),
+	});
+
+	const { data: newArrivalsProductData } = useQuery<
+		ApiResponse<{ total: number; result: ProductData[] }>,
+		Error
+	>({
+		queryKey: ["products", "newArrivals"],
+		queryFn: () =>
+			getNewArrivalsProducts({ uri: "/listing", method: "POST", body: { newArrivals: true } }),
+	});
+
+	const { data: likedListing } = useQuery<ApiResponse<{ product_id: number }[]>, Error>({
+		queryKey: ["listing", "liked"],
+		queryFn: () => getUserLikedListing({ uri: `/listing/like` }),
+		enabled: session?.user?.username ? true : false,
+		refetchOnWindowFocus: false,
+	});
+
+	const liked = likedListing?.data?.map((obj) => obj.product_id);
+
 	return (
-		<main
-			className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
-		>
-			<div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-				<p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-					Get started by editing&nbsp;
-					<code className="font-mono font-bold">pages/index.tsx</code>
-				</p>
-				<div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-					<a
-						className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-						href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						By{" "}
-						<Image
-							src="/vercel.svg"
-							alt="Vercel Logo"
-							className="dark:invert"
-							width={100}
-							height={24}
-							priority
+		<Fragment>
+			<Banner />
+			<section className="flex w-screen flex-col p-3 md:p-8">
+				<h1 className="mt-10 text-2xl font-bold md:text-3xl">New In</h1>
+				<p className="mb-6">Explore the Latest and Greatest in Contemporary Chic.</p>
+				<main className="no-scrollbar flex  w-full items-center overflow-scroll">
+					{newArrivalsProductData?.data?.result.map((obj, index) => (
+						<ListingCard
+							priority={index > 3 ? false : true}
+							key={obj.prod_id}
+							src={obj.primary_image}
+							prod_id={obj.prod_id}
+							product_data={obj}
+							likedListing={liked}
+							className="mb-4 mr-2 w-[65%] shrink-0 md:mr-4 md:w-1/5"
 						/>
-					</a>
-				</div>
-			</div>
+					))}
+					<Button
+						variant="ghost"
+						className=" flex w-[65%] shrink-0 cursor-pointer items-center justify-center font-semibold underline md:w-1/5"
+						asChild
+					>
+						<Link href="/shop/newArrivals">See All</Link>
+					</Button>
+				</main>
+				<Button variant="outline" className="mt-3 border-foreground font-semibold md:w-1/5" asChild>
+					<Link href="/shop/newArrivals">SHOP NOW</Link>
+				</Button>
+			</section>
 
-			<div className="before:bg-gradient-radial after:bg-gradient-conic relative flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700/10 after:dark:from-sky-900 after:dark:via-[#0141ff]/40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-				<Image
-					className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-					src="/next.svg"
-					alt="Next.js Logo"
-					width={180}
-					height={37}
-					priority
-				/>
-			</div>
-
-			<div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-				<a
-					href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-					className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-					target="_blank"
-					rel="noopener noreferrer"
+			<section className="flex w-screen flex-col p-3 md:p-8">
+				<h1 className="mt-10 text-2xl font-bold md:text-3xl">Featured Designers</h1>
+				<p className="mb-6">The Epitome of Fashion, Curated for Connoisseurs.</p>
+				<main className="no-scrollbar flex w-full items-center overflow-scroll">
+					{designerData?.data
+						.slice(0, 7)
+						.map((obj) => (
+							<DesignerCard
+								key={obj.name}
+								src={obj.logo}
+								designer_id={String(obj.id)}
+								isFollowed={obj.isFollow}
+								className="mb-4 mr-2 w-[65%] shrink-0 md:mr-4 md:w-1/5"
+								name={obj.name}
+								isLoading={isLoadingFeaturedDesigner}
+							/>
+						))}
+					<Button
+						variant="ghost"
+						className="flex w-[65%] shrink-0 cursor-pointer items-center justify-center font-semibold underline hover:font-bold md:w-1/5"
+						asChild
+					>
+						<Link href="/designers">See All</Link>
+					</Button>
+				</main>
+				<Button
+					variant="outline"
+					className="mt-3 border-foreground font-semibold hover:bg-primary hover:text-background md:w-1/5"
+					asChild
 				>
-					<h2 className={`mb-3 text-2xl font-semibold`}>
-						Docs{" "}
-						<span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-							-&gt;
-						</span>
-					</h2>
-					<p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-						Find in-depth information about Next.js features and API.
-					</p>
-				</a>
+					<Link href="/shop/featuredDesigners">SHOP NOW</Link>
+				</Button>
+			</section>
 
-				<a
-					href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-					className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<h2 className={`mb-3 text-2xl font-semibold`}>
-						Learn{" "}
-						<span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-							-&gt;
-						</span>
-					</h2>
-					<p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-						Learn about Next.js in an interactive course with&nbsp;quizzes!
-					</p>
-				</a>
-
-				<a
-					href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-					className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<h2 className={`mb-3 text-2xl font-semibold`}>
-						Templates{" "}
-						<span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-							-&gt;
-						</span>
-					</h2>
-					<p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-						Discover and deploy boilerplate example Next.js&nbsp;projects.
-					</p>
-				</a>
-
-				<a
-					href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-					className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<h2 className={`mb-3 text-2xl font-semibold`}>
-						Deploy{" "}
-						<span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-							-&gt;
-						</span>
-					</h2>
-					<p className={`m-0 max-w-[30ch] text-balance text-sm opacity-50`}>
-						Instantly deploy your Next.js site to a shareable URL with Vercel.
-					</p>
-				</a>
-			</div>
-		</main>
+			<section className="relative flex w-screen flex-col p-3 md:p-8">
+				<h1 className="mt-10 text-2xl font-bold md:text-3xl">Curation</h1>
+				<p className="mb-6">Seasonal curation to meet the zenith of worlds&apos; fashion trends</p>
+				{curationData?.data.map((obj, index) => (
+					<div className="relative mb-16 h-[500px] w-full" key={`${obj.theme}-${index}`}>
+						<Image src={obj.image} alt={obj.theme} fill={true} className="object-cover" />
+						<div className="absolute z-3 flex h-full w-full flex-col items-center justify-end px-5 pb-8 text-background md:justify-center">
+							<h3 className="text-xl font-semibold drop-shadow-md md:text-3xl">{obj.theme}</h3>
+							<p className="md:text-x text-center drop-shadow-md">{obj.slogan}</p>
+							<Link
+								className="cursor-pointer underline drop-shadow-md hover:text-foreground md:text-xl"
+								href="/"
+							>
+								Shop Now
+							</Link>
+						</div>
+						<div className="absolute z-2 h-full w-full bg-gray-300/10"></div>
+					</div>
+				))}
+			</section>
+		</Fragment>
 	);
+}
+
+export async function getStaticProps() {
+	const queryClient = new QueryClient();
+
+	await queryClient.prefetchQuery({
+		queryKey: ["featuredDesingers"],
+		queryFn: () => getFeaturedDesigners({ uri: "/designer/featured", server: true }),
+	});
+
+	await queryClient.prefetchQuery({
+		queryKey: ["curations"],
+		queryFn: () => getCurations({ uri: "/listing/curation", server: true }),
+	});
+
+	/*await queryClient.prefetchQuery({
+		queryKey: ["listing", "liked"],
+		queryFn: () => getUserLikedListing({ uri: `/listing/like`, server: true }),
+	});*/
+
+	return {
+		props: {
+			dehydratedState: dehydrate(queryClient),
+		},
+		revalidate: 60 * 3,
+	};
 }

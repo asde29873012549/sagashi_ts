@@ -11,9 +11,9 @@ import getAllCategories from "@/lib/queries/fetchQuery";
 
 import { makeProgress, mobileFormInput, sellSelector } from "@/redux/sellSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { ApiResponse, DeptCategory, SubCategorySubType } from "@/lib/types/global";
+import type { ApiResponse, DeptCategory, SubCategorySubType } from "@/lib/types/global";
 
-interface dataRefType {
+export interface dataRefType {
 	department: string | null;
 	category: string | null;
 	category_id: string | null;

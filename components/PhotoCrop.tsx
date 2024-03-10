@@ -2,7 +2,7 @@ import ReactCrop, { type Crop } from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import BlackCanvas from "@/components/layout/BlackCanvas";
 import { Button } from "@/components/base/button";
-import { centerAspectCrop } from "../lib/utils/utils";
+import { centerAspectCrop } from "../lib/utility/utils";
 
 interface PhotoCropProps {
 	imgSrc: string | null;

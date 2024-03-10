@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utility/utils";
+
 interface MessageProps {
 	className?: string;
 	children: React.ReactNode;
@@ -13,11 +15,11 @@ export default function ChatroomThumbnailCard({
 }: MessageProps) {
 	return (
 		<div
-			className={`flex w-full ${selfMessage ? "justify-end" : "justify-start"}`}
+			className={cn("flex w-full", selfMessage ? "justify-end" : "justify-start")}
 			ref={lastMessageElement}
 		>
 			<span
-				className={`my-0.5 w-fit max-w-[60%] rounded-3xl border-2 px-3 py-1 text-sm ${className}`}
+				className={cn("my-0.5 w-fit max-w-[60%] rounded-3xl border-2 px-3 py-1 text-sm", className)}
 			>
 				{children}
 			</span>

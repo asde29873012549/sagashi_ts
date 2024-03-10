@@ -26,7 +26,7 @@ import { useToast } from "@/components/base/use-toast";
 import DOMPurify from "dompurify";
 import { useDispatch } from "react-redux";
 import { XCircle } from "lucide-react";
-import {
+import type {
 	ProductData,
 	DraftProductData,
 	MenswearCategory,
@@ -36,6 +36,8 @@ import {
 	EditProductFormInput,
 	SubCategorySubType,
 	PartialSellFormInputType,
+	ApiResponse,
+	DeptCategory,
 } from "@/lib/types/global";
 
 interface EditProductDialogProps {
@@ -46,23 +48,7 @@ interface EditProductDialogProps {
 	isDraft?: boolean;
 }
 
-interface cachedCategoryData {
-	status: "success" | "fail";
-	data: {
-		Menswear: MenswearCategory;
-		Womenswear: WomenswearCategory;
-	};
-}
-
-type CategoryData =
-	| {
-			status: "success" | "fail";
-			data: {
-				Menswear: MenswearCategory;
-				Womenswear: WomenswearCategory;
-			};
-	  }
-	| undefined;
+type CategoryData = ApiResponse<DeptCategory> | undefined;
 
 export default function EditProductDialog({
 	isOpen,
@@ -91,7 +77,7 @@ export default function EditProductDialog({
 		return photoObj;
 	};
 
-	const cachedCategoryData: cachedCategoryData | undefined = queryClient.getQueryData(["category"]);
+	const cachedCategoryData: CategoryData = queryClient.getQueryData(["category"]);
 
 	let category_id: string | number = "";
 	let subCategory_id: string | number = "";

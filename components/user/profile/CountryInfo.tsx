@@ -1,4 +1,4 @@
-import { UserData } from "@/lib/types/global";
+import type { UserData } from "@/lib/types/global";
 export default function CountryInfo({
 	sheet = "",
 	userData,

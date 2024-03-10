@@ -1,6 +1,5 @@
 import ShopPage from "./index";
 import getTree from "@/lib/queries/fetchQuery";
-import getProducts from "@/lib/queries/fetchQuery";
 import { useQuery, QueryClient, dehydrate } from "@tanstack/react-query";
 
 export default function Womenswear() {

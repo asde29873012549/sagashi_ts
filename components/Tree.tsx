@@ -8,7 +8,7 @@ import { Checkbox } from "@/components/base/checkbox";
 import { useState, useMemo, useCallback } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getAllDesigners from "@/lib/queries/fetchQuery";
-import {
+import type {
 	OriginTreeData,
 	TreeFilterType,
 	Condition,
@@ -27,7 +27,7 @@ import {
 } from "@/components/base/command";
 import { Input } from "@/components/base/input";
 import { Check } from "lucide-react";
-import { cn } from "@/lib/utility/utils";
+import { debounce } from "@/lib/utility/utils";
 
 interface TreeProps {
 	treeData: OriginTreeData | FilteredTreeData;

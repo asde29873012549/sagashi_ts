@@ -30,7 +30,7 @@ import { getToken } from "next-auth/jwt";
 
 import { useState, useRef, useEffect } from "react";
 
-import {
+import type {
 	ApiResponse,
 	MenswearCategory,
 	ProductData,

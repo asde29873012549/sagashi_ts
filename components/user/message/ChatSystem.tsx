@@ -28,35 +28,18 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { parseISODate, timeDifference } from "@/lib/utility/utils";
-
-interface ChatroomData {
-	buyer_name: string;
-	chatroom_avatar: string;
-	id: string;
-	last_message: number;
-	last_sent_user_name: string;
-	link: string;
-	read_at: string | null;
-	seller_name: string;
-	text: string;
-	updated_at: string;
-}
-
-interface ChatroomDataResponse {
-	status: "success" | "fail";
-	data: ChatroomData[];
-}
+import type { ApiResponse, ChatroomType, InfiniteQueryType } from "@/lib/types/global";
 
 interface MessageData {
-	buyer_name: string;
-	chatroom_avatar: string;
 	id: string;
-	last_message: number;
+	buyer_name: string;
+	seller_name: string;
 	last_sent_user_name: string;
+	chatroom_avatar: string;
+	last_message: number;
+	text: string;
 	link: string;
 	read_at: string | null;
-	seller_name: string;
-	text: string;
 	updated_at: string;
 }
 
@@ -74,13 +57,6 @@ interface MessageType {
 	created_at: string;
 }
 
-interface InfiniteChatData {
-	pageParams: any[];
-	pages: {
-		data: MessageType[];
-		status: "success" | "fail";
-	}[];
-}
 export default function Messages({ user }: { user: string }) {
 	const queryClient = useQueryClient();
 	const dispatch = useDispatch();
@@ -107,7 +83,7 @@ export default function Messages({ user }: { user: string }) {
 				uri: "/message?tab=" + currentTab,
 			}),
 		refetchOnWindowFocus: false,
-		onSuccess: (initialChatroomList: ChatroomDataResponse) => {
+		onSuccess: (initialChatroomList: ApiResponse<ChatroomType[]>) => {
 			// on successfully fetch chatroom list, populate the initial state of last message and read status
 			dispatch(
 				setLastMessage(initialChatroomList.data?.map((c) => ({ chatroom_id: c.id, text: c.text }))),
@@ -253,7 +229,7 @@ export default function Messages({ user }: { user: string }) {
 			// Optimistically update to the new value
 			queryClient.setQueryData(
 				["messages", currentActiveChatroom],
-				(oldData: InfiniteChatData | undefined) => {
+				(oldData: InfiniteQueryType<ApiResponse<MessageType[]>> | undefined) => {
 					const newData = oldData;
 					newData &&
 						newData.pages[0].data.unshift({

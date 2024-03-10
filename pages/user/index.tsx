@@ -20,7 +20,7 @@ import { getToken } from "next-auth/jwt";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { ApiResponse, UserData, Feature } from "@/lib/types/global";
+import type { ApiResponse, UserData, Feature } from "@/lib/types/global";
 import { NextApiRequest } from "next";
 
 const JWT_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET;

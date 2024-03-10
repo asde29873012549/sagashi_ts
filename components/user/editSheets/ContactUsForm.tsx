@@ -15,7 +15,7 @@ import { Textarea } from "@/components/base/textarea";
 import { Button } from "@/components/base/button";
 import { Input } from "@/components/base/input";
 import { zodResolver } from "@hookform/resolvers/zod";
-import * as DOMPurify from "dompurify";
+import DOMPurify from "dompurify";
 
 const formSchema = z.object({
 	username: z

@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 export default function PrivacyPolicy() {
 	return (
 		<div className="m-auto mt-10 flex w-7/12 flex-col space-y-4 text-foreground">

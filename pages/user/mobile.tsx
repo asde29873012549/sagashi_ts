@@ -19,7 +19,7 @@ import getUser from "@/lib/queries/fetchQuery";
 import { getToken } from "next-auth/jwt";
 
 import { NextApiRequest } from "next";
-import { ApiResponse, UserData } from "@/lib/types/global";
+import type { ApiResponse, UserData } from "@/lib/types/global";
 
 const JWT_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET;
 

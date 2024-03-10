@@ -12,7 +12,7 @@ import { useSelector, useDispatch } from "react-redux";
 import register from "@/lib/queries/fetchQuery";
 
 import { useState } from "react";
-import * as DOMPurify from "dompurify";
+import DOMPurify from "dompurify";
 import Check from "./svg/check";
 
 export default function RegisterForm() {

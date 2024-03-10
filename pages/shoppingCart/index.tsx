@@ -5,7 +5,7 @@ import { Button } from "@/components/base/button";
 import { useQuery, QueryClient, dehydrate } from "@tanstack/react-query";
 import getCart from "@/lib/queries/fetchQuery";
 import { getToken } from "next-auth/jwt";
-import { CartData, ApiResponse } from "@/lib/types/global";
+import type { CartData, ApiResponse } from "@/lib/types/global";
 import { NextApiRequest } from "next";
 
 dotenv.config();
