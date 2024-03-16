@@ -1,5 +1,5 @@
 import { Button } from "@/components/base/button";
-import DesignerComboBox from "@/components/DesignerComboBox";
+import DesignerComboBox from "@/components/designerDisplay/DesignerComboBox";
 import { Input } from "@/components/base/input";
 import { Textarea } from "@/components/base/textarea";
 import { XCircle } from "lucide-react";
@@ -8,7 +8,7 @@ import { Progress } from "@/components/base/progress";
 import { useRef, Fragment } from "react";
 import { useRouter } from "next/router";
 import { v4 as uuid } from "uuid";
-import ImageUploadCard from "@/components/ImageUploadCard";
+import ImageUploadCard from "@/components/sell/ImageUploadCard";
 import { useInfiniteQuery, useMutation } from "@tanstack/react-query";
 
 import {

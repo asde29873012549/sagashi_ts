@@ -1,5 +1,5 @@
 import { Input } from "@/components/base/input";
-import DatePicker from "@/components/DatePicker";
+import DatePicker from "@/components/general/DatePicker";
 import { Label } from "@/components/base/label";
 import { RadioGroup, RadioGroupItem } from "@/components/base/radio-group";
 import { useState, Fragment } from "react";

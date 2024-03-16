@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/base/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
 import Message from "@/components/user/message/ChatroomThumbnailCard";
 import { useState, useRef, useEffect } from "react";
-import ItemCard from "../../ItemCard";
+import ItemCard from "../../general/ItemCard";
 import { useQuery, useInfiniteQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import getChatrooms from "@/lib/queries/fetchQuery";
 import getMessages from "@/lib/queries/fetchQuery";

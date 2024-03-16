@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import NavBar from "./NavBar";
-import RegisterForm from "../RegisterForm";
+import RegisterForm from "../general/RegisterForm";
 import Footer from "./Footer";
 import { Toaster } from "@/components/base/toaster";
 import Loading from "@/components/layout/Loading";

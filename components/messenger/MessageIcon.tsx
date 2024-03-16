@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/base/popover";
-import ItemCard from "../ItemCard";
+import ItemCard from "../general/ItemCard";
 import { received_message } from "@/lib/utility/msg_template";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";

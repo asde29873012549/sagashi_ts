@@ -5,13 +5,13 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/base/select";
-import DesignerComboBox from "../../components/DesignerComboBox";
+import DesignerComboBox from "../../components/designerDisplay/DesignerComboBox";
 import { Input } from "@/components/base/input";
 import { Textarea } from "@/components/base/textarea";
 import { Button } from "@/components/base/button";
 import { XCircle } from "lucide-react";
 import { useToast } from "@/components/base/use-toast";
-import ImageUploadCard from "../../components/ImageUploadCard";
+import ImageUploadCard from "../../components/sell/ImageUploadCard";
 import { useDispatch } from "react-redux";
 import { activate } from "@/redux/loadingSlice";
 

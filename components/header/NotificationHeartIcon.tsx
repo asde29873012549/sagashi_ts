@@ -1,6 +1,6 @@
 import { Heart } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/base/popover";
-import ItemCard from "../ItemCard";
+import ItemCard from "../general/ItemCard";
 import { likeListing, gotFollowed, uploadListing } from "@/lib/utility/msg_template";
 import { useState } from "react";
 import type { OnlineNotification, NotificationType } from "@/lib/types/global";

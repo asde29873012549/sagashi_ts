@@ -1,5 +1,5 @@
 import { Fragment } from "react";
-import ItemCard from "../../ItemCard";
+import ItemCard from "../../general/ItemCard";
 import { Separator } from "@/components/base/separator";
 
 export default function MyItemSheet() {

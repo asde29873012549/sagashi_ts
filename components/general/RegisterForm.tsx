@@ -4,16 +4,16 @@ import { Input } from "@/components/base/input";
 import { Label } from "@/components/base/label";
 import { Button } from "@/components/base/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/base/card";
-import SmallSpinner from "./layout/SmallSpinner";
-import { Checkbox } from "./base/checkbox";
+import SmallSpinner from "../layout/SmallSpinner";
+import { Checkbox } from "../base/checkbox";
 
-import { userSelector, toggleRegisterForm } from "../redux/userSlice";
+import { userSelector, toggleRegisterForm } from "../../redux/userSlice";
 import { useSelector, useDispatch } from "react-redux";
 import register from "@/lib/queries/fetchQuery";
 
 import { useState } from "react";
 import DOMPurify from "dompurify";
-import Check from "./svg/check";
+import Check from "../svg/check";
 
 export default function RegisterForm() {
 	const dispatch = useDispatch();

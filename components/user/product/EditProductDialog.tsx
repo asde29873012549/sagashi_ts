@@ -1,6 +1,6 @@
 import { Input } from "@/components/base/input";
 import { Label } from "@/components/base/label";
-import ImageUploadCard from "@/components/ImageUploadCard";
+import ImageUploadCard from "@/components/sell/ImageUploadCard";
 import { Textarea } from "@/components/base/textarea";
 import {
 	Select,
@@ -9,7 +9,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/base/select";
-import DesignerComboBox from "@/components/DesignerComboBox";
+import DesignerComboBox from "@/components/designerDisplay/DesignerComboBox";
 import { Dialog, DialogContent, DialogFooter } from "@/components/base/dialog";
 import { activate } from "@/redux/loadingSlice";
 import getAllCondition from "@/lib/queries/fetchQuery";

@@ -1,4 +1,4 @@
-import PhotoCrop from "@/components/PhotoCrop";
+import PhotoCrop from "@/components/sell/PhotoCrop";
 import { Fragment, useState, useRef, ChangeEvent } from "react";
 import { mobileFormInput } from "@/redux/sellSlice";
 import { useDispatch } from "react-redux";
