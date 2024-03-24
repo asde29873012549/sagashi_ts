@@ -1,2 +1,2 @@
-components/ui/*.jsx
-components/ui/*.ts
+components/base/*.jsx
+components/base/*.ts

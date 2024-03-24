@@ -11,16 +11,7 @@ import { Skeleton } from "@/components/base/skeleton";
 import FilterSection from "@/components/listingDisplay/FilterSection";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import type {
-	DeptCategory,
-	TreeFilterType,
-	FilterOptionType,
-	MenswearCategory,
-	WomenswearCategory,
-	ApiResponse,
-	ProductData,
-	OriginTreeData,
-} from "@/lib/types/global";
+import type { DeptCategory, ApiResponse, ProductData, OriginTreeData } from "@/lib/types/global";
 
 interface ShopProps {
 	isMenswear?: boolean;
@@ -50,17 +41,17 @@ export default function Shop({
 		refetchOnWindowFocus: false,
 	});
 
-	const initialFilterState = (): TreeFilterType => {
+	const initialFilterState = (): Record<string, Set<string>> => {
 		if (isMenswear) {
-			return { department: ["Menswear"] };
+			return { department: new Set(["Menswear"]) };
 		} else if (isWomenswear) {
-			return { department: ["Womenswear"] };
+			return { Womenswear: new Set(["Womenswear"]) };
 		} else if (designer) {
-			return { designers: [designer] };
+			return { designer: new Set([designer]) };
 		} else if (isNewArrival) {
-			return { newArrivals: true };
+			return { newArrivals: new Set(["newArrivals"]) };
 		} else if (subCat && cat && dept) {
-			return { subCategory: [{ dept, cat, name: subCat }] };
+			return { subCategory: new Set([`${dept}@${cat}@${subCat}`]) };
 		} else {
 			return {};
 		}
@@ -68,28 +59,26 @@ export default function Shop({
 
 	const initialTreeState = () => {
 		if (isMenswear) {
-			return reformTree(OriginTreeData?.data!, { department: ["Menswear"] });
+			return reformTree(OriginTreeData?.data!, { department: new Set(["Menswear"]) });
 		} else if (isWomenswear) {
-			return reformTree(OriginTreeData?.data!, { department: ["Womenswear"] });
+			return reformTree(OriginTreeData?.data!, { department: new Set(["Menswear"]) });
 		} else {
 			return OriginTreeData?.data || treeData;
 		}
 	};
 
-	const [filter, setFilter] = useState<TreeFilterType>(initialFilterState());
+	const [filter, setFilter] = useState<Record<string, Set<string>>>(initialFilterState());
 	const [tree, setTree] = useState(initialTreeState());
 
-	console.log(filter);
-
 	useEffect(() => {
-		subCat && cat && dept && setFilter({ subCategory: [{ dept, cat, name: subCat }] });
-		designer && setFilter({ designers: [designer] });
+		subCat && cat && dept && setFilter({ subCategory: new Set([`${dept}@${cat}@${subCat}`]) });
+		designer && setFilter({ designers: new Set([designer]) });
 	}, [subCat, cat, dept, designer]);
 
-	const createBody = (pageParam: [number], restFilter: TreeFilterType) => {
+	const createBody = (pageParam: [number], restFilter: Record<string, string[]>) => {
 		if (!pageParam && Object.keys(restFilter).length === 0) return {};
 
-		const filts: TreeFilterType & { cursor?: [number] } = { ...restFilter };
+		const filts: Record<string, string[]> & { cursor?: [number] } = { ...restFilter };
 
 		if (pageParam) {
 			filts.cursor = pageParam;
@@ -98,18 +87,27 @@ export default function Shop({
 		return filts;
 	};
 
+	const filterObj = () => {
+		const filterKeys = Object.keys(filter);
+		const filterObj: Record<string, string[]> = {};
+		filterKeys.forEach((key) => {
+			filterObj[key] = [...filter[key]];
+		});
+		return filterObj;
+	};
+
 	const {
 		data: productData,
 		fetchNextPage,
 		hasNextPage,
 		isFetchingNextPage,
 	} = useInfiniteQuery<ApiResponse<{ total: number; result: ProductData[] }>, Error>({
-		queryKey: ["products", filter, user],
+		queryKey: ["products", filterObj(), user],
 		queryFn: ({ pageParam = "", ...restFilter }) =>
 			getProducts({
 				uri: user ? `/listing?user=${user}` : "/listing",
 				method: "POST",
-				body: createBody(pageParam, restFilter.queryKey[1] as TreeFilterType),
+				body: createBody(pageParam, restFilter.queryKey[1] as Record<string, string[]>),
 			}),
 		getNextPageParam: (lastPage, pages) =>
 			// check if there is a next page by checking the sort property of elastic search result
@@ -123,33 +121,9 @@ export default function Shop({
 		fetchNextPage,
 	});
 
-	const onChangeFilter = (filter: TreeFilterType) => {
+	const onChangeFilter = (filter: Record<string, Set<string>>) => {
 		setFilter(filter);
-		const department = filter.department ? [...filter.department] : null;
-		const category: Partial<FilterOptionType["category"]> = filter.subCategory && {};
-		//const subCategory = filter.subCategory ? [...filter.subCategory] : null;
-
-		const menswearSubCategory = filter.subCategory?.filter((obj) => obj.dept === "Menswear") || [];
-		if (category && menswearSubCategory.length > 0) {
-			category.Menswear = Array.from(
-				new Set(menswearSubCategory.map((obj) => obj.cat)),
-			) as (keyof MenswearCategory)[];
-
-			if (department) !department.includes("Menswear") && department.push("Menswear");
-		}
-
-		const wommenswearSubCategory =
-			filter.subCategory?.filter((obj) => obj.dept === "Womenswear") || [];
-		if (category && wommenswearSubCategory.length > 0) {
-			category.Womenswear = Array.from(
-				new Set(wommenswearSubCategory.map((obj) => obj.cat)),
-			) as (keyof WomenswearCategory)[];
-
-			if (department) !department.includes("Womenswear") && department.push("Womenswear");
-		}
-
-		const reformedTree = reformTree(OriginTreeData?.data!, { department, category });
-
+		const reformedTree = reformTree(OriginTreeData?.data!, filter);
 		setTree(reformedTree);
 	};
 

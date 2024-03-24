@@ -96,31 +96,31 @@ interface WomenswearProductData extends BaseProductData {
 export type ProductData = MenswearProductData | WomenswearProductData;
 
 // Category Tree related Types Definitions
-export interface SubCategorySubType {
-	id: number;
-	name: string;
-}
+// export interface SubCategorySubType {
+// 	id: number;
+// 	name: string;
+// }
 
-export interface SubCategoryType {
-	id: number;
-	sub: SubCategorySubType[];
-}
+// export interface SubCategoryType {
+// 	id: number;
+// 	sub: SubCategorySubType[];
+// }
 
 interface CommonCategory {
-	Tops: SubCategoryType;
-	Bottoms: SubCategoryType;
-	Outerwear: SubCategoryType;
-	Footwear: SubCategoryType;
-	Accessories: SubCategoryType;
+	Tops: string[];
+	Bottoms: string[];
+	Outerwear: string[];
+	Footwear: string[];
+	Accessories: string[];
 }
 
 export interface WomenswearCategory extends CommonCategory {
-	Dresses: SubCategoryType;
-	"Bags & Lugguage": SubCategoryType;
+	Dresses: string[];
+	"Bags & Lugguage": string[];
 }
 
 export interface MenswearCategory extends CommonCategory {
-	Tailoring: SubCategoryType;
+	Tailoring: string[];
 }
 
 export type MenswearSizeType = {
@@ -172,20 +172,20 @@ interface CategoryFilterObj<C, D extends keyof C> {
 	cat: keyof C[D];
 }
 
-export interface TreeFilterType {
-	newArrivals?: boolean;
-	department?: ("Menswear" | "Womenswear")[];
-	subCategory?: (
-		| CategoryFilterObj<DeptCategory, "Menswear">
-		| CategoryFilterObj<DeptCategory, "Womenswear">
-	)[];
-	sizes?: (
-		| CategoryFilterObj<DeptCategorySize, "Menswear">
-		| CategoryFilterObj<DeptCategorySize, "Womenswear">
-	)[];
-	designers?: string[];
-	condition?: Condition[];
-}
+// export interface TreeFilterType {
+// 	newArrivals?: boolean;
+// 	department?: ("Menswear" | "Womenswear")[];
+// 	subCategory?: (
+// 		| CategoryFilterObj<DeptCategory, "Menswear">
+// 		| CategoryFilterObj<DeptCategory, "Womenswear">
+// 	)[];
+// 	sizes?: (
+// 		| CategoryFilterObj<DeptCategorySize, "Menswear">
+// 		| CategoryFilterObj<DeptCategorySize, "Womenswear">
+// 	)[];
+// 	designers?: string[];
+// 	condition?: Condition[];
+// }
 
 export interface FilterOptionType {
 	department?: ("Menswear" | "Womenswear")[] | null;
@@ -336,7 +336,9 @@ export interface NotificationType {
 		| "notification.follow"
 		| "notification.uploadListing";
 	image: string;
-	content: string;
+	content: {
+		listing_name: string;
+	};
 	link: string;
 	created_at: string;
 	read_at: string | null;

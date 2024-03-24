@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { genericError } from "../utils/userMessage";
+import { genericError } from "../utility/userMessage";
 
 dotenv.config();
 

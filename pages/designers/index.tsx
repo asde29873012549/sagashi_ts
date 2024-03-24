@@ -59,6 +59,10 @@ export default function Designers() {
 			<section className="mt-12">
 				<DesignerAlphabaticSec alphabat="A" designers={designers} alphabatRef={alphabatRef} />
 				<DesignerAlphabaticSec alphabat="B" designers={designers} alphabatRef={alphabatRef} />
+				<DesignerAlphabaticSec alphabat="C" designers={designers} alphabatRef={alphabatRef} />
+				<DesignerAlphabaticSec alphabat="D" designers={designers} alphabatRef={alphabatRef} />
+				<DesignerAlphabaticSec alphabat="E" designers={designers} alphabatRef={alphabatRef} />
+				<DesignerAlphabaticSec alphabat="F" designers={designers} alphabatRef={alphabatRef} />
 			</section>
 		</main>
 	);

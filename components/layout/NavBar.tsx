@@ -20,9 +20,6 @@ import { genericError } from "@/lib/utility/userMessage";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 
-//types
-import type { SubCategorySubType } from "@/lib/types/global";
-
 interface DesignerData {
 	id: number;
 	name: string;
@@ -110,21 +107,19 @@ export default function NavBar() {
 											<div className="flex flex-col" key={`${index}-${cat}`}>
 												<div className="my-2 w-52 font-normal">{cat}</div>
 												<div className="flex flex-col">
-													{categoryData?.data.Menswear[cat].sub.map(
-														(subCat: SubCategorySubType, index: number) => (
-															<NavigationMenuLink key={`${index}-${subCat}`} asChild>
-																<Link
-																	href={`/shop?subCat=${encodeURIComponent(
-																		subCat.name,
-																	)}&cat=${cat}&dept=Menswear`}
-																>
-																	<div className="my-1 flex translate-y-0 transform text-base font-light transition-transform duration-300 ease-in-out hover:translate-y-0.5 hover:cursor-pointer hover:underline">
-																		<span>{subCat.name}</span>
-																	</div>
-																</Link>
-															</NavigationMenuLink>
-														),
-													)}
+													{categoryData?.data.Menswear[cat].map((subCat: string, index: number) => (
+														<NavigationMenuLink key={`${index}-${subCat}`} asChild>
+															<Link
+																href={`/shop?subCat=${encodeURIComponent(
+																	subCat,
+																)}&cat=${cat}&dept=Menswear`}
+															>
+																<div className="my-1 flex translate-y-0 transform text-base font-light transition-transform duration-300 ease-in-out hover:translate-y-0.5 hover:cursor-pointer hover:underline">
+																	<span>{subCat}</span>
+																</div>
+															</Link>
+														</NavigationMenuLink>
+													))}
 												</div>
 											</div>
 										))}
@@ -146,16 +141,16 @@ export default function NavBar() {
 											<div className="flex flex-col" key={`${index}-${cat}`}>
 												<div className="my-2 w-44 font-normal">{cat}</div>
 												<div className="flex flex-col">
-													{categoryData?.data.Womenswear[cat].sub.map(
-														(subCat: SubCategorySubType, index: number) => (
+													{categoryData?.data.Womenswear[cat].map(
+														(subCat: string, index: number) => (
 															<NavigationMenuLink key={`${index}-${subCat}`} asChild>
 																<Link
 																	href={`/shop?subCat=${encodeURIComponent(
-																		subCat.name,
+																		subCat,
 																	)}&cat=${cat}&dept=Womenswear`}
 																>
 																	<div className="my-1 flex translate-y-0 transform text-base font-light transition-transform duration-300 ease-in-out hover:translate-y-0.5 hover:cursor-pointer hover:underline">
-																		<span>{subCat.name}</span>
+																		<span>{subCat}</span>
 																	</div>
 																</Link>
 															</NavigationMenuLink>

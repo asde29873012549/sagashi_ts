@@ -27,9 +27,7 @@ export default function NotificationHeartIcon({
 		let content: React.ReactNode = "";
 		const USERNAME = "username" in msg ? msg.username : msg.sender_name;
 		const LISTING_NAME =
-			"listing_name" in msg
-				? msg.listing_name
-				: JSON.parse((msg as NotificationType).content).listing_name;
+			"content" in msg ? msg.content.listing_name : "listing_name" in msg ? msg.listing_name : "";
 		switch (msg.type) {
 			case "notification.like":
 				content = likeListing(USERNAME, LISTING_NAME);

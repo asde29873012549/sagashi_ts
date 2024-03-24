@@ -49,11 +49,11 @@ export default function Header() {
 		refetchOnWindowFocus: false,
 		onSuccess: (initialNotificationData) => {
 			// create global state for notification read status
-			const temp: { [key: string]: string | null } = {};
-			const readStatus = initialNotificationData.data.forEach((obj: NotificationType) => {
-				temp[obj.id] = obj.read_at;
-			});
-			dispatch(setNotificationReadStatus(readStatus));
+			// const temp: { [key: string]: string | null } = {};
+			// const readStatus = initialNotificationData.data.forEach((obj: NotificationType) => {
+			// 	temp[obj.id] = obj.read_at;
+			// });
+			dispatch(setNotificationReadStatus(initialNotificationData.data));
 		},
 	});
 
@@ -146,7 +146,7 @@ export default function Header() {
 					{session ? "LOGOUT" : "LOGIN"}
 				</div>
 			</div>
-			<Logo className="absolute m-auto w-[7vw] md:w-[10vw] lg:w-[7vw]" />
+			<Logo className="m-auto w-[7vw] md:w-[10vw] lg:w-[7vw]" />
 			<div className="text-md flex w-1/6 justify-end">
 				<div className="flex w-fit space-x-6">
 					<div className="inline-block" style={{ height: "28px" }}>

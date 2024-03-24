@@ -1,63 +1,65 @@
 import type {
 	OriginTreeData,
-	WomenswearSizeType,
-	MenswearSizeType,
-	FilterOptionType,
+	WomenswearCategory,
 	FilteredTreeData,
-	DeptCategory,
+	MenswearCategory,
 } from "../types/global";
 
-interface DeptCategorySizePartial {
-	Menswear: Partial<MenswearSizeType>;
-	Womenswear: Partial<WomenswearSizeType>;
-}
-
-export default function reformTree(treeData: OriginTreeData, opts: FilterOptionType) {
-	const { department, category } = opts;
-	if (!department && !category) return treeData;
-
-	const filteredTree: FilteredTreeData = { ...treeData };
-
-	const treeCategory: Partial<DeptCategory> = {};
-	const treeSize: Partial<DeptCategorySizePartial> = {};
-
-	if (department && department.length > 0) {
-		department.sort().forEach((dep) => {
-			if (dep === "Menswear") {
-				treeCategory[dep] = filteredTree.Category[dep];
-				treeSize[dep] = filteredTree.Sizes[dep];
-			} else {
-				treeCategory[dep] = filteredTree.Category[dep];
-				treeSize[dep] = filteredTree.Sizes[dep];
-			}
-		});
-
-		filteredTree.Category = treeCategory;
+export default function reformTree(treeData: OriginTreeData, filter: Record<string, Set<string>>) {
+	const filteredTree: Partial<FilteredTreeData> = structuredClone(treeData);
+	if (filter.subCategory?.size > 0) {
+		const subCatArr = [...(filter.subCategory || [])].map((c) => c.split("@")[0]);
+		const s = new Set(subCatArr);
+		if (s.has("Menswear")) filteredTree.Sizes!.Menswear = {};
+		if (s.has("Womenswear")) filteredTree.Sizes!.Womenswear = {};
 	}
 
-	if (category) {
-		Object.keys(category).forEach((key) => {
-			if (key === "Menswear") {
-				const catSize: { [S in keyof MenswearSizeType]?: string[] } = {};
-				category[key]!.forEach((cat) => {
-					if (filteredTree.Category.Menswear && cat in filteredTree.Category.Menswear) {
-						catSize[cat] = filteredTree.Sizes.Menswear![cat];
-					}
-				});
-				treeSize[key] = catSize;
-			} else if (key === "Womenswear") {
-				const catSize: { [S in keyof WomenswearSizeType]?: string[] } = {};
-				category[key]!.forEach((cat) => {
-					if (filteredTree.Category.Womenswear && cat in filteredTree.Category.Womenswear) {
-						catSize[cat] = filteredTree.Sizes.Womenswear![cat];
-					}
-				});
-				treeSize[key] = catSize;
-			}
-		});
-	}
-
-	filteredTree.Sizes = treeSize;
+	Object.keys(filter).forEach((key) => {
+		const value = [...filter[key]];
+		switch (key) {
+			case "department":
+				if (value.length === 1) {
+					const otherDepartment = value[0] === "Menswear" ? "Womenswear" : "Menswear";
+					delete filteredTree.Category![otherDepartment];
+					delete filteredTree.Sizes![otherDepartment];
+				}
+				break;
+			case "subCategory":
+				const deptArr = value.map((c) => c.split("@")[0]);
+				const catArr = value.map((c) => c.split("@")[1]) as
+					| (keyof MenswearCategory)[]
+					| (keyof WomenswearCategory)[];
+				const dept = new Set(deptArr);
+				const cat = [...new Set(catArr)];
+				if (dept.has("Menswear") && !dept.has("Womenswear")) {
+					cat.forEach((c) => {
+						if (filteredTree.Sizes!.Menswear)
+							filteredTree.Sizes!.Menswear[c as keyof MenswearCategory] =
+								treeData.Sizes!.Menswear![c as keyof MenswearCategory];
+					});
+				} else if (dept.has("Womenswear") && !dept.has("Menswear")) {
+					cat.forEach((c) => {
+						if (filteredTree.Sizes!.Womenswear)
+							filteredTree.Sizes!.Womenswear[c as keyof WomenswearCategory] =
+								treeData.Sizes!.Womenswear![c as keyof WomenswearCategory];
+					});
+				} else {
+					value.forEach((str) => {
+						const c = str.split("@");
+						if (c[0] === "Menswear") {
+							if (filteredTree.Sizes!.Menswear)
+								filteredTree.Sizes!.Menswear![c[1] as keyof MenswearCategory] =
+									treeData.Sizes!.Menswear![c[1] as keyof MenswearCategory];
+						} else {
+							if (filteredTree.Sizes!.Womenswear)
+								filteredTree.Sizes!.Womenswear![c[1] as keyof WomenswearCategory] =
+									treeData.Sizes!.Womenswear![c[1] as keyof WomenswearCategory];
+						}
+					});
+				}
+				break;
+		}
+	});
 
 	return filteredTree;
 }

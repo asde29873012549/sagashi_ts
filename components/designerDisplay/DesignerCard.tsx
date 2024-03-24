@@ -106,6 +106,7 @@ export default function DesignerCard({
 					disabled={isLoadingFollowState}
 					// for initail load, check the isFollowed state from API, after that, check the state of the local isFollow state
 					variant={followBtnStyle}
+					id="followBtn"
 					className="m-auto w-1/2"
 				>
 					{isDesignerFollowed}
