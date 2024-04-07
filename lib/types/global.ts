@@ -22,7 +22,7 @@ export interface UserData {
 	follower_count: string | null;
 }
 
-export type UserJWTtype = {
+export type UserJWT = {
 	username: string;
 	avatar: string;
 	accessToken: string;
@@ -95,18 +95,7 @@ interface WomenswearProductData extends BaseProductData {
 
 export type ProductData = MenswearProductData | WomenswearProductData;
 
-// Category Tree related Types Definitions
-// export interface SubCategorySubType {
-// 	id: number;
-// 	name: string;
-// }
-
-// export interface SubCategoryType {
-// 	id: number;
-// 	sub: SubCategorySubType[];
-// }
-
-interface CommonCategory {
+interface BaseCategoryTree {
 	Tops: string[];
 	Bottoms: string[];
 	Outerwear: string[];
@@ -114,13 +103,45 @@ interface CommonCategory {
 	Accessories: string[];
 }
 
-export interface WomenswearCategory extends CommonCategory {
+export interface WomenswearCategoryTree extends BaseCategoryTree {
 	Dresses: string[];
 	"Bags & Lugguage": string[];
 }
 
-export interface MenswearCategory extends CommonCategory {
+export interface MenswearCategoryTree extends BaseCategoryTree {
 	Tailoring: string[];
+}
+
+export interface DeptCategoryTree {
+	Menswear: MenswearCategoryTree;
+	Womenswear: WomenswearCategoryTree;
+}
+
+export interface SubCategorySubType {
+	id: number;
+	name: string;
+}
+
+export interface SubCategoryType {
+	id: number;
+	sub: SubCategorySubType[];
+}
+
+interface CommonCategory {
+	Tops: SubCategoryType;
+	Bottoms: SubCategoryType;
+	Outerwear: SubCategoryType;
+	Footwear: SubCategoryType;
+	Accessories: SubCategoryType;
+}
+
+export interface WomenswearCategory extends CommonCategory {
+	Dresses: SubCategoryType;
+	"Bags & Lugguage": SubCategoryType;
+}
+
+export interface MenswearCategory extends CommonCategory {
+	Tailoring: SubCategoryType;
 }
 
 export type MenswearSizeType = {
@@ -151,7 +172,7 @@ export type Condition = "New/Never Worn" | "Gently Used" | "Used" | "Very Worn";
 export interface OriginTreeData {
 	Department: ["Menswear", "Womenswear"];
 	NewArrivals: null;
-	Category: DeptCategory;
+	Category: DeptCategoryTree;
 	Sizes: DeptCategorySize;
 	Designer: string[];
 	Condition: Condition[];
@@ -160,17 +181,17 @@ export interface OriginTreeData {
 export interface FilteredTreeData {
 	Department: ("Menswear" | "Womenswear")[] | null;
 	NewArrivals: null;
-	Category: Partial<DeptCategory>;
+	Category: Partial<DeptCategoryTree>;
 	Sizes: Partial<DeptCategorySizePartial>;
 	Designer: string[];
 	Condition: Condition[];
 }
 
-interface CategoryFilterObj<C, D extends keyof C> {
-	name: string;
-	dept: D;
-	cat: keyof C[D];
-}
+// interface CategoryFilterObj<C, D extends keyof C> {
+// 	name: string;
+// 	dept: D;
+// 	cat: keyof C[D];
+// }
 
 // export interface TreeFilterType {
 // 	newArrivals?: boolean;

@@ -4,7 +4,7 @@ import { twMerge } from "tailwind-merge";
 import { centerCrop, makeAspectCrop } from "react-image-crop";
 import { Shirt, Wallet } from "lucide-react";
 import { formatDistanceToNow, parseISO, differenceInMinutes, format } from "date-fns";
-import { ApiResponse, MenswearCategory, UserJWTtype, WomenswearCategory } from "../types/global";
+import { ApiResponse, MenswearCategory, UserJWT, WomenswearCategory } from "../types/global";
 import Dress from "@/components/svg/Dress";
 import HandBag from "@/components/svg/HandBag";
 import Hoodie from "@/components/svg/Hoodie";
@@ -71,7 +71,7 @@ export function generateCategoryIcon(category: IconCategory) {
 	return icon;
 }
 
-export async function refreshAccessToken(token: UserJWTtype): Promise<UserJWTtype> {
+export async function refreshAccessToken(token: UserJWT): Promise<UserJWT> {
 	const response = await fetch(`${backend_server}/user/refreshToken`, {
 		method: "POST",
 		headers: {
@@ -80,7 +80,7 @@ export async function refreshAccessToken(token: UserJWTtype): Promise<UserJWTtyp
 		body: JSON.stringify({ token }),
 	});
 
-	const res: ApiResponse<UserJWTtype> = await response.json();
+	const res: ApiResponse<UserJWT> = await response.json();
 	const newToken = res.data;
 
 	return newToken;
@@ -89,12 +89,10 @@ export async function refreshAccessToken(token: UserJWTtype): Promise<UserJWTtyp
 export function debounce<F extends () => void>(fn: F, duration: number) {
 	let timer: ReturnType<typeof setTimeout> | null = null;
 	return function () {
-		if (timer) {
-			clearTimeout(timer);
-			timer = setTimeout(() => {
-				fn();
-			}, duration);
-		}
+		timer && clearTimeout(timer);
+		timer = setTimeout(() => {
+			fn();
+		}, duration);
 	};
 }
 

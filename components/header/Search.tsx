@@ -49,7 +49,7 @@ export default function Search({ children }: { children: React.ReactNode }) {
 
 	const fetchSearchResult = useCallback(() => fetcher(escape.current), []);
 
-	const debouncedSearch = useMemo(() => debounce(fetchSearchResult, 250), [fetchSearchResult]);
+	const debouncedSearch = useMemo(() => debounce(fetchSearchResult, 200), [fetchSearchResult]);
 
 	const onEnterInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		setSearch(e.target.value);

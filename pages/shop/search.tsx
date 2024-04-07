@@ -14,12 +14,8 @@ import { useRouter } from "next/router";
 
 import type {
 	ApiResponse,
-	FilterOptionType,
-	MenswearCategory,
 	OriginTreeData,
 	ProductData,
-	TreeFilterType,
-	WomenswearCategory,
 	FilteredTreeData,
 } from "@/lib/types/global";
 
@@ -38,10 +34,10 @@ export default function ShopSearch({ treeData }: { treeData: OriginTreeData }) {
 		OriginTreeData?.data || treeData,
 	);
 
-	const createBody = (pageParam: [number], restFilter: TreeFilterType) => {
+	const createBody = (pageParam: [number], restFilter: Record<string, string[]>) => {
 		if (!pageParam && Object.keys(restFilter).length === 0) return {};
 
-		const filts: TreeFilterType & { cursor?: [number] } = { ...restFilter };
+		const filts: Record<string, string[]> & { cursor?: [number] } = { ...restFilter };
 
 		if (pageParam) {
 			filts.cursor = pageParam;
@@ -61,7 +57,7 @@ export default function ShopSearch({ treeData }: { treeData: OriginTreeData }) {
 			getProducts({
 				uri: `/search?keyword=${keyword}`,
 				method: "POST",
-				body: createBody(pageParam, restFilter.queryKey[1] as TreeFilterType),
+				body: createBody(pageParam, restFilter.queryKey[1] as Record<string, string[]>),
 			}),
 		getNextPageParam: (lastPage, pages) =>
 			// check if there is a next page by checking the sort property of elastic search result
@@ -75,33 +71,9 @@ export default function ShopSearch({ treeData }: { treeData: OriginTreeData }) {
 		fetchNextPage,
 	});
 
-	const onChangeFilter = (filter: TreeFilterType) => {
+	const onChangeFilter = (filter: Record<string, Set<string>>) => {
 		setFilter(filter);
-		const department = filter.department ? [...filter.department] : null;
-		const category: FilterOptionType["category"] = filter.subCategory && {};
-		//const subCategory = filter.subCategory ? [...filter.subCategory] : null;
-
-		const menswearSubCategory = filter.subCategory?.filter((obj) => obj.dept === "Menswear") || [];
-		if (category && menswearSubCategory.length > 0) {
-			category.Menswear = Array.from(
-				new Set(menswearSubCategory.map((obj) => obj.cat)),
-			) as (keyof MenswearCategory)[];
-
-			if (department) !department.includes("Menswear") && department.push("Menswear");
-		}
-
-		const wommenswearSubCategory =
-			filter.subCategory?.filter((obj) => obj.dept === "Womenswear") || [];
-		if (category && wommenswearSubCategory.length > 0) {
-			category.Womenswear = Array.from(
-				new Set(wommenswearSubCategory.map((obj) => obj.cat)),
-			) as (keyof WomenswearCategory)[];
-
-			if (department) !department.includes("Womenswear") && department.push("Womenswear");
-		}
-
-		const reformedTree = reformTree(OriginTreeData?.data!, { department, category });
-
+		const reformedTree = reformTree(OriginTreeData?.data!, filter);
 		setTree(reformedTree as FilteredTreeData);
 	};
 

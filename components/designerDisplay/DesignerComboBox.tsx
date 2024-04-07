@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, forwardRef, useImperativeHandle, useRef, useCallback } from "react";
+import { useState, forwardRef, useImperativeHandle } from "react";
 import { Check, ChevronsUpDown } from "lucide-react";
 
 import { cn } from "@/lib/utility/utils";
@@ -98,10 +98,10 @@ const DesignerComboBox = forwardRef(
 				>
 					<Command>
 						<CommandInput placeholder="Search designers..." />
-						<ScrollArea>
+						<ScrollArea data-testid="scrollArea">
 							<CommandEmpty>No designers found.</CommandEmpty>
 							<CommandGroup className="overflow-scroll">
-								{datas.map((page) => {
+								{datas?.map((page) => {
 									const pageData = page.data;
 									return pageData.map((data, index) => {
 										if (pageData.length === index + 1) {

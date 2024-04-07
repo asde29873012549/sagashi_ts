@@ -367,7 +367,6 @@ export default function Sell() {
 					hasNextPage={hasNextPage}
 					setFormInput={setFormInput}
 				/>
-
 				<div className="col-span-1 my-8 text-3xl font-semibold">Item Name</div>
 				<div className="col-span-1 my-8 text-3xl font-semibold">Color</div>
 				<Input

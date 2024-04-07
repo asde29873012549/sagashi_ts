@@ -3,7 +3,7 @@ import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { refreshAccessToken } from "@/lib/utility/utils";
-import { UserJWTtype } from "@/lib/types/global";
+import { UserJWT } from "@/lib/types/global";
 
 import { genericError, loginError } from "@/lib/utility/userMessage";
 
@@ -92,7 +92,7 @@ export default NextAuth({
 				if ("google" in user && user.google) {
 					token = user.google;
 				} else {
-					token = user as UserJWTtype;
+					token = user as UserJWT;
 				}
 			}
 

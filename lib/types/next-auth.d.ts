@@ -1,16 +1,16 @@
 import NextAuth from "next-auth";
-import { UserJWTtype } from "./global";
+import { UserJWT } from "./global";
 import { JWT } from "next-auth/jwt";
 
 declare module "next-auth" {
 	interface Session {
-		user: UserJWTtype;
+		user: UserJWT;
 	}
-	interface User extends UserJWTtype {
-		google?: Omit<UserJWTtype, "google">;
+	interface User extends UserJWT {
+		google?: Omit<UserJWT, "google">;
 	}
 	interface SignIn {
-		user: UserJWTtype | GoogleLoginUserType;
+		user: UserJWT | GoogleLoginUserType;
 		account: any;
 		profile: any;
 	}
@@ -21,5 +21,5 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
 	/** Returned by the `jwt` callback and `getToken`, when using JWT sessions */
-	interface JWT extends UserJWTtype {}
+	interface JWT extends UserJWT {}
 }

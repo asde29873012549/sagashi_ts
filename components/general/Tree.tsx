@@ -11,7 +11,7 @@ import getAllDesigners from "@/lib/queries/fetchQuery";
 import type {
 	OriginTreeData,
 	ApiResponse,
-	DeptCategory,
+	DeptCategoryTree,
 	DeptCategorySize,
 	FilteredTreeData,
 } from "@/lib/types/global";
@@ -77,14 +77,14 @@ export default function Tree({
 			if (
 				newFilter.subCategory &&
 				newFilter.subCategory.size ===
-					treeData.Category[department as keyof DeptCategory]![
-						category as keyof DeptCategory[keyof DeptCategory]
+					treeData.Category[department as keyof DeptCategoryTree]![
+						category as keyof DeptCategoryTree[keyof DeptCategoryTree]
 					].length
 			) {
 				newFilter.subCategory = new Set();
 			} else {
-				const allCategory = treeData.Category[department as keyof DeptCategory]![
-					category as keyof DeptCategory[keyof DeptCategory]
+				const allCategory = treeData.Category[department as keyof DeptCategoryTree]![
+					category as keyof DeptCategoryTree[keyof DeptCategoryTree]
 				].map((subCategory) => `${department}@${category}@${subCategory}`);
 				newFilter.subCategory = new Set([...allCategory, ...(newFilter.subCategory || [])]);
 			}
@@ -151,9 +151,9 @@ export default function Tree({
 			)}
 			<AccordionItem value="category">
 				<AccordionTrigger>Category</AccordionTrigger>
-				{(Object.keys(treeData.Category) as Array<keyof DeptCategory>).map((department) => {
+				{(Object.keys(treeData.Category) as Array<keyof DeptCategoryTree>).map((department) => {
 					const Categories = Object.keys(treeData.Category[department] || {}) as Array<
-						keyof DeptCategory[typeof department]
+						keyof DeptCategoryTree[typeof department]
 					>;
 					return (
 						<AccordionContent key={department}>
@@ -232,58 +232,60 @@ export default function Tree({
 			<AccordionItem value="size">
 				<AccordionTrigger>Size</AccordionTrigger>
 				{shouldRenderSize ? (
-					(Object.keys(treeData.Sizes) as Array<keyof DeptCategory>).map((department, index) => {
-						const Categories = Object.keys(treeData.Sizes[department] || {}) as Array<
-							keyof DeptCategorySize[typeof department]
-						>;
-						return (
-							<AccordionContent key={`${department}-${index}`}>
-								<div className="pl-2 text-base">{department}</div>
-								{Categories.map((category, index) => {
-									return (
-										<Accordion
-											type="multiple"
-											className="pl-4 text-sm"
-											key={`${category}-${department}`}
-											value={openedAccordion}
-											onValueChange={onOpenAccordion}
-										>
-											<AccordionItem
-												value={`${category}-${department}`}
-												className={cn({ "!border-b-0": index === Categories.length - 1 })}
+					(Object.keys(treeData.Sizes) as Array<keyof DeptCategoryTree>).map(
+						(department, index) => {
+							const Categories = Object.keys(treeData.Sizes[department] || {}) as Array<
+								keyof DeptCategorySize[typeof department]
+							>;
+							return (
+								<AccordionContent key={`${department}-${index}`}>
+									<div className="pl-2 text-base">{department}</div>
+									{Categories.map((category, index) => {
+										return (
+											<Accordion
+												type="multiple"
+												className="pl-4 text-sm"
+												key={`${category}-${department}`}
+												value={openedAccordion}
+												onValueChange={onOpenAccordion}
 											>
-												<AccordionTrigger data-testid={`${department}-${category}-size`}>
-													{category}
-												</AccordionTrigger>
-												{treeData.Sizes[department]?.[category]?.map((size, index) => (
-													<AccordionContent
-														key={`${index}-${size}`}
-														className="cursor-pointer pl-2 hover:underline"
-													>
-														<div className="flex items-center space-x-2">
-															<Checkbox
-																id={`${index}-${size}`}
-																checked={!!filter.size?.has(`${department}@${category}@${size}`)}
-																onCheckedChange={() =>
-																	onCheck("size", `${department}@${category}@${size}`)
-																}
-															/>
-															<label
-																htmlFor={`${index}-${size}`}
-																className="ml-2 text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-															>
-																{size}
-															</label>
-														</div>
-													</AccordionContent>
-												))}
-											</AccordionItem>
-										</Accordion>
-									);
-								})}
-							</AccordionContent>
-						);
-					})
+												<AccordionItem
+													value={`${category}-${department}`}
+													className={cn({ "!border-b-0": index === Categories.length - 1 })}
+												>
+													<AccordionTrigger data-testid={`${department}-${category}-size`}>
+														{category}
+													</AccordionTrigger>
+													{treeData.Sizes[department]?.[category]?.map((size, index) => (
+														<AccordionContent
+															key={`${index}-${size}`}
+															className="cursor-pointer pl-2 hover:underline"
+														>
+															<div className="flex items-center space-x-2">
+																<Checkbox
+																	id={`${index}-${size}`}
+																	checked={!!filter.size?.has(`${department}@${category}@${size}`)}
+																	onCheckedChange={() =>
+																		onCheck("size", `${department}@${category}@${size}`)
+																	}
+																/>
+																<label
+																	htmlFor={`${index}-${size}`}
+																	className="ml-2 text-sm leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+																>
+																	{size}
+																</label>
+															</div>
+														</AccordionContent>
+													))}
+												</AccordionItem>
+											</Accordion>
+										);
+									})}
+								</AccordionContent>
+							);
+						},
+					)
 				) : (
 					<AccordionContent className="text-sm">Please select category first</AccordionContent>
 				)}
