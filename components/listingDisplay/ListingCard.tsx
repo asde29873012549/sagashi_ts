@@ -41,7 +41,7 @@ export default function ListingCard({
 				method: "POST",
 				body: {
 					listing_id: prod_id,
-					listing_name: product_data.name,
+					listing_name: product_data?.name,
 					seller_name: product_data?.seller_name,
 					listing_image: src,
 				},
@@ -123,23 +123,23 @@ export default function ListingCard({
 					/>
 				</div>
 			</Link>
-			<div className="text-sm text-gray-500">{getDateDistance(product_data.created_at)}</div>
+			<div className="text-sm text-gray-500">{getDateDistance(product_data?.created_at)}</div>
 			<Separator />
 			<div className="flex w-full items-center justify-between">
 				<Link href={`/shop/${prod_id}`} className="w-5/6">
 					<div className="truncate text-base font-semibold text-foreground">
-						{product_data.name}
+						{product_data?.name}
 					</div>
 				</Link>
 				<div className="flex w-1/6 justify-end text-sm text-foreground">
-					{"size" in product_data ? product_data.size : product_data.Size.name}
+					{product_data && "size" in product_data ? product_data.size : product_data?.Size?.name}
 				</div>
 			</div>
 			<div className="truncate text-xs text-foreground">
-				{"designer" in product_data && product_data.designer}
+				{product_data && "designer" in product_data && product_data.designer}
 			</div>
 			<div className="flex items-center justify-between text-sm text-foreground">
-				<div className="before:content-['$']">{product_data.price}</div>
+				<div className="before:content-['$']">{product_data?.price}</div>
 				{likedListing?.includes(prod_id) ? (
 					<FilledHeart onClick={onLike} className="h-5 w-5 fill-red-700 hover:cursor-pointer" />
 				) : (

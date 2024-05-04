@@ -12,7 +12,7 @@ export default function Womenswear() {
 	return <ShopPage isWomenswear={true} treeData={OriginTreeData?.data} />;
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
 	const queryClient = new QueryClient();
 
 	await queryClient.prefetchQuery({
