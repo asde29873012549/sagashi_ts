@@ -38,6 +38,7 @@ import type {
 	WomenswearCategory,
 } from "@/lib/types/global";
 import { NextApiRequest } from "next";
+import { Skeleton } from "@/components/base/skeleton";
 
 const JWT_TOKEN_SECRET = process.env.JWT_TOKEN_SECRET;
 
@@ -221,7 +222,7 @@ export default function ListingItem({
 	};
 
 	// const onOffer = () => {
-	// 	if (!username) return dispatch(toggleRegisterForm());
+	//  if (!username) return dispatch(toggleRegisterForm());
 	// };
 
 	const secondaryImages =
@@ -322,7 +323,13 @@ export default function ListingItem({
 							likedListing={liked}
 							className="mb-4 w-[48%] shrink-0 md:w-1/6"
 						/>
-					))}
+					)) ??
+						Array.from({ length: 10 }, (_, i) => i + 1).map((k) => (
+							<Skeleton
+								key={`${k}-skeleton-mayAlsoLikeData`}
+								className="mb-4 w-[48%] shrink-0 md:w-1/6"
+							/>
+						))}
 				</div>
 			</div>
 
@@ -338,7 +345,13 @@ export default function ListingItem({
 							likedListing={liked}
 							className="mb-4 w-[48%] shrink-0 md:w-1/6"
 						/>
-					))}
+					)) ??
+						Array.from({ length: 10 }, (_, i) => i + 1).map((k) => (
+							<Skeleton
+								key={`${k}-skeleton-recentlyViewed`}
+								className="mb-4 w-[48%] shrink-0 md:w-1/6"
+							/>
+						))}
 				</div>
 			</div>
 		</div>

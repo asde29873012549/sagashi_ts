@@ -12,6 +12,7 @@ import getNewArrivalsProducts from "@/lib/queries/fetchQuery";
 import getUserLikedListing from "@/lib/queries/fetchQuery";
 import { useSession } from "next-auth/react";
 import type { ApiResponse, FeaturedDesignerData, ProductData } from "@/lib/types/global";
+import { Skeleton } from "@/components/base/skeleton";
 
 interface Curation {
 	id: number;
@@ -72,7 +73,13 @@ export default function Home() {
 							likedListing={liked}
 							className="mb-4 mr-2 w-[65%] shrink-0 md:mr-4 md:w-1/5"
 						/>
-					))}
+					)) ??
+						Array.from({ length: 10 }, (_, i) => i + 1).map((k) => (
+							<Skeleton
+								key={`${k}-skeleton-newArraivals`}
+								className="mb-4 mr-2 aspect-[4/5] w-[65%] shrink-0 md:mr-4 md:w-1/5"
+							/>
+						))}
 					<Button
 						variant="ghost"
 						className=" flex w-[65%] shrink-0 cursor-pointer items-center justify-center font-semibold underline md:w-1/5"
@@ -101,6 +108,12 @@ export default function Home() {
 								className="mb-4 mr-2 w-[65%] shrink-0 md:mr-4 md:w-1/5"
 								name={obj.name}
 								isLoading={isLoadingFeaturedDesigner}
+							/>
+						)) ??
+						Array.from({ length: 10 }, (_, i) => i + 1).map((k) => (
+							<Skeleton
+								key={`${k}-skeleton-desginer`}
+								className="mb-4 mr-2 aspect-[4/5] w-[65%] shrink-0 md:mr-4 md:w-1/5"
 							/>
 						))}
 					<Button
@@ -158,9 +171,9 @@ export async function getStaticProps() {
 	});
 
 	/*await queryClient.prefetchQuery({
-		queryKey: ["listing", "liked"],
-		queryFn: () => getUserLikedListing({ uri: `/listing/like`, server: true }),
-	});*/
+        queryKey: ["listing", "liked"],
+        queryFn: () => getUserLikedListing({ uri: `/listing/like`, server: true }),
+    });*/
 
 	return {
 		props: {
