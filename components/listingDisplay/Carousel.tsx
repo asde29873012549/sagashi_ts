@@ -3,6 +3,7 @@ import { Fragment, useState, useRef, useMemo } from "react";
 import Image from "next/image";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utility/utils";
+import { Skeleton } from "../base/skeleton";
 
 export default function Carousel({
 	primary_image,
@@ -18,6 +19,7 @@ export default function Carousel({
 		[primary_image, secondary_images],
 	);
 
+	const [imgLoaded, setImgLoaded] = useState<boolean>(false);
 	const [direction, setDirection] = useState<number>(1);
 	const carouselRef = useRef<HTMLDivElement>(null);
 	const initialTouchRef = useRef<number>(0);
@@ -129,6 +131,11 @@ export default function Carousel({
 
 	return (
 		<Fragment>
+			{!imgLoaded && (
+				<div className="relative aspect-[4/5] w-screen overflow-hidden md:w-2/5 md:overflow-scroll">
+					<Skeleton className="h-full w-full" />
+				</div>
+			)}
 			<div
 				className={cn(
 					"no-scrollbar relative aspect-[4/5] w-screen overflow-hidden md:w-2/5 md:overflow-scroll",
@@ -155,6 +162,7 @@ export default function Carousel({
 								onTouchStart={onTouchStart}
 								onTouchMove={onTouchMove}
 								onTouchEnd={onTouchEnd}
+								{...(index === 0 && { onLoad: () => setImgLoaded(true) })}
 							/>
 						</div>
 					))}

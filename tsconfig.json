@@ -19,6 +19,12 @@
 		},
 		// "typeRoots": ["./node_modules/@types", "./types"],
 	},
-	"include": ["vitest.d.ts", "next-env.d.ts", "**/*.ts", "**/*.tsx", "pages/api/auth/[...nextauth].ts"],
+	"include": [
+		"vitest.d.ts",
+		"next-env.d.ts",
+		"**/*.ts",
+		"**/*.tsx",
+		"pages/api/auth/[...nextauth].ts",
+	],
 	"exclude": ["node_modules"],
 }
