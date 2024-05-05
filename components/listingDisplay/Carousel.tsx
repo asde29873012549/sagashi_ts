@@ -131,51 +131,58 @@ export default function Carousel({
 
 	return (
 		<Fragment>
-			{!imgLoaded && (
-				<div className="relative aspect-[4/5] w-screen overflow-hidden md:w-2/5 md:overflow-scroll">
+			{!imgLoaded ? (
+				<div
+					className={cn(
+						"relative aspect-[4/5] w-screen overflow-hidden md:w-2/5 md:overflow-scroll",
+						className,
+					)}
+				>
 					<Skeleton className="h-full w-full" />
 				</div>
-			)}
-			<div
-				className={cn(
-					"no-scrollbar relative aspect-[4/5] w-screen overflow-hidden md:w-2/5 md:overflow-scroll",
-					className,
-				)}
-			>
+			) : (
 				<div
-					className="duration-400 flex h-full w-full justify-start transition-transform ease-out md:flex-col"
-					ref={carouselRef}
-					onTransitionEnd={onTransitionEnd}
+					className={cn(
+						"no-scrollbar relative aspect-[4/5] w-screen overflow-hidden md:w-2/5 md:overflow-scroll",
+						className,
+					)}
 				>
-					{slides.map((slide, index) => (
-						<div
-							className="relative aspect-[4/5] w-screen shrink-0 md:w-full"
-							key={index}
-							id={String(index)}
-						>
-							<Image
-								priority
-								src={slide}
-								fill={true}
-								alt="image"
-								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-								onTouchStart={onTouchStart}
-								onTouchMove={onTouchMove}
-								onTouchEnd={onTouchEnd}
-								{...(index === 0 && { onLoad: () => setImgLoaded(true) })}
-							/>
-						</div>
-					))}
+					<div
+						className="duration-400 flex h-full w-full justify-start transition-transform ease-out md:flex-col"
+						ref={carouselRef}
+						onTransitionEnd={onTransitionEnd}
+					>
+						{slides.map((slide, index) => (
+							<div
+								className="relative aspect-[4/5] w-screen shrink-0 md:w-full"
+								key={index}
+								id={String(index)}
+							>
+								<Image
+									priority
+									src={slide}
+									fill={true}
+									alt="image"
+									sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+									onTouchStart={onTouchStart}
+									onTouchMove={onTouchMove}
+									onTouchEnd={onTouchEnd}
+									onLoad={() => index === 0 && setImgLoaded(true)}
+								/>
+							</div>
+						))}
+					</div>
+					{/* Left Arrow */}
+					<div className="absolute left-5 top-[50%] -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white md:hidden">
+						<ChevronLeft onClick={prevSlide} size={30} />
+					</div>
+					{/* Right Arrow */}
+					<div className="absolute right-5 top-[50%] -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white md:hidden">
+						<ChevronRight onClick={nextSlide} size={30} />
+					</div>
 				</div>
-				{/* Left Arrow */}
-				<div className="absolute left-5 top-[50%] -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white md:hidden">
-					<ChevronLeft onClick={prevSlide} size={30} />
-				</div>
-				{/* Right Arrow */}
-				<div className="absolute right-5 top-[50%] -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white md:hidden">
-					<ChevronRight onClick={nextSlide} size={30} />
-				</div>
-			</div>
+			)}
+
 			<CarouselDots currentImage={currentImage} slides={slides} />
 		</Fragment>
 	);
