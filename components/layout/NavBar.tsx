@@ -44,8 +44,6 @@ export default function NavBar() {
 		queryFn: () => getAllCategories({ uri: "/category" }),
 	});
 
-	console.log(categoryData);
-
 	return (
 		<NavigationMenu>
 			<div className="hidden md:block md:w-full md:py-2">
