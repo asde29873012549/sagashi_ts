@@ -167,7 +167,7 @@ export default function Carousel({
 									onTouchStart={onTouchStart}
 									onTouchMove={onTouchMove}
 									onTouchEnd={onTouchEnd}
-									onLoad={() => index === 0 && setImgLoaded(true)}
+									onLoad={() => index == 0 && setImgLoaded(true)}
 								/>
 							</div>
 						))}
