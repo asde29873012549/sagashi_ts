@@ -157,7 +157,7 @@ export default function Home() {
 	);
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
 	const queryClient = new QueryClient();
 
 	await queryClient.prefetchQuery({
@@ -179,6 +179,5 @@ export async function getStaticProps() {
 		props: {
 			dehydratedState: dehydrate(queryClient),
 		},
-		revalidate: 60 * 3,
 	};
 }

@@ -12,7 +12,7 @@ export default function NewArrivals() {
 	return <ShopPage isNewArrival={true} treeData={OriginTreeData?.data} />;
 }
 
-export async function getStaticProps() {
+export async function getServerSideProps() {
 	const queryClient = new QueryClient();
 
 	await queryClient.prefetchQuery({

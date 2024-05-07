@@ -3,7 +3,7 @@ import sharp from "sharp";
 import { fileTypeFromFile } from "file-type";
 import formidable, { errors as formidableError } from "formidable";
 import { ValidationError } from "@/lib/utility/api_error";
-import Response from "@/lib/utility/response_template.js";
+import Response from "@/lib/utility/response_template";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export const config = {
