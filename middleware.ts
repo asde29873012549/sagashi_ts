@@ -7,12 +7,14 @@ const isProduction = process.env.NODE_ENV === "production";
 
 export function middleware(request: NextRequest) {
 	const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
+	const sriptSrc = isProduction
+		? `'self' 'nonce-${nonce}' 'strict-dynamic'`
+		: `'self' 'unsafe-eval'`;
+	const styleSrc = isProduction ? `'self' 'nonce-${nonce}'` : `'self' 'unsafe-inline'`;
 	const cspHeader = `
     default-src 'self';
-    script-src ${
-			isProduction ? "'self' 'nonce-" + nonce + " 'strict-dynamic'" : "'self' 'unsafe-eval'"
-		};
-    style-src 'self' 'unsafe-inline';
+    script-src 'self' ${sriptSrc};
+    style-src ${styleSrc};
     img-src 'self' blob: data: ${static_image_src} lh3.googleusercontent.com github.com avatars.githubusercontent.com;
 	connect-src 'self' ws: ${notification_server!.split("://")[1]};
     font-src 'self';
