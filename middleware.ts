@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
 	const styleSrc = isProduction ? `'self' 'nonce-${nonce}'` : `'self' 'unsafe-inline'`;
 	const cspHeader = `
     default-src 'self';
-    script-src 'self' ${sriptSrc};
+    script-src ${sriptSrc};
     style-src ${styleSrc};
     img-src 'self' blob: data: ${static_image_src} lh3.googleusercontent.com github.com avatars.githubusercontent.com;
 	connect-src 'self' ws: ${notification_server!.split("://")[1]};
