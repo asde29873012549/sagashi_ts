@@ -4,9 +4,9 @@ export default function CustomDocument({ nonce }: { nonce: string }) {
 	return (
 		<Html lang="en">
 			<Head nonce={nonce} />
-			<body>
+			<body data-nonce={nonce}>
 				<Main />
-				<NextScript data-nonce={nonce} />
+				<NextScript nonce={nonce} />
 			</body>
 		</Html>
 	);
