@@ -175,6 +175,7 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 		messageBoxData.username,
 		messageBoxData.listingOwner,
 		messageBoxData.product_id,
+		chatroom_id,
 		queryClient,
 	]);
 
