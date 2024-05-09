@@ -2,6 +2,7 @@ import * as dotenv from "dotenv";
 import socket from "@/lib/socketio/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { ApiResponse } from "../types/global";
+import socketEventCleaner from "./socketEventCleaner";
 
 dotenv.config();
 
@@ -9,7 +10,7 @@ interface SocketInitializer {
 	queryClient: ReturnType<typeof useQueryClient>;
 	chatroom_id: string;
 	setId?: React.Dispatch<React.SetStateAction<string[]>>;
-	fetchQuery: (id: string) => Promise<ApiResponse<number[]>>;
+	fetchQuery: () => Promise<ApiResponse<number[]>>;
 }
 
 export default async function socketInitializer({
@@ -22,12 +23,28 @@ export default async function socketInitializer({
 	// await fetch(`${NEXT_PUBLIC_SERVER_DOMAIN}/api/ws`);
 
 	// Standard socket management
-	socket.on("connect", () => {
+	socket.on("connect", async () => {
 		console.log("Connected to the server");
+
+		try {
+			const result = await fetchQuery();
+			if (result.status === "fail") throw new Error();
+		} catch (err) {
+			console.log(err);
+		}
 	});
 
-	socket.on("disconnect", () => {
+	socket.on("disconnect", async () => {
 		console.log("Disconnected from the server");
+
+		try {
+			const result = await fetchQuery();
+			if (result.status === "fail") throw new Error();
+		} catch (err) {
+			console.log(err);
+		} finally {
+			socketEventCleaner(socket);
+		}
 	});
 
 	socket.on("connect_error", (error) => {
@@ -52,16 +69,9 @@ export default async function socketInitializer({
 		chatroom_id && setId && setId(chatroom_id);
 	});
 
-	socket.on("getMessage", async ({ message }) => {
+	socket.on("getMessage", ({ message }) => {
 		queryClient.invalidateQueries({ queryKey: ["messages", chatroom_id] });
 		console.log("getMessage: ", message);
-
-		try {
-			const result = await fetchQuery(message.message_id);
-			if (result.status === "fail") throw new Error();
-		} catch (err) {
-			console.log(err);
-		}
 	});
 
 	// socket.on("client-count", (count) => {

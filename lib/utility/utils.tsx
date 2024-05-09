@@ -121,10 +121,16 @@ export const parseISODate = (isoDate: string) => {
 };
 
 export const timeDifference = (current: string, previous: string) => {
-	const startDate = parseISO(current);
-	const endDate = parseISO(previous);
+	if (!current || !previous) return 0;
+	try {
+		const startDate = parseISO(current);
+		const endDate = parseISO(previous);
 
-	return differenceInMinutes(startDate, endDate);
+		return differenceInMinutes(startDate, endDate);
+	} catch (err) {
+		console.log(err);
+		return 0;
+	}
 };
 
 export const formattedMoney = (amount: number) =>

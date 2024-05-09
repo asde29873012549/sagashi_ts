@@ -222,7 +222,7 @@ export default function ListingItem({
 	};
 
 	// const onOffer = () => {
-	// 	if (!username) return dispatch(toggleRegisterForm());
+	//  if (!username) return dispatch(toggleRegisterForm());
 	// };
 
 	const secondaryImages =
@@ -379,8 +379,8 @@ export async function getServerSideProps({
 	return {
 		props: {
 			dehydratedState: dehydrate(queryClient),
-			username,
-			product_id,
+			username: username || null,
+			product_id: product_id || null,
 		},
 	};
 }

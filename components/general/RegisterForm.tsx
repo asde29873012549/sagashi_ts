@@ -14,9 +14,12 @@ import register from "@/lib/queries/fetchQuery";
 import { useState } from "react";
 import DOMPurify from "dompurify";
 import Check from "../svg/check";
+import { useRouter } from "next/router";
 
 export default function RegisterForm() {
 	const dispatch = useDispatch();
+	const router = useRouter();
+	const { user } = router.query;
 	const registerFormStatus = useSelector(userSelector).isRegisterFormActive;
 	const [currentTab, setCurrentTab] = useState<string>("login");
 	const [loginBtnText, setLoginBtnText] = useState<React.ReactNode>("SIGN IN");
@@ -35,6 +38,10 @@ export default function RegisterForm() {
 		password: "",
 		email: "",
 	});
+
+	if (user && user === "invalid") {
+		dispatch(toggleRegisterForm());
+	}
 
 	const onToggleRegisterForm = () => dispatch(toggleRegisterForm());
 

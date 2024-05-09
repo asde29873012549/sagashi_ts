@@ -13,16 +13,24 @@ export function Toaster() {
 
 	return (
 		<ToastProvider>
-			{toasts.map(function ({ id, title, description, action, ...props }) {
+			{toasts.map(function ({ id, title, description, status, action, ...props }) {
 				return (
 					<Toast
 						key={id}
 						{...props}
 						className="from-22% max-w-fit bg-gradient-to-bl from-cyan-800 via-slate-800 via-40% to-slate-950 to-90% text-background"
 					>
-						<div className="grid gap-1">
-							{title && <ToastTitle>{title}</ToastTitle>}
-							{description && <ToastDescription>{description}</ToastDescription>}
+						<div className="grid">
+							{title && (
+								<ToastTitle
+									className={`text-base ${status === "fail" ? "text-red-500" : "text-lime-500"}`}
+								>
+									{title}
+								</ToastTitle>
+							)}
+							{description && (
+								<ToastDescription className="font-extralight">{description}</ToastDescription>
+							)}
 						</div>
 						{action}
 						<ToastClose />

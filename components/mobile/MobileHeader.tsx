@@ -16,7 +16,7 @@ import ShoppingCartIcon from "../header/ShoppingCartIcon";
 
 import { useDispatch, useSelector } from "react-redux";
 import {
-	setMessageReadStatus,
+	setOnlineMessageReadStatus,
 	setLastMessage,
 	messageSelector,
 	setNotificationReadStatus,
@@ -75,7 +75,7 @@ export default function MobileHeader() {
 					// if true, it means the user is currently in the chatroom, so we automatically set the message as read
 					// otherwise, it means the user is not in the chatroom, so we set the message read status as null
 					dispatch(
-						setMessageReadStatus({
+						setOnlineMessageReadStatus({
 							chatroom_id: newMessageChatroomId,
 							read_at:
 								currentActiveChatroom === newMessageChatroomId ? new Date().toISOString() : null,

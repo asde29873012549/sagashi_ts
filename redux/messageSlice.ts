@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 interface message {
-	isMessageReadMap: { [key: string]: string | null };
+	isOnlineMessageRead: { [key: string]: string | null };
 	isNotificationReadMap: { [key: string]: string | null };
 	lastMessage: { [key: string]: { text: string; updated_at: string } };
 	currentActiveChatroom: string | null;
@@ -23,7 +23,7 @@ interface messageState {
 }
 
 let initialState: message = {
-	isMessageReadMap: {},
+	isOnlineMessageRead: {},
 	isNotificationReadMap: {},
 	lastMessage: {},
 	currentActiveChatroom: null,
@@ -36,30 +36,21 @@ const messageSlice = createSlice({
 	name: "message",
 	initialState,
 	reducers: {
-		setMessageReadStatus: (state, action) => {
+		setOnlineMessageReadStatus: (state, action) => {
 			// change read status when clicking on itemCard
 			// if typeof payload is string (passed in chatroom_id), means that specific chatroom is clicked and read
 			if (typeof action.payload === "string") {
-				state.isMessageReadMap = {
-					...state.isMessageReadMap,
+				state.isOnlineMessageRead = {
+					...state.isOnlineMessageRead,
 					[action.payload]: new Date().toISOString(),
 				};
 				// initialize read status when fetching chatroom list, depending on the read_at field
-			} else if (Array.isArray(action.payload)) {
-				if (Object.keys(state.isMessageReadMap).length === 0) {
-					const temp: { [key: string]: string | null } = {};
-					action.payload.forEach((obj) => {
-						temp[obj.chatroom_id] = obj.read_at;
-					});
-
-					state.isMessageReadMap = temp;
-				}
 			} else {
 				// if received new message from eventSource
 				// 1. receive message from currentActive chatroom, then the message will be initially read, so should have read_at data
 				// 2. receive messsage but was not current active chatroom, then the message will be initially unread, so should not have read_at data
-				state.isMessageReadMap = {
-					...state.isMessageReadMap,
+				state.isOnlineMessageRead = {
+					...state.isOnlineMessageRead,
 					[action.payload.chatroom_id]: action.payload.read_at || null,
 				};
 			}
@@ -76,7 +67,7 @@ const messageSlice = createSlice({
 					state.lastMessage = temp;
 				}
 			} else {
-				// if received new message from eventSource, reset the new message as chatroom's last message
+				// if received new message from eventSource, or user input message, reset the new message as chatroom's last message
 				state.lastMessage = {
 					...state.lastMessage,
 					[action.payload.chatroom_id]: {
@@ -125,7 +116,7 @@ const messageSlice = createSlice({
 });
 
 export const {
-	setMessageReadStatus,
+	setOnlineMessageReadStatus,
 	setLastMessage,
 	setCurrentActiveChatroom,
 	setNotificationReadStatus,

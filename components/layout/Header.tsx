@@ -13,14 +13,14 @@ import ShoppingCartIcon from "../header/ShoppingCartIcon";
 import { toggleRegisterForm } from "../../redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
-	setMessageReadStatus,
+	setOnlineMessageReadStatus,
 	setLastMessage,
 	messageSelector,
 	setNotificationReadStatus,
 } from "@/redux/messageSlice";
 import { useQuery } from "@tanstack/react-query";
 import getNotification from "@/lib/queries/fetchQuery";
-import type { ChatroomType, NotificationType, OnlineNotification } from "@/lib/types/global";
+import type { ChatroomType, OnlineNotification } from "@/lib/types/global";
 import { cn } from "@/lib/utility/utils";
 
 dotenv.config();
@@ -73,7 +73,7 @@ export default function Header() {
 					// if true, it means the user is currently in the chatroom, so we automatically set the message as read
 					// otherwise, it means the user is not in the chatroom, so we set the message read status as null
 					dispatch(
-						setMessageReadStatus({
+						setOnlineMessageReadStatus({
 							chatroom_id: newMessageChatroomId,
 							read_at:
 								currentActiveChatroom === newMessageChatroomId ? new Date().toISOString() : null,
@@ -87,13 +87,10 @@ export default function Header() {
 					// update chatroom list's last message and created_at
 					setChatroom((prev) => {
 						return prev.map((c) => {
-							if (c.id === newMessageChatroomId) {
-								return {
-									...c,
-									created_at: newNotification.created_at,
-									text: newNotification.text,
-									read_at: null,
-								};
+							const cId =
+								c.id ?? ("listing_id" in c && `${c.listing_id}-${c.seller_name}-${c.buyer_name}`);
+							if (cId === newMessageChatroomId) {
+								return newNotification;
 							}
 							return c;
 						});

@@ -1,5 +1,5 @@
 import * as dotenv from "dotenv";
-import { genericError } from "../utility/userMessage";
+import { genericError, unAuthorizedError } from "../utility/userMessage";
 
 dotenv.config();
 
@@ -54,11 +54,13 @@ const fetchQuery = async ({
 
 	try {
 		const response = await fetch(fetch_uri, configObj);
+		if (response.status === 401) {
+			throw new Error(unAuthorizedError.title);
+		}
 		const res = await response.json();
 		if (res.status === "fail") {
 			throw new Error(res.data);
 		}
-
 		return res;
 	} catch (err) {
 		throw err;

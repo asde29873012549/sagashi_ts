@@ -146,14 +146,15 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 	useEffect(() => {
 		socketInitializer({
 			queryClient,
-			chatroom_id: `${messageBoxData?.product_id}-${messageBoxData?.listingOwner}-${messageBoxData?.username}`,
+			chatroom_id,
 			setId,
-			fetchQuery: async (message_id) =>
+			fetchQuery: async () =>
 				await readMessage({
-					uri: "/message",
+					uri: "/message/all",
 					method: "PUT",
 					body: {
-						message_id,
+						time: new Date().toISOString(),
+						chatroom_id,
 					},
 				}),
 		});
@@ -166,9 +167,8 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 
 		return () => {
 			if (socket.connected) {
-				console.log("socket disconnectd");
-				socketEventCleaner(socket);
 				socket.disconnect();
+				console.log("socket disconnectd");
 			}
 		};
 	}, [
