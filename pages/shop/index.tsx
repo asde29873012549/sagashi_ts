@@ -47,7 +47,7 @@ export default function Shop({
 		} else if (isWomenswear) {
 			return { Womenswear: new Set(["Womenswear"]) };
 		} else if (designer) {
-			return { designer: new Set([designer]) };
+			return { designers: new Set([designer]) };
 		} else if (isNewArrival) {
 			return { newArrivals: new Set(["newArrivals"]) };
 		} else if (subCat && cat && dept) {
