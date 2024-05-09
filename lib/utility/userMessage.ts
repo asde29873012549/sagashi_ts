@@ -1,4 +1,9 @@
 const genericError = "Encounter temporary error. Please try again later.";
+const unAuthorizedError = {
+	title: "Unauthorized",
+	desc: "The session has Expired. Please Login Again.",
+	status: "fail",
+};
 
 const loginError = {
 	notExist: "The username provided does not exist, please register.",
@@ -56,6 +61,7 @@ const duplicateOffer = {
 
 export {
 	genericError,
+	unAuthorizedError,
 	loginError,
 	uploadSuccess,
 	saveDraftSuccess,

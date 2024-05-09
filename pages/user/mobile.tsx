@@ -190,7 +190,7 @@ export async function getServerSideProps({ req }: { req: NextApiRequest }) {
 	return {
 		props: {
 			dehydratedState: dehydrate(queryClient),
-			user: username,
+			user: username || null,
 		},
 	};
 }

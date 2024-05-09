@@ -19,7 +19,10 @@ export default function ChatroomThumbnailCard({
 			ref={lastMessageElement}
 		>
 			<span
-				className={cn("my-0.5 w-fit max-w-[60%] rounded-3xl border-2 px-3 py-1 text-sm", className)}
+				className={cn(
+					"my-0.5 inline-block w-fit max-w-[60%] text-balance break-words rounded-3xl border-2 px-3 py-1 text-sm",
+					className,
+				)}
 			>
 				{children}
 			</span>

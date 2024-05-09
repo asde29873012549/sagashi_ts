@@ -6,7 +6,7 @@ import { Dot } from "lucide-react";
 import readMessage from "@/lib/queries/fetchQuery";
 import { useDispatch, useSelector } from "react-redux";
 import {
-	setMessageReadStatus,
+	setOnlineMessageReadStatus,
 	messageSelector,
 	setCurrentActiveChatroom,
 	setNotificationReadStatus,
@@ -32,23 +32,23 @@ interface ItemCardProps {
 }
 
 export default function ItemCard({
-	user, // only Messages section will have user
+	user, // only MessageIcon will have user
 	src,
 	children,
 	timing, // only notificationIcon will have timing
 	link, // only itemCards in the header messageIcon(only desktop) or notificationIcon will have link
 	setIsOpen,
-	read_at, // only messageIcon and Messages Section will have read_at
-	message_id, // only messageIcon and Messages Section will have message_id
-	chatroom_id, // only messageIcon and Messages Section will have chatroom_id
+	read_at, // only offline MessageIcon/ ChatSystem and offline notification will have read_at
+	message_id, // only offline MessageIcon/ ChatSystem will have message_id
+	chatroom_id, // only offline MessageIcon/ ChatSystem will have chatroom_id
 	notification_id, // only notificationIcon will have notification_id
 	isDesktop, // only Mesages Section on Desktop will have isDesktop to true
 }: ItemCardProps) {
 	const dispatch = useDispatch();
-	const messageReadMap = useSelector(messageSelector).isMessageReadMap;
+	const onlineMessageReadMap = useSelector(messageSelector).isOnlineMessageRead;
 	const notificationReadMap = useSelector(messageSelector).isNotificationReadMap;
 	const currentActiveChatroom = useSelector(messageSelector).currentActiveChatroom;
-	const hasMsgSeen = chatroom_id ? messageReadMap[chatroom_id] : undefined;
+	const hasMsgSeen = chatroom_id ? onlineMessageReadMap[chatroom_id] : undefined;
 	const hasNotiSeen = notification_id ? notificationReadMap[notification_id] : undefined;
 
 	const isNotificationItemCard = useRef(notification_id ? true : false);
@@ -59,7 +59,7 @@ export default function ItemCard({
 
 	const onToggleSelect = () => {
 		setIsOpen();
-		chatroom_id && dispatch(setMessageReadStatus(chatroom_id));
+		chatroom_id && dispatch(setOnlineMessageReadStatus(chatroom_id));
 		chatroom_id && dispatch(setCurrentActiveChatroom(chatroom_id));
 		notification_id && dispatch(setNotificationReadStatus(`${notification_id}`));
 		user && dispatch(setCurrentTab((chatroom_id?.split("-")[1] ?? "") === user ? "sell" : "buy"));

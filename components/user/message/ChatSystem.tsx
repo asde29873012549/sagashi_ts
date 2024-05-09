@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/base/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
 import Message from "@/components/user/message/ChatroomThumbnailCard";
 import { useState, useRef, useEffect } from "react";
-import ItemCard from "../../general/ItemCard";
+import MessageItemCard from "@/components/messenger/MessageItemCard";
 import { useQuery, useInfiniteQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import getChatrooms from "@/lib/queries/fetchQuery";
 import getMessages from "@/lib/queries/fetchQuery";
@@ -19,12 +19,7 @@ import socketEventCleaner from "@/lib/socketio/socketEventCleaner";
 import DOMPurify from "dompurify";
 import { useRouter } from "next/router";
 
-import {
-	setLastMessage,
-	setMessageReadStatus,
-	messageSelector,
-	setCurrentTab,
-} from "@/redux/messageSlice";
+import { setLastMessage, messageSelector, setCurrentTab } from "@/redux/messageSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import { parseISODate, timeDifference } from "@/lib/utility/utils";
@@ -67,7 +62,7 @@ export default function Messages({ user }: { user: string }) {
 		chatroom_id_from_url ? false : true,
 	);
 	const lastMessageMap = useSelector(messageSelector).lastMessage;
-	const messageReadMap = useSelector(messageSelector).isMessageReadMap;
+	const onlineMessageReadMap = useSelector(messageSelector).isOnlineMessageRead;
 	const currentActiveChatroom = useSelector(messageSelector).currentActiveChatroom;
 	const currentTab = useSelector(messageSelector).currentTab;
 	const currentChatroom_avatar = useRef<string | null>(null);
@@ -87,11 +82,6 @@ export default function Messages({ user }: { user: string }) {
 			// on successfully fetch chatroom list, populate the initial state of last message and read status
 			dispatch(
 				setLastMessage(initialChatroomList.data?.map((c) => ({ chatroom_id: c.id, text: c.text }))),
-			);
-			dispatch(
-				setMessageReadStatus(
-					initialChatroomList.data?.map((c) => ({ chatroom_id: c.id, read_at: c.read_at })),
-				),
 			);
 		},
 	});
@@ -124,10 +114,10 @@ export default function Messages({ user }: { user: string }) {
 	});
 
 	// There are two possible ways to initialize the websocket
-	// 1. clikced on the itemCard on header messageIcon and navigate to user page's message section
+	// 1. clikced on the MessageitemCard on header messageIcon and navigate to user page's message section
 	// the chatroom_id_from_url url query will be available and
 	// thus caused the useEffect to run and initiate the websocket connection
-	// 2. directly clicked itemCard when in the user's page message section
+	// 2. directly clicked MessageitemCard when in the user's page message section
 	// this will also triggered onOpenChatroom and set the currentActiveChatroom_id
 	// thus caused the useEffect to run and initiate the websocket connection
 
@@ -137,12 +127,13 @@ export default function Messages({ user }: { user: string }) {
 			socketInitializer({
 				queryClient,
 				chatroom_id: currentActiveChatroom,
-				fetchQuery: async (message_id) =>
+				fetchQuery: async () =>
 					await readMessage({
-						uri: "/message",
+						uri: "/message/all",
 						method: "PUT",
 						body: {
-							message_id,
+							time: new Date().toISOString(),
+							chatroom_id: currentActiveChatroom,
 						},
 					}),
 			});
@@ -156,9 +147,8 @@ export default function Messages({ user }: { user: string }) {
 
 		return () => {
 			if (socket.connected) {
-				console.log("socket disconnectd");
-				socketEventCleaner(socket);
 				socket.disconnect();
+				console.log("socket disconnectd");
 			}
 		};
 	}, [currentActiveChatroom, queryClient]);
@@ -263,7 +253,9 @@ export default function Messages({ user }: { user: string }) {
 				});
 
 				// set local user's last message state
-				dispatch(setLastMessage({ currentActiveChatroom, text: messageData.data?.text }));
+				dispatch(
+					setLastMessage({ chatroom_id: currentActiveChatroom, text: messageData.data?.text }),
+				);
 			}
 		},
 	});
@@ -307,18 +299,18 @@ export default function Messages({ user }: { user: string }) {
 						offlineChatroom.map((msg: MessageData, index) => {
 							const content = mes_type_helper(msg);
 							return (
-								<ItemCard
+								<MessageItemCard
 									key={`message-${msg.updated_at}-${index}-offline`}
 									src={msg.chatroom_avatar}
 									setIsOpen={() => onOpenChatroom(msg.chatroom_avatar)}
-									read_at={!messageReadMap[msg.id] ? null : msg.read_at}
+									read_at={msg.read_at}
 									message_id={msg.last_message}
 									chatroom_id={msg.id}
 									// chatroom_id_from_url={currentActiveChatroom}
 									isDesktop={true}
 								>
 									{content}
-								</ItemCard>
+								</MessageItemCard>
 							);
 						})
 					) : (
@@ -397,18 +389,18 @@ export default function Messages({ user }: { user: string }) {
 						offlineChatroom.map((msg, index) => {
 							const content = mes_type_helper(msg);
 							return (
-								<ItemCard
+								<MessageItemCard
 									key={`message-${msg.updated_at}-${index}-offline`}
 									src={msg.chatroom_avatar}
 									setIsOpen={() => onOpenChatroom(msg.chatroom_avatar)}
-									read_at={!messageReadMap[msg.id] ? null : msg.read_at}
+									read_at={msg.read_at}
 									message_id={msg.last_message}
 									chatroom_id={msg.id}
 									// chatroom_id_from_url={chatroom_id_from_url}
 									isDesktop={true}
 								>
 									{content}
-								</ItemCard>
+								</MessageItemCard>
 							);
 						})
 					) : (
