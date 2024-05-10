@@ -157,9 +157,9 @@ export default function ImageUploadCard({
 				<label
 					ref={imageCardRef}
 					className={
-						"relative flex aspect-[4/5] items-center justify-center rounded-md bg-gray-100 transition-transform duration-700 hover:scale-105 hover:cursor-pointer"
+						"relative flex aspect-[4/5] items-center justify-center rounded-md bg-gray-100 bg-contain transition-transform duration-700 hover:scale-105 hover:cursor-pointer"
 					}
-					style={{ backgroundImage: `url(${initialBgImage || ""})`, backgroundSize: "contain" }}
+					style={{ backgroundImage: `url(${initialBgImage || ""})` }}
 				>
 					<div ref={cameraIconRef} style={{ display: `${initialBgImage ? "none" : "block"}` }}>
 						<FilledCamera className="h-6 w-6" />

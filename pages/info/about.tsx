@@ -16,10 +16,12 @@ export default function About() {
 					<Image
 						src="/aboutBanner.png"
 						alt="aboutBanner"
-						fill={true}
+						width={2649}
+						height={1173}
 						sizes="100vw"
 						priority={true}
 						quality={100}
+						className="absolute inset-0 h-full w-full object-cover"
 					/>
 				</picture>
 			</div>
@@ -28,7 +30,8 @@ export default function About() {
 					<Image
 						src="/aboutImage1.webp"
 						alt="acneStudio"
-						fill={true}
+						height={387}
+						width={310}
 						sizes="(max-width: 768px) 50vw, 20vw"
 					/>
 				</div>
@@ -56,7 +59,8 @@ export default function About() {
 					<Image
 						src="/aboutImage2.webp"
 						alt="acneStudio"
-						fill={true}
+						height={409}
+						width={409}
 						sizes="(max-width: 768px) 50vw, 20vw"
 					/>
 				</div>
@@ -64,7 +68,8 @@ export default function About() {
 					<Image
 						src="/aboutImage3.webp"
 						alt="acneStudio"
-						fill={true}
+						height={511}
+						width={409}
 						sizes="(max-width: 768px) 50vw, 20vw"
 					/>
 				</div>
@@ -92,7 +97,8 @@ export default function About() {
 					<Image
 						src="/aboutImage4.webp"
 						alt="acneStudio"
-						fill={true}
+						height={540}
+						width={540}
 						sizes="(max-width: 768px) 50vw, 20vw"
 					/>
 				</div>
@@ -121,10 +127,12 @@ export default function About() {
 					<Image
 						src="/aboutFooter.webp"
 						alt="aboutFooter"
-						fill={true}
+						width={2649}
+						height={1173}
 						sizes="100vw"
 						priority={true}
 						quality={100}
+						className="absolute inset-0 h-full w-full object-cover"
 					/>
 				</picture>
 			</div>

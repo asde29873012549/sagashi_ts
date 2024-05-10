@@ -138,7 +138,13 @@ export default function Home() {
 				<p className="mb-6">Seasonal curation to meet the zenith of worlds&apos; fashion trends</p>
 				{curationData?.data.map((obj, index) => (
 					<div className="relative mb-16 h-[500px] w-full" key={`${obj.theme}-${index}`}>
-						<Image src={obj.image} alt={obj.theme} fill={true} className="object-cover" />
+						<Image
+							src={obj.image}
+							alt={obj.theme}
+							height={500}
+							width={1376}
+							className="absolute inset-0 h-full w-full object-cover"
+						/>
 						<div className="absolute z-3 flex h-full w-full flex-col items-center justify-end px-5 pb-8 text-background md:justify-center">
 							<h3 className="text-xl font-semibold drop-shadow-md md:text-3xl">{obj.theme}</h3>
 							<p className="md:text-x text-center drop-shadow-md">{obj.slogan}</p>

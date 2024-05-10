@@ -150,7 +150,7 @@ export default function MobileHeader() {
 						>
 							{session ? "LOGOUT" : "LOGIN"}
 						</div>
-						<div className="inline-block hover:cursor-pointer" style={{ height: "28px" }}>
+						<div className="inline-block h-[28px] hover:cursor-pointer">
 							<Search>
 								<SearchIcon className="mx-1 h-7 w-7" />
 							</Search>

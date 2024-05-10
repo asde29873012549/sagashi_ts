@@ -75,7 +75,8 @@ export default function OderItem({ username, cartData, priority }: OrderItemProp
 					<div className="relative aspect-[4/5] w-full shrink-0 md:w-2/5 md:max-w-[160px]">
 						<Image
 							src={cartData.primary_image}
-							fill={true}
+							height={200}
+							width={160}
 							alt="test"
 							sizes="(max-width: 768px) 90vw, 33vw"
 							priority={priority}

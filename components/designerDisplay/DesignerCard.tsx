@@ -83,7 +83,8 @@ export default function DesignerCard({
 				>
 					<Image
 						src={src}
-						fill={true}
+						height={350}
+						width={280}
 						alt="pic"
 						onLoad={onImageLoad}
 						sizes="(max-width: 620px) 80vw, 20vw"

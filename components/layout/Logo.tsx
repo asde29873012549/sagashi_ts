@@ -8,7 +8,8 @@ export default function Logo({ className = "" }: { className: string }) {
 			<Image
 				src="/sagashi_logo.webp"
 				alt="Sagashi_logo"
-				fill={true}
+				width={300}
+				height={205}
 				sizes="(max-width: 768px) 35vw, (max-width: 1200px) 20vw, 15vw"
 				priority={true}
 			/>

@@ -115,7 +115,8 @@ export default function ListingCard({
 				>
 					<Image
 						src={src}
-						fill={true}
+						height={350}
+						width={280}
 						alt="pic"
 						sizes="(max-width: 768px) 50vw, 20vw"
 						onLoad={onImageLoad}

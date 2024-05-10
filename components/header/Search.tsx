@@ -106,8 +106,7 @@ export default function Search({ children }: { children: React.ReactNode }) {
 						<div className="md:flex md:h-12 md:w-full md:items-center md:justify-end">
 							<SearchInput
 								placeholder="Search"
-								className="h-[45px] w-10/12 font-normal placeholder:text-info md:h-10 md:w-full"
-								style={{ border: "none" }}
+								className="h-[45px] w-10/12 border-none font-normal placeholder:text-info focus-visible:ring-0 focus-visible:ring-offset-0 md:h-10 md:w-full"
 								value={search}
 								onChange={onEnterInput}
 								onKeyDown={onEnter}
