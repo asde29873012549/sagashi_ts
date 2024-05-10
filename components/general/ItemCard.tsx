@@ -108,7 +108,7 @@ export default function ItemCard({
 								<AvatarFallback delayMs={750}>CN</AvatarFallback>
 							</Avatar>
 						</div>
-						<div style={{ width: "77%" }}>
+						<div className="w-[77%]">
 							<div className="ml-1 line-clamp-2 w-full whitespace-break-spaces px-2">
 								{children}
 							</div>
@@ -147,7 +147,7 @@ export default function ItemCard({
 								<AvatarFallback delayMs={750}>CN</AvatarFallback>
 							</Avatar>
 						</div>
-						<div style={{ width: "77%" }}>
+						<div className="w-[77%]">
 							<div className="ml-1 line-clamp-2 w-full whitespace-break-spaces px-2">
 								{children}
 							</div>

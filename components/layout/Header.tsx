@@ -146,7 +146,7 @@ export default function Header() {
 			<Logo className="m-auto w-[7vw] md:w-[10vw] lg:w-[7vw]" />
 			<div className="text-md flex w-1/6 justify-end">
 				<div className="flex w-fit space-x-6">
-					<div className="inline-block" style={{ height: "28px" }}>
+					<div className="inline-block h-[28px]">
 						<Search>
 							<SearchIcon className="mx-1 h-7 w-7" />
 						</Search>

@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
 	const sriptSrc = isProduction
 		? `'self' 'nonce-${nonce}' 'strict-dynamic'`
 		: `'self' 'unsafe-eval'`;
-	const styleSrc = isProduction ? `'self' 'nonce-${nonce}'` : `'self' 'unsafe-inline'`;
+	const styleSrc = `'self' 'unsafe-inline'`;
 	const cspHeader = `
     default-src 'self';
     script-src ${sriptSrc};
