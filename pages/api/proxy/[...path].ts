@@ -42,6 +42,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 		proxy.web(req, res, {
 			target: BACKEND_SERVER,
 			autoRewrite: false,
+			changeOrigin: true,
+			secure: true,
 		});
 	});
 }
