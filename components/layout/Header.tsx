@@ -2,7 +2,7 @@ import * as dotenv from "dotenv";
 import { signOut, useSession } from "next-auth/react";
 import Logo from "./Logo";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { User, Search as SearchIcon } from "lucide-react";
 import NotificationHeartIcon from "../header/NotificationHeartIcon";
 import MessageIcon from "../messenger/MessageIcon";
@@ -41,12 +41,11 @@ export default function Header() {
 	const { data: session, status } = useSession();
 	const onToggleRegisterForm = () => dispatch(toggleRegisterForm());
 	const currentActiveChatroom = useSelector(messageSelector).currentActiveChatroom;
+	const currentActiveChatroomRef = useRef(currentActiveChatroom);
 
 	const user = session?.user?.username ?? "";
 
-	const { data: notificationData, refetch: notificationRefetch } = useQuery<
-		ApiResponse<NotificationType[]>
-	>({
+	const { data: notificationData } = useQuery<ApiResponse<NotificationType[]>>({
 		queryKey: ["notification"],
 		queryFn: () =>
 			getNotification({
@@ -60,6 +59,10 @@ export default function Header() {
 	});
 
 	useEffect(() => {
+		currentActiveChatroomRef.current = currentActiveChatroom;
+	}, [currentActiveChatroom]);
+
+	useEffect(() => {
 		let eventSource: EventSource;
 		if (user) {
 			eventSource = new EventSource(`${NOTIFICATION_SERVER}/events`, {
@@ -70,6 +73,10 @@ export default function Header() {
 				const newNotification = JSON.parse(event.data);
 				if (newNotification.type === "notification.message") {
 					const newMessageChatroomId = `${newNotification.listing_id}-${newNotification.seller_name}-${newNotification.buyer_name}`;
+					const readStatus =
+						currentActiveChatroomRef.current === newMessageChatroomId
+							? new Date().toISOString()
+							: null;
 					// if received new message online
 					// check if current opened chatroom is the same as the chatroom id the new message belongs to
 					// if true, it means the user is currently in the chatroom, so we automatically set the message as read
@@ -77,8 +84,7 @@ export default function Header() {
 					dispatch(
 						setOnlineMessageReadStatus({
 							chatroom_id: newMessageChatroomId,
-							read_at:
-								currentActiveChatroom === newMessageChatroomId ? new Date().toISOString() : null,
+							read_at: readStatus,
 						}),
 					);
 					// set message receiver's last message
@@ -115,7 +121,7 @@ export default function Header() {
 		}
 
 		return () => eventSource && eventSource.close();
-	}, [user, notificationRefetch, currentActiveChatroom, dispatch]);
+	}, [user, dispatch]);
 
 	const onLogout = () => {
 		signOut({ callbackUrl: homepage });
