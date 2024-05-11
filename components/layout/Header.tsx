@@ -20,7 +20,12 @@ import {
 } from "@/redux/messageSlice";
 import { useQuery } from "@tanstack/react-query";
 import getNotification from "@/lib/queries/fetchQuery";
-import type { ChatroomType, OnlineNotification } from "@/lib/types/global";
+import type {
+	ApiResponse,
+	ChatroomType,
+	NotificationType,
+	OnlineNotification,
+} from "@/lib/types/global";
 import { cn } from "@/lib/utility/utils";
 
 dotenv.config();
@@ -39,7 +44,9 @@ export default function Header() {
 
 	const user = session?.user?.username ?? "";
 
-	const { data: notificationData, refetch: notificationRefetch } = useQuery({
+	const { data: notificationData, refetch: notificationRefetch } = useQuery<
+		ApiResponse<NotificationType[]>
+	>({
 		queryKey: ["notification"],
 		queryFn: () =>
 			getNotification({
@@ -48,11 +55,6 @@ export default function Header() {
 		enabled: session ? true : false,
 		refetchOnWindowFocus: false,
 		onSuccess: (initialNotificationData) => {
-			// create global state for notification read status
-			// const temp: { [key: string]: string | null } = {};
-			// const readStatus = initialNotificationData.data.forEach((obj: NotificationType) => {
-			// 	temp[obj.id] = obj.read_at;
-			// });
 			dispatch(setNotificationReadStatus(initialNotificationData.data));
 		},
 	});

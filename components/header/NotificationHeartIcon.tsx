@@ -4,14 +4,15 @@ import { Alert, AlertDescription } from "@/components/base/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
 import { likeListing, gotFollowed, uploadListing } from "@/lib/utility/msg_template";
 import { useState } from "react";
-import type { OnlineNotification, NotificationType } from "@/lib/types/global";
+import type { OnlineNotification, NotificationType, ApiResponse } from "@/lib/types/global";
 import { cn, getDateDistance } from "@/lib/utility/utils";
 import { Dot } from "lucide-react";
-import readMessage from "@/lib/queries/fetchQuery";
+import readNotification from "@/lib/queries/fetchQuery";
 import { useDispatch, useSelector } from "react-redux";
 import { messageSelector, setNotificationReadStatus } from "@/redux/messageSlice";
 
 import Link from "next/link";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface NotificationHeartIconProps {
 	notificationActive: boolean;
@@ -28,7 +29,7 @@ interface ItemCardProps {
 	setIsOpen: () => void;
 	read_at?: string | null;
 	message_id?: number;
-	notification_id: number | string;
+	notification_id: number[] | string;
 }
 
 export default function NotificationHeartIcon({
@@ -141,23 +142,61 @@ function NotificationItemCard({
 	notification_id, // only notificationIcon will have notification_id
 }: ItemCardProps) {
 	const dispatch = useDispatch();
+	const queryClient = useQueryClient();
 	const notificationReadMap = useSelector(messageSelector).isNotificationReadMap;
-	const hasNotiSeen = notification_id ? notificationReadMap[notification_id] : undefined;
+	const hasOnlineNotiSeen =
+		notification_id && !Array.isArray(notification_id)
+			? notificationReadMap[notification_id]
+			: undefined;
 
-	const isItemCardActiveNotiVersion = !read_at && !hasNotiSeen;
+	const isNotificationUnread = hasOnlineNotiSeen ? false : hasOnlineNotiSeen === null || !read_at;
 
-	const onToggleSelect = () => {
-		setIsOpen();
-		notification_id && dispatch(setNotificationReadStatus(`${notification_id}`));
-
-		if (notification_id) {
-			readMessage({
+	const { mutate: readNotificationMutate } = useMutation({
+		mutationFn: () =>
+			readNotification({
 				uri: "/notification",
 				method: "PUT",
 				body: {
 					notification_id,
 				},
-			});
+			}),
+		onMutate: async () => {
+			// Snapshot the previous value
+			const previousMessage = queryClient.getQueryData<ApiResponse<NotificationType[]>>([
+				"notification",
+			]);
+
+			// Optimistically update to the new value
+			queryClient.setQueryData(
+				["notification"],
+				(oldData: ApiResponse<NotificationType[]> | undefined): ApiResponse<NotificationType[]> => {
+					return {
+						status: oldData!.status,
+						data:
+							oldData?.data.map((obj) =>
+								JSON.stringify(obj.id) === JSON.stringify(notification_id)
+									? { ...obj, read_at: new Date().toISOString() }
+									: obj,
+							) ?? [],
+					};
+				},
+			);
+			// Return a context object with the snapshotted value
+			return { previousMessage };
+		},
+		// If the mutation fails,
+		// use the context returned from onMutate to roll back
+		onError: (err, newTodo, context) => {
+			queryClient.setQueryData(["notification"], context?.previousMessage);
+		},
+	});
+
+	const onToggleSelect = () => {
+		setIsOpen();
+		if (!notification_id) return;
+		if (isNotificationUnread) {
+			readNotificationMutate();
+			!Array.isArray(notification_id) && dispatch(setNotificationReadStatus(`${notification_id}`));
 		}
 	};
 
@@ -165,7 +204,7 @@ function NotificationItemCard({
 		<Link href={link || ""} onClick={onToggleSelect} scroll={false}>
 			<Alert>
 				<AlertDescription
-					className={`flex w-[400px] cursor-pointer items-center justify-between rounded-md p-4 hover:bg-slate-100 ${hasNotiSeen ? "" : "bg-slate-100"}`}
+					className={`flex w-[400px] cursor-pointer items-center justify-between rounded-md p-4 hover:bg-slate-100 ${isNotificationUnread ? "bg-slate-100" : ""}`}
 				>
 					<div className="flex w-full">
 						<div className="mr-2 w-2/12 items-center">
@@ -184,7 +223,7 @@ function NotificationItemCard({
 								</div>
 							)}
 						</div>
-						{isItemCardActiveNotiVersion && (
+						{isNotificationUnread && (
 							<Dot strokeWidth={5} color="#4932f5" className="h-full shrink-0 self-center" />
 						)}
 					</div>
