@@ -348,7 +348,7 @@ interface UploadListingNotification {
 export type OnlineNotification = LikeNotification | FollowNotification | UploadListingNotification;
 
 export interface NotificationType {
-	id: number;
+	id: number[];
 	sender_name: string;
 	receiver_name: string;
 	type:
