@@ -12,6 +12,7 @@ import {
 } from "@/redux/messageSlice";
 
 import Link from "next/link";
+import { ChatroomType } from "@/lib/types/global";
 
 interface ItemCardProps {
 	user?: string;
@@ -21,7 +22,7 @@ interface ItemCardProps {
 	link?: string;
 	setIsOpen: () => void;
 	read_at?: string | null;
-	message_id?: number;
+	setChatroom?: React.Dispatch<React.SetStateAction<ChatroomType[]>>;
 	chatroom_id?: string;
 	isDesktop?: boolean;
 }
@@ -32,8 +33,8 @@ export default function MessageItemCard({
 	children,
 	link, // only itemCards in the header messageIcon(only desktop) or notificationIcon will have link
 	setIsOpen,
+	setChatroom, // only offline ItemCard will receive from MessageIcon
 	read_at, // only offline MessageIcon/ ChatSystem will have read_at
-	message_id, // only offline MessageIcon/ ChatSystem will have message_id
 	chatroom_id, // only MessageIcon/ ChatSystem will have chatroom_id
 	isDesktop, // only ChatSystem will have isDesktop to true
 }: ItemCardProps) {
@@ -56,6 +57,15 @@ export default function MessageItemCard({
 		if (chatroom_id) {
 			dispatch(setOnlineMessageReadStatus(chatroom_id));
 			dispatch(setCurrentActiveChatroom(chatroom_id));
+			setChatroom &&
+				setChatroom((prev) => {
+					return prev.map((msg) => {
+						if ("read_at" in msg && !msg.read_at && msg.id === chatroom_id) {
+							return { ...msg, read_at: new Date().toISOString() };
+						}
+						return msg;
+					});
+				});
 		}
 		user && dispatch(setCurrentTab((chatroom_id?.split("-")[1] ?? "") === user ? "sell" : "buy"));
 	};

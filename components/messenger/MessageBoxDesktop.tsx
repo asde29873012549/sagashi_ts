@@ -4,7 +4,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
 import { X as Xicon } from "lucide-react";
 import { motion } from "framer-motion";
 import socketInitializer from "@/lib/socketio/socketInitializer";
-import socketEventCleaner from "@/lib/socketio/socketEventCleaner";
 import socket from "@/lib/socketio/client";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";

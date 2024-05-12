@@ -2,7 +2,6 @@ import { Sheet, SheetContent } from "@/components/base/sheet";
 import Message from "../user/message/ChatroomThumbnailCard";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
 import socketInitializer from "@/lib/socketio/socketInitializer";
-import socketEventCleaner from "@/lib/socketio/socketEventCleaner";
 import socket from "@/lib/socketio/client";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -175,7 +174,6 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 		messageBoxData.username,
 		messageBoxData.listingOwner,
 		messageBoxData.product_id,
-		chatroom_id,
 		queryClient,
 	]);
 
