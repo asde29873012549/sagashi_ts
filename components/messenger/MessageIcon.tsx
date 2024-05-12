@@ -5,7 +5,7 @@ import { received_message } from "@/lib/utility/msg_template";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getMessages from "@/lib/queries/fetchQuery";
-import type { ChatroomType } from "@/lib/types/global";
+import type { ApiResponse, ChatroomType } from "@/lib/types/global";
 import { useSelector } from "react-redux";
 import { messageSelector } from "@/redux/messageSlice";
 
@@ -33,7 +33,7 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 	const onlineMessageReadMap = useSelector(messageSelector).isOnlineMessageRead;
 	const lastMessageMap = useSelector(messageSelector).lastMessage;
 
-	const { refetch: fetchChatroomList } = useQuery({
+	const { refetch: fetchChatroomList } = useQuery<ApiResponse<ChatroomType[]>>({
 		queryKey: ["chatroomList"],
 		queryFn: () =>
 			getMessages({
@@ -41,7 +41,15 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 			}),
 		refetchOnWindowFocus: false,
 		onSuccess: (initialChatroomList) => {
-			setChatroom(initialChatroomList.data);
+			setChatroom(
+				initialChatroomList.data.map((msg) => {
+					// If the last sent user is the current user, there's no need to mark it as unread
+					// Because the user who sent the message will definitely read it
+					if ("read_at" in msg && !msg.read_at && msg.last_sent_user_name === user)
+						return { ...msg, read_at: new Date().toISOString() };
+					return msg;
+				}),
+			);
 		},
 	});
 
@@ -119,7 +127,7 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 								link={isMobile ? "" : msg.link}
 								setIsOpen={onToggleMessageIcon}
 								read_at={msg.read_at}
-								message_id={msg.last_message}
+								setChatroom={setChatroom}
 								chatroom_id={msg.id}
 							>
 								{content}

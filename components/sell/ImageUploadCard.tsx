@@ -5,6 +5,9 @@ import { useDispatch } from "react-redux";
 import { EditProductFormInput, PartialSellFormInputType, PhotoBlobKey } from "@/lib/types/global";
 import { type Crop } from "react-image-crop";
 import { cn } from "@/lib/utility/utils";
+import Spinner from "@/components/layout/Spinner";
+import { useToast } from "../base/use-toast";
+import { uploadImageFailure } from "@/lib/utility/userMessage";
 
 const cropAspet = 4 / 5;
 const NEXT_PUBLIC_SERVER_DOMAIN = process.env.NEXT_PUBLIC_SERVER_DOMAIN;
@@ -38,10 +41,12 @@ export default function ImageUploadCard({
 	const [crop, setCrop] = useState<Crop>();
 	const [bufferImage, setBufferImage] = useState<ArrayBuffer | string>("");
 	const [croppedBackground, setCroppedBackground] = useState<string>("");
+	const [shouldShowSpinner, setShouldShowSpinner] = useState<boolean>(false);
 	const imageCardRef = useRef<HTMLLabelElement>(null);
 	const cameraIconRef = useRef<HTMLDivElement>(null);
 	const cancelIconRef = useRef<HTMLDivElement>(null);
 	const dispatch = useDispatch();
+	const { toast } = useToast();
 
 	const onSelectFile = (e: ChangeEvent<HTMLInputElement>) => {
 		if (e.target.files && e.target.files.length > 0) {
@@ -59,6 +64,14 @@ export default function ImageUploadCard({
 	};
 
 	const onFinishCrop = async () => {
+		let timeoutId: ReturnType<typeof setTimeout> | string = "";
+		// remove the crop area
+		setImgSrc(null);
+		setCrop(undefined);
+
+		setShouldShowSpinner(true);
+		const minLoadingTime = 300;
+
 		const imageCardNode = imageCardRef.current!;
 		const cameraIconNode = cameraIconRef.current!;
 		const cancelIconNode = cancelIconRef.current!;
@@ -79,32 +92,48 @@ export default function ImageUploadCard({
 			);
 		}
 
-		const response = await fetch(`${NEXT_PUBLIC_SERVER_DOMAIN}/api/cropImage`, {
-			method: "POST",
-			body: formData,
-		});
+		try {
+			const imgResponsePromise = fetch(`${NEXT_PUBLIC_SERVER_DOMAIN}/api/cropImage`, {
+				method: "POST",
+				body: formData,
+			});
 
-		if (!response.ok) {
-			const error = await response.json();
-			console.log(error);
-		} else {
-			const data = await response.blob();
-			const imageURL = URL.createObjectURL(data);
-			setCroppedBackground(imageURL);
-			if (dispatchFormInput) {
-				dispatch(mobileFormInput({ key: "photos", value: { ...formInput.photos, [id]: data } }));
+			const timeoutPromise = new Promise((resolve) => {
+				timeoutId = setTimeout(() => {
+					setShouldShowSpinner(false);
+					resolve(true);
+				}, minLoadingTime);
+			});
+
+			const [response, _] = await Promise.all([imgResponsePromise, timeoutPromise]);
+
+			if (!response.ok) {
+				const error = await response.json();
+				console.log(error);
 			} else {
-				if (setFormInput)
-					setFormInput({ ...formInput, photos: { ...formInput.photos, [id]: data } });
+				const data = await response.blob();
+				const imageURL = URL.createObjectURL(data);
+				setCroppedBackground(imageURL);
+				if (dispatchFormInput) {
+					dispatch(mobileFormInput({ key: "photos", value: { ...formInput.photos, [id]: data } }));
+				} else {
+					if (setFormInput)
+						setFormInput({ ...formInput, photos: { ...formInput.photos, [id]: data } });
+				}
+				imageCardNode.style.backgroundImage = `url(${imageURL})`;
+				// imageCardNode.style.backgroundSize = "contain";
+				cameraIconNode.style.display = "none";
+				cancelIconNode.style.display = "block";
 			}
-
-			imageCardNode.style.backgroundImage = `url(${imageURL})`;
-			// imageCardNode.style.backgroundSize = "contain";
-			cameraIconNode.style.display = "none";
-			cancelIconNode.style.display = "block";
+		} catch (err) {
+			toast({
+				title: uploadImageFailure.title,
+				description: uploadImageFailure.desc,
+				status: uploadImageFailure.status,
+			});
+		} finally {
+			timeoutId && clearTimeout(timeoutId);
 		}
-		setImgSrc(null);
-		setCrop(undefined);
 	};
 
 	const onCancelCrop = () => {
@@ -136,6 +165,7 @@ export default function ImageUploadCard({
 
 	return (
 		<Fragment>
+			{shouldShowSpinner && <Spinner />}
 			<PhotoCrop
 				imgSrc={imgSrc}
 				setCrop={setCrop}

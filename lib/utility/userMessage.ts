@@ -17,6 +17,12 @@ const uploadSuccess = {
 	status: "success",
 };
 
+const uploadImageFailure = {
+	title: "Failed !",
+	desc: "Encountered error while uploading Image !",
+	status: "fail",
+};
+
 const saveDraftSuccess = {
 	title: "Success !",
 	desc: "Find your drafts in your profile > drafts .",
@@ -71,4 +77,5 @@ export {
 	deleteSuccess,
 	accountCreated,
 	duplicateOffer,
+	uploadImageFailure,
 };

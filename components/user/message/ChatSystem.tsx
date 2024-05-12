@@ -15,7 +15,6 @@ import ChatboxInput from "@/components/messenger/ChatboxInput";
 
 import socket from "@/lib/socketio/client";
 import socketInitializer from "@/lib/socketio/socketInitializer";
-import socketEventCleaner from "@/lib/socketio/socketEventCleaner";
 import DOMPurify from "dompurify";
 import { useRouter } from "next/router";
 
@@ -62,7 +61,6 @@ export default function Messages({ user }: { user: string }) {
 		chatroom_id_from_url ? false : true,
 	);
 	const lastMessageMap = useSelector(messageSelector).lastMessage;
-	const onlineMessageReadMap = useSelector(messageSelector).isOnlineMessageRead;
 	const currentActiveChatroom = useSelector(messageSelector).currentActiveChatroom;
 	const currentTab = useSelector(messageSelector).currentTab;
 	const currentChatroom_avatar = useRef<string | null>(null);
@@ -164,7 +162,12 @@ export default function Messages({ user }: { user: string }) {
 		}
 	}, [currentTab]);
 
-	const offlineChatroom = chatroomList?.data ?? [];
+	const offlineChatroom =
+		chatroomList?.data?.map((msg) => {
+			if (!msg.read_at && msg.last_sent_user_name === user)
+				return { ...msg, read_at: new Date().toISOString() };
+			return msg;
+		}) ?? [];
 
 	const mes_type_helper = (msg: MessageData) => {
 		// check if last_sent_user_name(from message table) is the same as user
@@ -304,7 +307,6 @@ export default function Messages({ user }: { user: string }) {
 									src={msg.chatroom_avatar}
 									setIsOpen={() => onOpenChatroom(msg.chatroom_avatar)}
 									read_at={msg.read_at}
-									message_id={msg.last_message}
 									chatroom_id={msg.id}
 									// chatroom_id_from_url={currentActiveChatroom}
 									isDesktop={true}
@@ -394,7 +396,6 @@ export default function Messages({ user }: { user: string }) {
 									src={msg.chatroom_avatar}
 									setIsOpen={() => onOpenChatroom(msg.chatroom_avatar)}
 									read_at={msg.read_at}
-									message_id={msg.last_message}
 									chatroom_id={msg.id}
 									// chatroom_id_from_url={chatroom_id_from_url}
 									isDesktop={true}
