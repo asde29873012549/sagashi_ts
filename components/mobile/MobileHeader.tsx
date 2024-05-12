@@ -50,12 +50,7 @@ export default function MobileHeader() {
 		enabled: session ? true : false,
 		refetchOnWindowFocus: false,
 		onSuccess: (initialNotificationData) => {
-			// create global state for notification read status
-			const temp: { [key: string]: string | null } = {};
-			const readStatus = initialNotificationData.data.forEach((obj: NotificationType) => {
-				temp[obj.id] = obj.read_at;
-			});
-			dispatch(setNotificationReadStatus(readStatus));
+			dispatch(setNotificationReadStatus(initialNotificationData.data));
 		},
 	});
 
