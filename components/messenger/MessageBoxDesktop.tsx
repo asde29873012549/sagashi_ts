@@ -150,31 +150,39 @@ export default function MessageBoxDesktop({
 	});
 
 	useEffect(() => {
-		socketInitializer({
-			queryClient,
-			chatroom_id: `${wsData.product_id}-${wsData.listingOwner}-${wsData.username}`,
-			setId,
-			fetchQuery: async () =>
-				await readMessage({
-					uri: "/message/all",
-					method: "PUT",
-					body: {
-						time: new Date().toISOString(),
-						chatroom_id: `${wsData.product_id}-${wsData.listingOwner}-${wsData.username}`,
-					},
-				}),
-		});
+		if (!socket.connected) {
+			socketInitializer({
+				queryClient,
+				chatroom_id: `${wsData.product_id}-${wsData.listingOwner}-${wsData.username}`,
+				setId,
+				fetchQuery: async () =>
+					await readMessage({
+						uri: "/message/all",
+						method: "PUT",
+						body: {
+							time: new Date().toISOString(),
+							chatroom_id: `${wsData.product_id}-${wsData.listingOwner}-${wsData.username}`,
+						},
+					}),
+			});
+		}
 
-		socket.io.opts.query!.user = wsData.username;
-		socket.io.opts.query!.listingOwner = wsData.listingOwner;
-		socket.io.opts.query!.productId = wsData.product_id;
+		// Update socket query parameters
+		socket.io.opts.query = {
+			user: wsData.username,
+			listingOwner: wsData.listingOwner,
+			productId: wsData.product_id,
+		};
 
-		socket.connect();
+		if (!socket.connected) {
+			console.log("Socket connecting...");
+			socket.connect();
+		}
 
 		return () => {
 			if (socket.connected) {
+				console.log("Cleaning up socket...");
 				socket.disconnect();
-				console.log("socket disconnectd");
 			}
 		};
 	}, [wsData.username, wsData.listingOwner, wsData.product_id, queryClient]);

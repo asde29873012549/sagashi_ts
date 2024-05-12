@@ -17,15 +17,11 @@ import {
 	setLastMessage,
 	messageSelector,
 	setNotificationReadStatus,
+	setChatroom,
 } from "@/redux/messageSlice";
 import { useQuery } from "@tanstack/react-query";
 import getNotification from "@/lib/queries/fetchQuery";
-import type {
-	ApiResponse,
-	ChatroomType,
-	NotificationType,
-	OnlineNotification,
-} from "@/lib/types/global";
+import type { ApiResponse, NotificationType, OnlineNotification } from "@/lib/types/global";
 import { cn } from "@/lib/utility/utils";
 
 dotenv.config();
@@ -35,7 +31,6 @@ const NOTIFICATION_SERVER = process.env.NEXT_PUBLIC_NOTIFICATION_SERVER;
 
 export default function Header() {
 	const [onlineNotification, setOnlineNotification] = useState<OnlineNotification[]>([]);
-	const [chatroom, setChatroom] = useState<ChatroomType[]>([]);
 	const [notificationActive, setNotificationActive] = useState<boolean>(false);
 	const dispatch = useDispatch();
 	const { data: session, status } = useSession();
@@ -93,16 +88,13 @@ export default function Header() {
 					);
 
 					// update chatroom list's last message and created_at
-					setChatroom((prev) => {
-						return prev.map((c) => {
-							const cId =
-								c.id ?? ("listing_id" in c && `${c.listing_id}-${c.seller_name}-${c.buyer_name}`);
-							if (cId === newMessageChatroomId) {
-								return newNotification;
-							}
-							return c;
-						});
-					});
+					dispatch(
+						setChatroom({
+							type: "getNewMessage",
+							newMessageChatroomId,
+							newNotification,
+						}),
+					);
 				} else {
 					setOnlineNotification((prev) => [newNotification, ...prev]);
 					setNotificationActive(true);
@@ -116,8 +108,6 @@ export default function Header() {
 					);
 				}
 			};
-
-			// notificationRefetch();
 		}
 
 		return () => eventSource && eventSource.close();
@@ -167,14 +157,7 @@ export default function Header() {
 							onNotificationHeartIconClick={onNotificationHeartIconClick}
 						/>
 					)}
-					{session && (
-						<MessageIcon
-							user={user}
-							chatroom={chatroom}
-							setChatroom={setChatroom}
-							isMobile={false}
-						/>
-					)}
+					{session && <MessageIcon user={user} isMobile={false} />}
 					{session && <ShoppingCartIcon user={user} />}
 					{session && (
 						<Link className="inline-block hover:cursor-pointer" href="/user">

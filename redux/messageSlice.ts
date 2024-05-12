@@ -1,6 +1,8 @@
+import { ChatroomType, MessageNotification } from "@/lib/types/global";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface message {
+	chatroom: ChatroomType[] | MessageNotification[];
 	isOnlineMessageRead: { [key: string]: string | null };
 	isNotificationReadMap: { [key: string]: string | null };
 	lastMessage: { [key: string]: { text: string; updated_at: string } };
@@ -23,6 +25,7 @@ interface messageState {
 }
 
 let initialState: message = {
+	chatroom: [],
 	isOnlineMessageRead: {},
 	isNotificationReadMap: {},
 	lastMessage: {},
@@ -36,6 +39,39 @@ const messageSlice = createSlice({
 	name: "message",
 	initialState,
 	reducers: {
+		setChatroom: (state, action) => {
+			switch (action.payload.type) {
+				case "getNewMessage":
+					state.chatroom = state.chatroom.map((c) => {
+						const cId =
+							"id" in c
+								? c.id
+								: "listing_id" in c && `${c.listing_id}-${c.seller_name}-${c.buyer_name}`;
+						if (cId === action.payload.newMessageChatroomId) {
+							return action.payload.newNotification;
+						}
+						return c;
+					});
+					break;
+				case "updateMessageReadAt":
+					state.chatroom = state.chatroom.map((msg) => {
+						if ("read_at" in msg && !msg.read_at && msg.id === action.payload.chatroom_id) {
+							return { ...msg, read_at: new Date().toISOString() };
+						}
+						return msg;
+					}) as ChatroomType[] | MessageNotification[];
+					break;
+				case "getInitialChatroomList":
+					state.chatroom = action.payload.initialChatroomList.map((msg: ChatroomType) => {
+						// If the last sent user is the current user, there's no need to mark it as unread
+						// Because the user who sent the message will definitely read it
+						if ("read_at" in msg && !msg.read_at && msg.last_sent_user_name === action.payload.user)
+							return { ...msg, read_at: new Date().toISOString() };
+						return msg;
+					});
+					break;
+			}
+		},
 		setOnlineMessageReadStatus: (state, action) => {
 			// change read status when clicking on itemCard
 			// if typeof payload is string (passed in chatroom_id), means that specific chatroom is clicked and read
@@ -123,6 +159,7 @@ export const {
 	setCurrentTab,
 	setMobileMessageBoxOpen,
 	setMobileMessageBoxData,
+	setChatroom,
 } = messageSlice.actions;
 export const messageSelector = (state: messageState) => state.message;
 export default messageSlice.reducer;

@@ -2,36 +2,24 @@ import { MessageCircle } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/base/popover";
 import MessageItemCard from "./MessageItemCard";
 import { received_message } from "@/lib/utility/msg_template";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import getMessages from "@/lib/queries/fetchQuery";
-import type { ApiResponse, ChatroomType } from "@/lib/types/global";
-import { useSelector } from "react-redux";
-import { messageSelector } from "@/redux/messageSlice";
+import type { ApiResponse, ChatroomType, MessageNotification } from "@/lib/types/global";
+import { useDispatch, useSelector } from "react-redux";
+import { messageSelector, setChatroom } from "@/redux/messageSlice";
 
 interface MessageIconProps {
 	user: string;
-	chatroom: (ChatroomType | MessageNotification)[];
-	setChatroom: React.Dispatch<React.SetStateAction<ChatroomType[]>>;
 	isMobile: boolean;
 }
 
-type MessageNotification = {
-	type: "notification.message";
-	sender_name: string;
-	buyer_name: string;
-	seller_name: string;
-	listing_id: string;
-	text: string;
-	image: string;
-	created_at: string;
-	link: string;
-};
-
-export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: MessageIconProps) {
+export default function MessageIcon({ user, isMobile }: MessageIconProps) {
+	const dispatch = useDispatch();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const onlineMessageReadMap = useSelector(messageSelector).isOnlineMessageRead;
 	const lastMessageMap = useSelector(messageSelector).lastMessage;
+	const chatroom = useSelector(messageSelector).chatroom;
 
 	const { refetch: fetchChatroomList } = useQuery<ApiResponse<ChatroomType[]>>({
 		queryKey: ["chatroomList"],
@@ -41,13 +29,11 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 			}),
 		refetchOnWindowFocus: false,
 		onSuccess: (initialChatroomList) => {
-			setChatroom(
-				initialChatroomList.data.map((msg) => {
-					// If the last sent user is the current user, there's no need to mark it as unread
-					// Because the user who sent the message will definitely read it
-					if ("read_at" in msg && !msg.read_at && msg.last_sent_user_name === user)
-						return { ...msg, read_at: new Date().toISOString() };
-					return msg;
+			dispatch(
+				setChatroom({
+					type: "getInitialChatroomList",
+					user,
+					initialChatroomList: initialChatroomList.data,
 				}),
 			);
 		},
@@ -72,7 +58,7 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 		setIsOpen((o) => !o);
 	};
 
-	const shouldShowMessageCircle = () => {
+	const shouldShowMessageCircle = useMemo(() => {
 		let yes = false;
 		chatroom?.some((msg) => {
 			if ("listing_id" in msg) {
@@ -84,7 +70,7 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 			if ("read_at" in msg && !msg.read_at) yes = true;
 		});
 		return yes;
-	};
+	}, [chatroom, onlineMessageReadMap]);
 
 	return (
 		<Popover open={isOpen} onOpenChange={onToggleMessageIcon}>
@@ -92,7 +78,7 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 				{/* Notification Circle */}
 				<div
 					className={`absolute right-[1px] z-50 mb-3 h-2.5 w-2.5 rounded-full bg-red-700 
-					${shouldShowMessageCircle() ? "" : "hidden"}`} // Hide on desktop if no new message
+					${shouldShowMessageCircle ? "" : "hidden"}`} // Hide on desktop if no new message
 				></div>
 
 				{/* Message Icon */}
@@ -101,7 +87,7 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 
 			<PopoverContent
 				className={`mr-4 max-h-[70dvh] md:mr-8 ${
-					chatroom.length > 0 ? "" : "mr-1"
+					chatroom?.length > 0 ? "" : "mr-1"
 				} overflow-y-scroll`}
 			>
 				{chatroom &&
@@ -127,14 +113,13 @@ export default function MessageIcon({ user, chatroom, setChatroom, isMobile }: M
 								link={isMobile ? "" : msg.link}
 								setIsOpen={onToggleMessageIcon}
 								read_at={msg.read_at}
-								setChatroom={setChatroom}
 								chatroom_id={msg.id}
 							>
 								{content}
 							</MessageItemCard>
 						);
 					})}
-				{!chatroom.length && (
+				{!chatroom?.length && (
 					<div className="flex h-14 w-60 items-center justify-center text-gray-500">
 						No new message
 					</div>

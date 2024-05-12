@@ -21,6 +21,7 @@ export default async function socketInitializer({
 }: SocketInitializer) {
 	// ping the server to setup a socket if not already running
 	// await fetch(`${NEXT_PUBLIC_SERVER_DOMAIN}/api/ws`);
+	socket.removeAllListeners();
 
 	// Standard socket management
 	socket.on("connect", async () => {
