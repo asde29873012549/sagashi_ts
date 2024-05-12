@@ -118,10 +118,12 @@ export default function Messages({ user }: { user: string }) {
 	// 2. directly clicked MessageitemCard when in the user's page message section
 	// this will also triggered onOpenChatroom and set the currentActiveChatroom_id
 	// thus caused the useEffect to run and initiate the websocket connection
-
 	useEffect(() => {
-		if (currentActiveChatroom) {
-			const [product_id, listingOwner, client] = currentActiveChatroom.split("-");
+		if (!currentActiveChatroom) return;
+
+		const [product_id, listingOwner, client] = currentActiveChatroom.split("-");
+		// Initialize socket only if not already connected or if explicitly needed
+		if (!socket.connected) {
 			socketInitializer({
 				queryClient,
 				chatroom_id: currentActiveChatroom,
@@ -129,24 +131,28 @@ export default function Messages({ user }: { user: string }) {
 					await readMessage({
 						uri: "/message/all",
 						method: "PUT",
-						body: {
-							time: new Date().toISOString(),
-							chatroom_id: currentActiveChatroom,
-						},
+						body: { time: new Date().toISOString(), chatroom_id: currentActiveChatroom },
 					}),
 			});
+		}
 
-			socket.io.opts.query!.user = client;
-			socket.io.opts.query!.listingOwner = listingOwner;
-			socket.io.opts.query!.productId = product_id;
+		// Update socket query parameters
+		socket.io.opts.query = {
+			user: client,
+			listingOwner: listingOwner,
+			productId: product_id,
+		};
 
+		// Connect if not already connected
+		if (!socket.connected) {
+			console.log("Socket connecting...");
 			socket.connect();
 		}
 
 		return () => {
 			if (socket.connected) {
+				console.log("Cleaning up socket...");
 				socket.disconnect();
-				console.log("socket disconnectd");
 			}
 		};
 	}, [currentActiveChatroom, queryClient]);

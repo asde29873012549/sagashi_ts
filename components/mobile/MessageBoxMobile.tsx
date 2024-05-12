@@ -143,38 +143,53 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 	};
 
 	useEffect(() => {
-		socketInitializer({
-			queryClient,
-			chatroom_id,
-			setId,
-			fetchQuery: async () =>
-				await readMessage({
-					uri: "/message/all",
-					method: "PUT",
-					body: {
-						time: new Date().toISOString(),
-						chatroom_id,
-					},
-				}),
-		});
+		const [user, listingOwner, productId] = chatroom_id.split("-");
+		if (
+			messageBoxData.username &&
+			messageBoxData.listingOwner &&
+			messageBoxData.product_id &&
+			!socket.connected
+		) {
+			socketInitializer({
+				queryClient,
+				chatroom_id,
+				setId,
+				fetchQuery: async () =>
+					await readMessage({
+						uri: "/message/all",
+						method: "PUT",
+						body: {
+							time: new Date().toISOString(),
+							chatroom_id,
+						},
+					}),
+			});
+		}
 
-		socket.io.opts.query!.user = messageBoxData?.username;
-		socket.io.opts.query!.listingOwner = messageBoxData?.listingOwner;
-		socket.io.opts.query!.productId = messageBoxData?.product_id;
+		// Update socket query parameters
+		socket.io.opts.query = {
+			user,
+			listingOwner,
+			productId,
+		};
 
-		socket.connect();
+		if (!socket.connected) {
+			console.log("Socket connecting...");
+			socket.connect();
+		}
 
 		return () => {
 			if (socket.connected) {
+				console.log("Cleaning up socket...");
 				socket.disconnect();
-				console.log("socket disconnectd");
 			}
 		};
 	}, [
-		messageBoxData.username,
-		messageBoxData.listingOwner,
-		messageBoxData.product_id,
+		chatroom_id,
 		queryClient,
+		messageBoxData.product_id,
+		messageBoxData.listingOwner,
+		messageBoxData.username,
 	]);
 
 	const updateMessageInput = (valStateFromChild: {

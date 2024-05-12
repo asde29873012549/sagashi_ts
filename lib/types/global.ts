@@ -285,6 +285,18 @@ export interface FeaturedDesignerData {
 	isFollow: boolean;
 }
 
+export type MessageNotification = {
+	type: "notification.message";
+	sender_name: string;
+	buyer_name: string;
+	seller_name: string;
+	listing_id: string;
+	text: string;
+	image: string;
+	created_at: string;
+	link: string;
+};
+
 // Messages related Types Definitions
 export interface ChatroomType {
 	id: string;
@@ -297,18 +309,6 @@ export interface ChatroomType {
 	link: string;
 	read_at: string | null;
 	updated_at: string;
-}
-
-interface MessageNotification {
-	type: "notification.message";
-	sender_name: string;
-	buyer_name: string;
-	seller_name: string;
-	listing_id: string;
-	text: string;
-	image: string;
-	created_at: string;
-	link: string;
 }
 
 interface LikeNotification {

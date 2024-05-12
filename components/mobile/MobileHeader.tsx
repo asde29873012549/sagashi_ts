@@ -9,6 +9,7 @@ import Search from "../header/Search";
 import MessageBoxMobile from "./MessageBoxMobile";
 
 import { toggleRegisterForm } from "../../redux/userSlice";
+import { setChatroom } from "@/redux/messageSlice";
 
 import NotificationHeartIcon from "../header/NotificationHeartIcon";
 import MessageIcon from "../messenger/MessageIcon";
@@ -23,7 +24,7 @@ import {
 } from "@/redux/messageSlice";
 import { useQuery } from "@tanstack/react-query";
 import getNotification from "@/lib/queries/fetchQuery";
-import type { ChatroomType, NotificationType, OnlineNotification } from "@/lib/types/global";
+import type { OnlineNotification } from "@/lib/types/global";
 
 dotenv.config();
 
@@ -32,7 +33,6 @@ const NOTIFICATION_SERVER = process.env.NEXT_PUBLIC_NOTIFICATION_SERVER;
 
 export default function MobileHeader() {
 	const [onlineNotification, setOnlineNotification] = useState<OnlineNotification[]>([]);
-	const [chatroom, setChatroom] = useState<ChatroomType[]>([]);
 	const [notificationActive, setNotificationActive] = useState<boolean>(false);
 	const dispatch = useDispatch();
 	const { data: session } = useSession();
@@ -82,19 +82,13 @@ export default function MobileHeader() {
 					);
 
 					// update chatroom list's last message and created_at
-					setChatroom((prev) => {
-						return prev.map((c) => {
-							if (c.id === newMessageChatroomId) {
-								return {
-									...c,
-									created_at: newNotification.created_at,
-									text: newNotification.text,
-									read_at: null,
-								};
-							}
-							return c;
-						});
-					});
+					dispatch(
+						setChatroom({
+							type: "getNewMessage",
+							newMessageChatroomId,
+							newNotification,
+						}),
+					);
 				} else {
 					setOnlineNotification((prev) => [newNotification, ...prev]);
 					setNotificationActive(true);
@@ -128,9 +122,7 @@ export default function MobileHeader() {
 			<div className="sticky top-0 z-[19] flex h-16 w-full items-center justify-between bg-background px-3 py-2 shadow-md sm:px-6 sm:py-4 md:hidden">
 				<MenuBar />
 				<Logo className="absolute m-auto w-[19vw]" />
-				{session && (
-					<MessageIcon user={user} chatroom={chatroom} setChatroom={setChatroom} isMobile={true} />
-				)}
+				{session && <MessageIcon user={user} isMobile={true} />}
 				<div className="text-md fixed bottom-0 right-0 z-8 flex w-full items-center justify-between bg-background px-5 py-3">
 					<div className="flex w-full items-center justify-around">
 						<Link
@@ -145,7 +137,7 @@ export default function MobileHeader() {
 						>
 							{session ? "LOGOUT" : "LOGIN"}
 						</div>
-						<div className="inline-block hover:cursor-pointer" style={{ height: "28px" }}>
+						<div className="inline-block h-[28px] hover:cursor-pointer">
 							<Search>
 								<SearchIcon className="mx-1 h-7 w-7" />
 							</Search>
