@@ -28,7 +28,7 @@ interface ClientToServerEvents {
 }
 
 // Setup the Socket
-const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io(":8081", {
+const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io("/", {
 	transports: ["websocket", "polling"],
 	path: "/api/socketio",
 	addTrailingSlash: false,
