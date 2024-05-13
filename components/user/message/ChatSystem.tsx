@@ -120,21 +120,22 @@ export default function Messages({ user }: { user: string }) {
 	// thus caused the useEffect to run and initiate the websocket connection
 	useEffect(() => {
 		if (!currentActiveChatroom) return;
-
 		const [product_id, listingOwner, client] = currentActiveChatroom.split("-");
-		// Initialize socket only if not already connected or if explicitly needed
-		if (!socket.connected) {
-			socketInitializer({
-				queryClient,
-				chatroom_id: currentActiveChatroom,
-				fetchQuery: async () =>
-					await readMessage({
-						uri: "/message/all",
-						method: "PUT",
-						body: { time: new Date().toISOString(), chatroom_id: currentActiveChatroom },
-					}),
-			});
+
+		if (socket.connected) {
+			socket.emit("join", { currentActiveChatroom });
 		}
+
+		socketInitializer({
+			queryClient,
+			chatroom_id: currentActiveChatroom,
+			fetchQuery: async () =>
+				await readMessage({
+					uri: "/message/all",
+					method: "PUT",
+					body: { time: new Date().toISOString(), chatroom_id: currentActiveChatroom },
+				}),
+		});
 
 		// Update socket query parameters
 		socket.io.opts.query = {
@@ -143,17 +144,14 @@ export default function Messages({ user }: { user: string }) {
 			productId: product_id,
 		};
 
-		// Connect if not already connected
+		// Initialize socket only if not already connected or if explicitly needed
 		if (!socket.connected) {
 			console.log("Socket connecting...");
 			socket.connect();
 		}
 
 		return () => {
-			if (socket.connected) {
-				console.log("Cleaning up socket...");
-				socket.disconnect();
-			}
+			socket.emit("leave", { currentActiveChatroom });
 		};
 	}, [currentActiveChatroom, queryClient]);
 
@@ -167,6 +165,15 @@ export default function Messages({ user }: { user: string }) {
 				buyContainer.current.scrollHeight - buyContainer.current.clientHeight;
 		}
 	}, [currentTab]);
+
+	useEffect(() => {
+		return () => {
+			if (socket.connected) {
+				console.log("Cleaning up socket...");
+				socket.disconnect();
+			}
+		};
+	}, []);
 
 	const offlineChatroom =
 		chatroomList?.data?.map((msg) => {
@@ -257,8 +264,8 @@ export default function Messages({ user }: { user: string }) {
 						text: messageData.data?.text,
 						sender_name: user,
 						message_id: messageData.data?.id,
+						chatroom_id: currentActiveChatroom,
 					},
-					client,
 				});
 
 				// set local user's last message state

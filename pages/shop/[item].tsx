@@ -28,7 +28,7 @@ import OfferDialog from "@/components/listingDisplay/OfferDialog";
 
 import { getToken } from "next-auth/jwt";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, use } from "react";
 
 import type {
 	ApiResponse,
@@ -81,6 +81,10 @@ export default function ListingItem({
 				console.error(err);
 			}
 		}
+
+		return () => {
+			setIsOpen(false);
+		};
 	}, [product_id, username]);
 
 	const { data: listingData } = useQuery<
@@ -122,6 +126,7 @@ export default function ListingItem({
 				setAddToCart(<Check />);
 				delayShowCartItem();
 			}
+			clearTimeout(timeoutId.current);
 		},
 		onError: (err) => {
 			setAddToCart("ADD TO CART");

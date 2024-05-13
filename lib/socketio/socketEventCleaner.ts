@@ -7,7 +7,8 @@ export default function socketEventCleaner(socket: typeof Socket) {
 	// socket.off("reconnect");
 	// socket.off("reconnect_error");
 	// socket.off("reconnect_failed");
-	socket.off("client-new");
+	socket.off("clientNew");
 	socket.off("getMessage");
+	socket.off("userLeft");
 	// socket.off("client-count");
 }

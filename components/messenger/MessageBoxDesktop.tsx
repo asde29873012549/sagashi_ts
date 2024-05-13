@@ -140,8 +140,8 @@ export default function MessageBoxDesktop({
 					text: msgData?.data?.text,
 					sender_name: wsData.username,
 					message_id: msgData?.data?.id,
+					chatroom_id,
 				},
-				client,
 			});
 
 			// set local user's last message state
