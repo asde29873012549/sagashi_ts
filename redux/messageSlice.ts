@@ -24,6 +24,8 @@ interface messageState {
 	message: message;
 }
 
+type Chatroom = ChatroomType[] | MessageNotification[];
+
 let initialState: message = {
 	chatroom: [],
 	isOnlineMessageRead: {},
@@ -35,6 +37,17 @@ let initialState: message = {
 	mobileMessageBoxData: {},
 };
 
+const findElemtAndIndex = (
+	arr: Chatroom,
+	predicate: (c: ChatroomType | MessageNotification) => boolean,
+) => {
+	const index = arr.findIndex(predicate);
+	if (index !== -1) {
+		return { element: arr[index], index };
+	}
+	return { element: undefined, index: -1 };
+};
+
 const messageSlice = createSlice({
 	name: "message",
 	initialState,
@@ -42,16 +55,22 @@ const messageSlice = createSlice({
 		setChatroom: (state, action) => {
 			switch (action.payload.type) {
 				case "getNewMessage":
-					state.chatroom = state.chatroom.map((c) => {
+					const { element: chatroom, index } = findElemtAndIndex(state.chatroom, (c) => {
 						const cId =
 							"id" in c
 								? c.id
 								: "listing_id" in c && `${c.listing_id}-${c.seller_name}-${c.buyer_name}`;
-						if (cId === action.payload.newMessageChatroomId) {
-							return action.payload.newNotification;
-						}
-						return c;
+						return cId === action.payload.newMessageChatroomId;
 					});
+
+					if (chatroom) {
+						state.chatroom = [
+							action.payload.newNotification,
+							...state.chatroom.toSpliced(index, 1),
+						];
+					} else {
+						state.chatroom = [action.payload.newNotification, ...state.chatroom];
+					}
 					break;
 				case "updateMessageReadAt":
 					state.chatroom = state.chatroom.map((msg) => {

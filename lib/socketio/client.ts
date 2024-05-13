@@ -8,8 +8,9 @@ interface Message {
 }
 
 interface ServerToClientEvents {
-	"client-new": (chatroom_id: string[]) => void;
+	clientNew: (chatroom_id: string[]) => void;
 	getMessage: ({ message, sender }: { message: Message; sender: string }) => void;
+	userLeft: ({ chatroom_id, user }: { chatroom_id: string; user: string }) => void;
 }
 
 interface ClientToServerMessage {
@@ -17,10 +18,13 @@ interface ClientToServerMessage {
 	text: string;
 	sender_name: string;
 	message_id: string;
+	chatroom_id: string;
 }
 
 interface ClientToServerEvents {
-	message: (message: { message: ClientToServerMessage; client: string }) => void;
+	message: (message: { message: ClientToServerMessage }) => void;
+	leave: (cId: { currentActiveChatroom: string }) => void;
+	join: (cId: { currentActiveChatroom: string }) => void;
 }
 
 // Setup the Socket

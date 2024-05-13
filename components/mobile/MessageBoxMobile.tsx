@@ -117,8 +117,8 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 					text: msgData?.data?.text,
 					sender_name: messageBoxData?.username || "",
 					message_id: msgData?.data?.id,
+					chatroom_id,
 				},
-				client,
 			});
 
 			// set local user's last message state

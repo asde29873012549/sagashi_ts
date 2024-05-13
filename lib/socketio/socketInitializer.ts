@@ -13,7 +13,7 @@ interface SocketInitializer {
 	fetchQuery: () => Promise<ApiResponse<number[]>>;
 }
 
-export default async function socketInitializer({
+export default function socketInitializer({
 	queryClient,
 	chatroom_id,
 	setId,
@@ -25,7 +25,7 @@ export default async function socketInitializer({
 
 	// Standard socket management
 	socket.on("connect", async () => {
-		console.log("Connected to the server");
+		console.log("Connected to the websocket server");
 
 		try {
 			const result = await fetchQuery();
@@ -65,14 +65,19 @@ export default async function socketInitializer({
 	// });
 
 	// Manage socket message events
-	socket.on("client-new", (chatroom_id) => {
-		console.log(`Recieved 'client-new' event with chatroom_id: ${chatroom_id}`);
+	socket.on("clientNew", (chatroom_id) => {
+		console.log(`Recieved 'clientNew' event with chatroom_id: ${chatroom_id}`);
 		chatroom_id && setId && setId(chatroom_id);
+	});
+
+	socket.on("userLeft", ({ chatroom_id, user }) => {
+		console.log(`User: ${user} has left your chatroom: ${chatroom_id}`);
 	});
 
 	socket.on("getMessage", ({ message }) => {
 		queryClient.invalidateQueries({ queryKey: ["messages", chatroom_id] });
 		console.log("getMessage: ", message);
+		console.log(chatroom_id);
 	});
 
 	// socket.on("client-count", (count) => {
