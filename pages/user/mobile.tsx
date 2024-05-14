@@ -12,6 +12,7 @@ import ProfileInfo from "@/components/user/profile/ProfileInfo";
 import LanguageInfo from "@/components/user/profile/LanguageInfo";
 import AddressInfo from "@/components/user/profile/AddressInfo";
 import CountryInfo from "@/components/user/profile/CountryInfo";
+import { Separator } from "@/components/base/separator";
 // import About from "@/components/User/About";
 
 import { QueryClient, dehydrate, useQuery } from "@tanstack/react-query";
@@ -30,6 +31,8 @@ export default function User({ user }: { user: string }) {
 		refetchOnWindowFocus: false,
 	});
 
+	console.log(userData);
+
 	return (
 		<div className="h-full w-screen px-3">
 			<div className="py-4 text-2xl font-bold">Account</div>
@@ -37,12 +40,16 @@ export default function User({ user }: { user: string }) {
 				<div className="flex items-center justify-between">
 					<AlertDescription className="flex items-center">
 						<Avatar className="h-20 w-20">
-							<AvatarImage src="/defaultProfile.webp" />
+							<AvatarImage src={userData?.data.avatar} />
 							<AvatarFallback>CN</AvatarFallback>
 						</Avatar>
 						<div className="ml-3">
-							<AlertTitle className="font-semibold">Noah Hung</AlertTitle>
-							<div>0 reviews</div>
+							<AlertTitle className="font-semibold">{userData?.data.username}</AlertTitle>
+							<div className="flex items-center space-x-5">
+								<div>{userData?.data.follower_count ?? 0} Followers</div>
+								<Separator orientation="vertical" className="h-4" />
+								<div>0 reviews</div>
+							</div>
 						</div>
 					</AlertDescription>
 					<SheetWrapper

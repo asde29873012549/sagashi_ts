@@ -1,49 +1,48 @@
 import * as dotenv from "dotenv";
 import { signOut, useSession } from "next-auth/react";
-import Logo from "./Logo";
+import Logo from "../layout/Logo";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { User, Search as SearchIcon, CircleDollarSign, LogIn, LogOut } from "lucide-react";
-import NotificationHeartIcon from "../header/NotificationHeartIcon";
-import MessageIcon from "../messenger/MessageIcon";
-import MenuBar from "../mobile/menu/MenuBar";
+import { Fragment, useEffect, useRef, useState } from "react";
+import { User, Search as SearchIcon } from "lucide-react";
+import MenuBar from "./menu/MenuBar";
 import Search from "../header/Search";
-import ShoppingCartIcon from "../header/ShoppingCartIcon";
+import MessageBoxMobile from "./MessageBoxMobile";
 
 import { toggleRegisterForm } from "../../redux/userSlice";
+import { setChatroom } from "@/redux/messageSlice";
+
+import NotificationHeartIcon from "../header/NotificationHeartIcon";
+import MessageIcon from "../messenger/MessageIcon";
+import ShoppingCartIcon from "../header/ShoppingCartIcon";
+
 import { useDispatch, useSelector } from "react-redux";
 import {
 	setOnlineMessageReadStatus,
 	setLastMessage,
 	messageSelector,
 	setNotificationReadStatus,
-	setChatroom,
 } from "@/redux/messageSlice";
 import { useQuery } from "@tanstack/react-query";
 import getNotification from "@/lib/queries/fetchQuery";
-import type { ApiResponse, NotificationType, OnlineNotification } from "@/lib/types/global";
-import { cn } from "@/lib/utility/utils";
-import MessageBoxMobile from "../mobile/MessageBoxMobile";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
+import type { OnlineNotification } from "@/lib/types/global";
 
 dotenv.config();
 
 const homepage = process.env.NEXT_PUBLIC_SERVER_DOMAIN;
 const NOTIFICATION_SERVER = process.env.NEXT_PUBLIC_NOTIFICATION_SERVER;
 
-export default function Header() {
+export default function MobileHeader() {
 	const [onlineNotification, setOnlineNotification] = useState<OnlineNotification[]>([]);
 	const [notificationActive, setNotificationActive] = useState<boolean>(false);
 	const dispatch = useDispatch();
-	const { data: session, status } = useSession();
+	const { data: session } = useSession();
 	const onToggleRegisterForm = () => dispatch(toggleRegisterForm());
 	const currentActiveChatroom = useSelector(messageSelector).currentActiveChatroom;
 	const currentActiveChatroomRef = useRef(currentActiveChatroom);
-	const isMobileMessageBoxOpen = useSelector(messageSelector).isMobileMessageBoxOpen;
 
 	const user = session?.user?.username ?? "";
 
-	const { data: notificationData } = useQuery<ApiResponse<NotificationType[]>>({
+	const { data: notificationData } = useQuery({
 		queryKey: ["notification"],
 		queryFn: () =>
 			getNotification({
@@ -125,29 +124,26 @@ export default function Header() {
 	};
 
 	return (
-		<div className="sticky top-0 z-[19] w-full bg-background shadow-md md:flex md:h-20 md:items-center md:justify-between md:px-4 md:py-1 md:shadow-none">
-			<div className="flex h-16 w-full items-center justify-between px-3 py-2 md:h-20 md:px-9 md:py-1">
+		<Fragment>
+			<div className="sticky top-0 z-[19] flex h-16 w-full items-center justify-between bg-background px-3 py-2 shadow-md sm:px-6 sm:py-4 md:hidden">
 				<MenuBar />
-				<div className="hidden w-full justify-between md:flex  md:text-sm lg:text-base">
-					<div className="flex items-center space-x-3 md:space-x-6">
-						<Link className="hidden w-1/4 hover:cursor-pointer md:inline-block" href="/sell">
+				<Logo className="mx-auto w-[17vw]" />
+				{session && <MessageIcon user={user} isMobile={true} />}
+				<div className="text-md fixed bottom-0 right-0 z-8 flex w-full items-center justify-between bg-background px-5 py-3">
+					<div className="flex w-full items-center justify-around">
+						<Link
+							className="inline-block text-base hover:cursor-pointer"
+							href="/sell/mobile/stageFirst"
+						>
 							SELL
 						</Link>
-						<Link className="hidden w-1/4 hover:cursor-pointer md:inline-block" href="/shop">
-							SHOP
-						</Link>
 						<div
-							className={cn(
-								"hover:cursor-pointer",
-								status === "loading" ? "invisible opacity-0" : "inline-block",
-							)}
+							className="inline-block text-base hover:cursor-pointer"
 							onClick={session ? onLogout : onToggleRegisterForm}
 						>
 							{session ? "LOGOUT" : "LOGIN"}
 						</div>
-					</div>
-					<div className="flex w-fit space-x-1 md:space-x-6">
-						<div className="h-[28px] hover:cursor-pointer">
+						<div className="inline-block h-[28px] hover:cursor-pointer">
 							<Search>
 								<SearchIcon className="mx-1 h-7 w-7" />
 							</Search>
@@ -160,64 +156,18 @@ export default function Header() {
 								onNotificationHeartIconClick={onNotificationHeartIconClick}
 							/>
 						)}
-						{session && <MessageIcon user={user} isMobile={false} />}
-						{session && <ShoppingCartIcon user={user} />}
 						{session && (
-							<Link className="inline-block hover:cursor-pointer" href="/user">
+							<ShoppingCartIcon user={user} /*className="h-7 w-7 hover:cursor-pointer"*/ />
+						)}
+						{session && (
+							<Link className="inline-block hover:cursor-pointer" href="/user/mobile">
 								<User className="h-7 w-7" />
 							</Link>
 						)}
 					</div>
 				</div>
-				<Logo className="absolute inset-0 m-auto w-[16vw] md:w-[10vw] lg:w-[7vw]" />
-				{session && <MessageIcon user={user} isMobile={true} className="md:hidden" />}
 			</div>
-			{/* Mobile-specific components */}
-			<div className="text-md fixed bottom-0 right-0 z-8 flex w-full items-center justify-between bg-background px-1 py-1 md:hidden">
-				<div className="flex w-full items-center justify-around">
-					<Link
-						className="flex flex-col items-center hover:cursor-pointer md:hidden"
-						href="/sell/mobile/stageFirst"
-					>
-						<CircleDollarSign />
-						<div className="text-[10px]">SELL</div>
-					</Link>
-					<div
-						className={cn(
-							"flex flex-col items-center hover:cursor-pointer",
-							status === "loading" ? "invisible opacity-0" : "",
-						)}
-						onClick={session ? onLogout : onToggleRegisterForm}
-					>
-						{session ? <LogOut /> : <LogIn />}
-						<div className="text-[10px]">{session ? "LOGOUT" : "LOGIN"}</div>
-					</div>
-					{session && (
-						<Link className="flex flex-col items-center hover:cursor-pointer" href="/user/mobile">
-							<Avatar className="h-7 w-7">
-								<AvatarImage src={session?.user?.avatar} />
-								<AvatarFallback>CN</AvatarFallback>
-							</Avatar>
-							<div className="text-[10px]">PROFILE</div>
-						</Link>
-					)}
-					<div className="flex flex-col items-center hover:cursor-pointer">
-						<Search>
-							<SearchIcon className="mx-1 h-7 w-7" />
-						</Search>
-						<div className="text-[10px]">DISCOVER</div>
-					</div>
-					{session && (
-						<div className="flex flex-col items-center">
-							<ShoppingCartIcon user={user} />
-							<div className="text-[10px]">CART</div>
-						</div>
-					)}
-				</div>
-			</div>
-			{session && isMobileMessageBoxOpen && (
-				<MessageBoxMobile className="w-full md:hidden" user={user} />
-			)}
-		</div>
+			<MessageBoxMobile className="w-full md:hidden" user={user} />
+		</Fragment>
 	);
 }

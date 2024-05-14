@@ -1,47 +1,46 @@
 import * as dotenv from "dotenv";
 import { signOut, useSession } from "next-auth/react";
-import Logo from "../layout/Logo";
+import Logo from "./Logo";
 import Link from "next/link";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { User, Search as SearchIcon } from "lucide-react";
-import MenuBar from "./menu/MenuBar";
-import Search from "../header/Search";
-import MessageBoxMobile from "./MessageBoxMobile";
-
-import { toggleRegisterForm } from "../../redux/userSlice";
-import { setChatroom } from "@/redux/messageSlice";
-
 import NotificationHeartIcon from "../header/NotificationHeartIcon";
 import MessageIcon from "../messenger/MessageIcon";
+import MenuBar from "../mobile/menu/MenuBar";
+import Search from "../header/Search";
 import ShoppingCartIcon from "../header/ShoppingCartIcon";
 
+import { toggleRegisterForm } from "../../redux/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {
 	setOnlineMessageReadStatus,
 	setLastMessage,
 	messageSelector,
 	setNotificationReadStatus,
+	setChatroom,
 } from "@/redux/messageSlice";
 import { useQuery } from "@tanstack/react-query";
 import getNotification from "@/lib/queries/fetchQuery";
-import type { OnlineNotification } from "@/lib/types/global";
+import type { ApiResponse, NotificationType, OnlineNotification } from "@/lib/types/global";
+import { cn } from "@/lib/utility/utils";
 
 dotenv.config();
 
 const homepage = process.env.NEXT_PUBLIC_SERVER_DOMAIN;
 const NOTIFICATION_SERVER = process.env.NEXT_PUBLIC_NOTIFICATION_SERVER;
 
-export default function MobileHeader() {
+export default function Header() {
 	const [onlineNotification, setOnlineNotification] = useState<OnlineNotification[]>([]);
 	const [notificationActive, setNotificationActive] = useState<boolean>(false);
 	const dispatch = useDispatch();
-	const { data: session } = useSession();
+	const { data: session, status } = useSession();
 	const onToggleRegisterForm = () => dispatch(toggleRegisterForm());
 	const currentActiveChatroom = useSelector(messageSelector).currentActiveChatroom;
+	const currentActiveChatroomRef = useRef(currentActiveChatroom);
 
 	const user = session?.user?.username ?? "";
 
-	const { data: notificationData, refetch: notificationRefetch } = useQuery({
+	const { data: notificationData } = useQuery<ApiResponse<NotificationType[]>>({
 		queryKey: ["notification"],
 		queryFn: () =>
 			getNotification({
@@ -55,6 +54,10 @@ export default function MobileHeader() {
 	});
 
 	useEffect(() => {
+		currentActiveChatroomRef.current = currentActiveChatroom;
+	}, [currentActiveChatroom]);
+
+	useEffect(() => {
 		let eventSource: EventSource;
 		if (user) {
 			eventSource = new EventSource(`${NOTIFICATION_SERVER}/events`, {
@@ -65,6 +68,10 @@ export default function MobileHeader() {
 				const newNotification = JSON.parse(event.data);
 				if (newNotification.type === "notification.message") {
 					const newMessageChatroomId = `${newNotification.listing_id}-${newNotification.seller_name}-${newNotification.buyer_name}`;
+					const readStatus =
+						currentActiveChatroomRef.current === newMessageChatroomId
+							? new Date().toISOString()
+							: null;
 					// if received new message online
 					// check if current opened chatroom is the same as the chatroom id the new message belongs to
 					// if true, it means the user is currently in the chatroom, so we automatically set the message as read
@@ -72,8 +79,7 @@ export default function MobileHeader() {
 					dispatch(
 						setOnlineMessageReadStatus({
 							chatroom_id: newMessageChatroomId,
-							read_at:
-								currentActiveChatroom === newMessageChatroomId ? new Date().toISOString() : null,
+							read_at: readStatus,
 						}),
 					);
 					// set message receiver's last message
@@ -102,12 +108,10 @@ export default function MobileHeader() {
 					);
 				}
 			};
-
-			// notificationRefetch();
 		}
 
 		return () => eventSource && eventSource.close();
-	}, [user, notificationRefetch, currentActiveChatroom, dispatch]);
+	}, [user, dispatch]);
 
 	const onLogout = () => {
 		signOut({ callbackUrl: homepage });
@@ -118,50 +122,50 @@ export default function MobileHeader() {
 	};
 
 	return (
-		<Fragment>
-			<div className="sticky top-0 z-[19] flex h-16 w-full items-center justify-between bg-background px-3 py-2 shadow-md sm:px-6 sm:py-4 md:hidden">
-				<MenuBar />
-				<Logo className="absolute m-auto w-[19vw]" />
-				{session && <MessageIcon user={user} isMobile={true} />}
-				<div className="text-md fixed bottom-0 right-0 z-8 flex w-full items-center justify-between bg-background px-5 py-3">
-					<div className="flex w-full items-center justify-around">
-						<Link
-							className="inline-block text-base hover:cursor-pointer"
-							href="/sell/mobile/stageFirst"
-						>
-							SELL
-						</Link>
-						<div
-							className="inline-block text-base hover:cursor-pointer"
-							onClick={session ? onLogout : onToggleRegisterForm}
-						>
-							{session ? "LOGOUT" : "LOGIN"}
-						</div>
-						<div className="inline-block h-[28px] hover:cursor-pointer">
-							<Search>
-								<SearchIcon className="mx-1 h-7 w-7" />
-							</Search>
-						</div>
-						{session && (
-							<NotificationHeartIcon
-								onlineNotification={onlineNotification}
-								offlineNotification={notificationData?.data ?? []}
-								notificationActive={notificationActive}
-								onNotificationHeartIconClick={onNotificationHeartIconClick}
-							/>
-						)}
-						{session && (
-							<ShoppingCartIcon user={user} /*className="h-7 w-7 hover:cursor-pointer"*/ />
-						)}
-						{session && (
-							<Link className="inline-block hover:cursor-pointer" href="/user/mobile">
-								<User className="h-7 w-7" />
-							</Link>
-						)}
-					</div>
+		<div className="top-0 z-[19] hidden w-full bg-background md:sticky md:flex md:h-20 md:items-center md:justify-between md:px-9 md:py-1 md:shadow-none">
+			<MenuBar />
+			<div className="hidden w-1/6 justify-between md:flex md:w-1/5 md:text-sm lg:w-1/6 lg:text-base">
+				<Link className="mr-2 inline-block w-1/4 hover:cursor-pointer" href="/sell">
+					SELL
+				</Link>
+				<Link className="inline-block w-1/4 hover:cursor-pointer" href="/shop">
+					SHOP
+				</Link>
+				<div
+					className={cn(
+						"w-1/3 hover:cursor-pointer",
+						status === "loading" ? "invisible opacity-0" : "inline-block",
+					)}
+					onClick={session ? onLogout : onToggleRegisterForm}
+				>
+					{session ? "LOGOUT" : "LOGIN"}
 				</div>
 			</div>
-			<MessageBoxMobile className="w-full md:hidden" user={user} />
-		</Fragment>
+			<Logo className="mx-auto w-[17vw] md:w-[10vw] lg:w-[7vw]" />
+			<div className="text-md flex w-1/6 justify-end">
+				<div className="flex w-fit space-x-6">
+					<div className="inline-block h-[28px]">
+						<Search>
+							<SearchIcon className="mx-1 h-7 w-7" />
+						</Search>
+					</div>
+					{session && (
+						<NotificationHeartIcon
+							onlineNotification={onlineNotification}
+							offlineNotification={notificationData?.data ?? []}
+							notificationActive={notificationActive}
+							onNotificationHeartIconClick={onNotificationHeartIconClick}
+						/>
+					)}
+					{session && <MessageIcon user={user} isMobile={false} />}
+					{session && <ShoppingCartIcon user={user} />}
+					{session && (
+						<Link className="inline-block hover:cursor-pointer" href="/user">
+							<User className="h-7 w-7" />
+						</Link>
+					)}
+				</div>
+			</div>
+		</div>
 	);
 }
