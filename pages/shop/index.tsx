@@ -131,6 +131,7 @@ export default function Shop({
 		queryKey: ["listing", "liked"],
 		queryFn: () => getUserLikedListing({ uri: `/listing/like` }),
 		refetchOnWindowFocus: false,
+		enabled: !!user,
 	});
 
 	const liked = likedListing?.data?.map((obj) => obj.product_id);
@@ -179,6 +180,7 @@ export default function Shop({
 										? lastProductElement
 										: null
 								}
+								isUserLoggedIn={!!user}
 							/>
 						));
 					})}

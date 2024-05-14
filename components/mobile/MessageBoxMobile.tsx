@@ -147,7 +147,6 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 
 	useEffect(() => {
 		if (chatroom_id && !socket.connected) {
-			console.log(chatroom_id);
 			socketInitializer({
 				queryClient,
 				chatroom_id,

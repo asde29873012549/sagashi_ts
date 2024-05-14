@@ -18,9 +18,11 @@ import type {
 	ProductData,
 	FilteredTreeData,
 } from "@/lib/types/global";
+import { useSession } from "next-auth/react";
 
 export default function ShopSearch({ treeData }: { treeData: OriginTreeData }) {
 	const router = useRouter();
+	const { data: session } = useSession();
 	const { data: OriginTreeData } = useQuery<ApiResponse<OriginTreeData>, Error>({
 		queryKey: ["tree"],
 		queryFn: () => getTree({ uri: "/tree" }),
@@ -81,6 +83,7 @@ export default function ShopSearch({ treeData }: { treeData: OriginTreeData }) {
 		queryKey: ["listing", "liked"],
 		queryFn: () => getUserLikedListing({ uri: `/listing/like` }),
 		refetchOnWindowFocus: false,
+		enabled: !!session?.user?.username,
 	});
 
 	const liked = likedListing?.data?.map((obj) => obj.product_id);
@@ -120,6 +123,7 @@ export default function ShopSearch({ treeData }: { treeData: OriginTreeData }) {
 										? lastProductElement
 										: null
 								}
+								isUserLoggedIn={!!session?.user?.username}
 							/>
 						));
 					})}

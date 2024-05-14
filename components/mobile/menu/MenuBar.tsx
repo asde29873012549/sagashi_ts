@@ -37,7 +37,6 @@ export default function MenuBar() {
 	const category = treeData?.data.Category[currentTab] ?? {};
 
 	const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-		e.preventDefault();
 		isTouchActiveRef.current = true;
 		initialTouchRef.current = e.touches[0].screenY;
 	};
@@ -166,7 +165,7 @@ export default function MenuBar() {
 							{Object.keys(category).map((key, index) => (
 								<MenuDrawer
 									key={`${index}-${key}`}
-									data={category[key].sub}
+									data={category[key]}
 									currentCategory={currentCategory}
 									setCurrentCategory={setCurrentCategory}
 									setOpen={setOpen}

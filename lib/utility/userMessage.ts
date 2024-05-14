@@ -1,7 +1,7 @@
 const genericError = "Encounter temporary error. Please try again later.";
 const unAuthorizedError = {
 	title: "Unauthorized",
-	desc: "The session has Expired. Please Login Again.",
+	desc: "You may need to login or your session has expired.",
 	status: "fail",
 };
 

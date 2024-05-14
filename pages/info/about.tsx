@@ -16,8 +16,7 @@ export default function About() {
 					<Image
 						src="/aboutBanner.png"
 						alt="aboutBanner"
-						width={2649}
-						height={1173}
+						fill={true}
 						sizes="100vw"
 						priority={true}
 						quality={100}
@@ -30,8 +29,7 @@ export default function About() {
 					<Image
 						src="/aboutImage1.webp"
 						alt="acneStudio"
-						height={387}
-						width={310}
+						fill={true}
 						sizes="(max-width: 768px) 50vw, 20vw"
 					/>
 				</div>
@@ -59,8 +57,7 @@ export default function About() {
 					<Image
 						src="/aboutImage2.webp"
 						alt="acneStudio"
-						height={409}
-						width={409}
+						fill={true}
 						sizes="(max-width: 768px) 50vw, 20vw"
 					/>
 				</div>
@@ -68,8 +65,7 @@ export default function About() {
 					<Image
 						src="/aboutImage3.webp"
 						alt="acneStudio"
-						height={511}
-						width={409}
+						fill={true}
 						sizes="(max-width: 768px) 50vw, 20vw"
 					/>
 				</div>
@@ -97,8 +93,7 @@ export default function About() {
 					<Image
 						src="/aboutImage4.webp"
 						alt="acneStudio"
-						height={540}
-						width={540}
+						fill={true}
 						sizes="(max-width: 768px) 50vw, 20vw"
 					/>
 				</div>
@@ -127,8 +122,7 @@ export default function About() {
 					<Image
 						src="/aboutFooter.webp"
 						alt="aboutFooter"
-						width={2649}
-						height={1173}
+						fill={true}
 						sizes="100vw"
 						priority={true}
 						quality={100}

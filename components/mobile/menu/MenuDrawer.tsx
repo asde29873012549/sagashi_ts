@@ -3,15 +3,12 @@ import MenuDrawerItem from "./MenuDrawerItem";
 import { useRouter } from "next/router";
 
 import React, { useRef } from "react";
+import { FeaturedDesignerData, MenswearCategory, WomenswearCategory } from "@/lib/types/global";
 
 const slideThreshold = 100;
 
-type MenuDrawerData =
-	| { id: number; name: string }
-	| { id: number; name: string; logo: string | null; created_at: string };
-
 interface MenuDrawerProps {
-	data: MenuDrawerData[];
+	data: (keyof MenswearCategory | keyof WomenswearCategory)[] | FeaturedDesignerData[];
 	children: string;
 	currentCategory: string;
 	setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
@@ -32,16 +29,13 @@ export default function MenuDrawer({
 	const endingTouchRef = useRef<number>(0);
 	const isTouchActiveRef = useRef<Boolean>(false);
 	const pageRef = useRef<HTMLDivElement>(null);
-	const pageRefCurrent = pageRef.current!;
 
 	const onSwitch = () => {
 		setCurrentCategory(children);
-		pageRefCurrent.style.transform = `translateX(0px)`;
+		if (pageRef.current) pageRef.current.style.transform = `translateX(0px)`;
 	};
 
 	const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-		e.preventDefault();
-
 		isTouchActiveRef.current = true;
 		initialTouchRef.current = e.touches[0].screenX;
 	};
@@ -49,17 +43,17 @@ export default function MenuDrawer({
 		endingTouchRef.current = e.touches[0].screenX;
 		let movement = endingTouchRef.current - initialTouchRef.current;
 		movement = movement > slideThreshold ? movement : 0;
-		pageRefCurrent.style.transform = `translateX(${movement}px)`;
+		pageRef.current!.style.transform = `translateX(${movement}px)`;
 	};
 
 	const onTouchEnd = () => {
 		isTouchActiveRef.current = false;
 		const distance = endingTouchRef.current - initialTouchRef.current;
 		if (distance > slideThreshold) {
-			pageRefCurrent.style.transform = `translateX(${pageRefCurrent.offsetWidth}px)`;
+			pageRef.current!.style.transform = `translateX(${pageRef.current!.offsetWidth}px)`;
 			setTimeout(() => setCurrentCategory(""), 500);
 		} else {
-			pageRefCurrent.style.transform = "translateX(0px)";
+			pageRef.current!.style.transform = "translateX(0px)";
 			setTimeout(() => setCurrentCategory(children), 500);
 		}
 
@@ -67,13 +61,15 @@ export default function MenuDrawer({
 		endingTouchRef.current = 0;
 	};
 
-	const onNavigatePage = (obj: MenuDrawerData) => {
+	const onNavigatePage = (
+		categoryName: keyof MenswearCategory | keyof WomenswearCategory | number,
+	) => {
 		setOpen(false);
 		if (children === "Designers") {
-			return router.push(`/designers/${obj?.id}`);
+			return router.push(`/designers/${categoryName}`);
 		}
 
-		return router.push(`/shop?dept=${currentTab || ""}&cat=${children}&subCat=${obj.name}`);
+		return router.push(`/shop?dept=${currentTab || ""}&cat=${children}&subCat=${categoryName}`);
 	};
 
 	return (
@@ -90,16 +86,18 @@ export default function MenuDrawer({
 				ref={pageRef}
 			>
 				{children === "Designers" && <MenuDrawerItem>View All</MenuDrawerItem>}
-				{data?.map((obj) => (
-					<MenuDrawerItem
-						key={obj.id}
-						currentCategory={currentCategory}
-						item={children}
-						onNavigatePage={() => onNavigatePage(obj)}
-					>
-						{obj.name}
-					</MenuDrawerItem>
-				))}
+				{data?.map((c, index) => {
+					return (
+						<MenuDrawerItem
+							key={`${c}-${index}`}
+							currentCategory={currentCategory}
+							item={children}
+							onNavigatePage={() => onNavigatePage(typeof c === "string" ? c : c.id)}
+						>
+							{typeof c === "string" ? c : c.name}
+						</MenuDrawerItem>
+					);
+				})}
 			</div>
 		</div>
 	);

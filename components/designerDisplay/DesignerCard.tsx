@@ -4,7 +4,7 @@ import { Button } from "@/components/base/button";
 import { useMutation } from "@tanstack/react-query";
 import followDesigner from "@/lib/queries/fetchQuery";
 import { useToast } from "@/components/base/use-toast";
-import { genericError } from "@/lib/utility/userMessage";
+import { genericError, unAuthorizedError } from "@/lib/utility/userMessage";
 import { cn } from "@/lib/utility/utils";
 
 import { useState } from "react";
@@ -40,11 +40,12 @@ export default function DesignerCard({
 					designer_id,
 				},
 			}),
-		onError: () => {
+		onError: (err: Error) => {
 			setIsFollow((prev) => !prev);
 			toast({
 				title: "Failed !",
-				description: genericError,
+				description:
+					err.message === unAuthorizedError.title ? unAuthorizedError.desc : genericError,
 				status: "fail",
 			});
 		},
@@ -83,8 +84,7 @@ export default function DesignerCard({
 				>
 					<Image
 						src={src}
-						height={350}
-						width={280}
+						fill={true}
 						alt="pic"
 						onLoad={onImageLoad}
 						sizes="(max-width: 620px) 80vw, 20vw"

@@ -31,8 +31,6 @@ export default function User({ user }: { user: string }) {
 		refetchOnWindowFocus: false,
 	});
 
-	console.log(userData);
-
 	return (
 		<div className="h-full w-screen px-3">
 			<div className="py-4 text-2xl font-bold">Account</div>

@@ -37,6 +37,7 @@ import {
 	saveDraftSuccess,
 	uploadSuccess,
 	submitEmptyDraft,
+	unAuthorizedError,
 } from "@/lib/utility/userMessage";
 import type {
 	DeptCategory,
@@ -112,11 +113,12 @@ export default function Sell() {
 				router.push("/");
 			}, 1500);
 		},
-		onError: (error) => {
+		onError: (err: Error) => {
 			dispatch(activate());
 			toast({
 				title: "Failed !",
-				description: genericError,
+				description:
+					err.message === unAuthorizedError.title ? unAuthorizedError.desc : genericError,
 				status: "fail",
 			});
 		},
@@ -137,11 +139,12 @@ export default function Sell() {
 				router.push("/");
 			}, 1500);
 		},
-		onError: (error) => {
+		onError: (err: Error) => {
 			dispatch(activate());
 			toast({
 				title: "Failed !",
-				description: genericError,
+				description:
+					err.message === unAuthorizedError.title ? unAuthorizedError.desc : genericError,
 				status: "fail",
 			});
 		},

@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import { Button } from "@/components/base/button";
 import { useState, useEffect, useRef, MutableRefObject } from "react";
 import SheetWrapper from "@/components/user/editSheets/SheetWrapper";
+import { MoveRight } from "lucide-react";
 
 export default function Info() {
 	const router = useRouter();
@@ -73,7 +74,12 @@ export default function Info() {
 						</AccordionTrigger>
 						<AccordionContent>
 							<SheetWrapper
-								trigger={<div className="text-sm hover:underline">Contact us through email</div>}
+								trigger={
+									<div className="flex items-center space-x-2 text-sm hover:underline">
+										<MoveRight className="animate-horizontalBounce" size={14} />
+										<span>Contact us through email</span>
+									</div>
+								}
 								feature="Contact Us"
 								sheet="ContactUs"
 								side="right"

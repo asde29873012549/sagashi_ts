@@ -72,6 +72,7 @@ export default function Home() {
 							product_data={obj}
 							likedListing={liked}
 							className="mb-4 mr-2 w-[65%] shrink-0 md:mr-4 md:w-1/5"
+							isUserLoggedIn={!!session?.user?.username}
 						/>
 					)) ??
 						Array.from({ length: 10 }, (_, i) => i + 1).map((k) => (
@@ -141,8 +142,7 @@ export default function Home() {
 						<Image
 							src={obj.image}
 							alt={obj.theme}
-							height={500}
-							width={1376}
+							fill={true}
 							className="absolute inset-0 h-full w-full object-cover"
 						/>
 						<div className="absolute z-3 flex h-full w-full flex-col items-center justify-end px-5 pb-8 text-background md:justify-center">

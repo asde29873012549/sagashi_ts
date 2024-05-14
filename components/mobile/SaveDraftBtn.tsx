@@ -1,6 +1,11 @@
 import { Button } from "@/components/base/button";
 import { useMutation } from "@tanstack/react-query";
-import { genericError, saveDraftSuccess, submitEmptyDraft } from "@/lib/utility/userMessage";
+import {
+	genericError,
+	saveDraftSuccess,
+	submitEmptyDraft,
+	unAuthorizedError,
+} from "@/lib/utility/userMessage";
 import { sellSelector } from "@/redux/sellSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { activate } from "@/redux/loadingSlice";
@@ -36,11 +41,12 @@ export default function SaveDraft({
 				router.push("/");
 			}, 1500);
 		},
-		onError: (error) => {
+		onError: (err: Error) => {
 			dispatch(activate());
 			toast({
 				title: "Failed !",
-				description: genericError,
+				description:
+					err.message === unAuthorizedError.title ? unAuthorizedError.desc : genericError,
 				status: "fail",
 			});
 		},

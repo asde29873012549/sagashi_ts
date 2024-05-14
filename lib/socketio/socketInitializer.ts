@@ -77,7 +77,6 @@ export default function socketInitializer({
 	socket.on("getMessage", ({ message }) => {
 		queryClient.invalidateQueries({ queryKey: ["messages", chatroom_id] });
 		console.log("getMessage: ", message);
-		console.log(chatroom_id);
 	});
 
 	// socket.on("client-count", (count) => {

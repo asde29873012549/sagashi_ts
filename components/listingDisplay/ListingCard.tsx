@@ -10,6 +10,8 @@ import { genericError } from "@/lib/utility/userMessage";
 import type { ProductData, ApiResponse, RecentlyViewedProductData } from "@/lib/types/global";
 
 import { useState } from "react";
+import { toggleRegisterForm } from "@/redux/userSlice";
+import { useDispatch } from "react-redux";
 
 interface ListingCardProps {
 	src: string;
@@ -19,6 +21,7 @@ interface ListingCardProps {
 	likedListing: number[] | undefined;
 	className: string;
 	priority?: boolean;
+	isUserLoggedIn: boolean;
 }
 
 export default function ListingCard({
@@ -29,8 +32,10 @@ export default function ListingCard({
 	likedListing,
 	className,
 	priority,
+	isUserLoggedIn,
 }: ListingCardProps) {
 	const queryClient = useQueryClient();
+	const dispatch = useDispatch();
 	const [loaded, setLoaded] = useState<boolean>(false);
 	const { toast } = useToast();
 
@@ -91,6 +96,10 @@ export default function ListingCard({
 
 	const onLike = async () => {
 		try {
+			if (!isUserLoggedIn) {
+				dispatch(toggleRegisterForm());
+				return;
+			}
 			likeMutate();
 		} catch (err) {
 			console.log(err);
@@ -115,8 +124,7 @@ export default function ListingCard({
 				>
 					<Image
 						src={src}
-						height={350}
-						width={280}
+						fill={true}
 						alt="pic"
 						sizes="(max-width: 768px) 50vw, 20vw"
 						onLoad={onImageLoad}

@@ -22,7 +22,7 @@ import { activate } from "@/redux/loadingSlice";
 import { useDispatch, useSelector } from "react-redux";
 import getAllDesigners from "@/lib/queries/fetchQuery";
 import SaveDraftBtn from "@/components/mobile/SaveDraftBtn";
-import { genericError, uploadSuccess } from "@/lib/utility/userMessage";
+import { genericError, unAuthorizedError, uploadSuccess } from "@/lib/utility/userMessage";
 import createDraft from "@/lib/queries/fetchQuery";
 
 import Link from "next/link";
@@ -111,11 +111,12 @@ export default function MobileLastInfo() {
 				router.push("/");
 			}, 1500);
 		},
-		onError: (error) => {
+		onError: (err: Error) => {
 			dispatch(activate());
 			toast({
 				title: "Failed !",
-				description: genericError,
+				description:
+					err.message === unAuthorizedError.title ? unAuthorizedError.desc : genericError,
 				status: "fail",
 			});
 		},

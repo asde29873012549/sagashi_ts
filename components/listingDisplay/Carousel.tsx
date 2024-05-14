@@ -73,7 +73,6 @@ export default function Carousel({
 	};
 
 	const onTouchStart = (e: React.TouchEvent<HTMLImageElement>) => {
-		e.preventDefault();
 		isTouchActiveRef.current = true;
 		initialTouchRef.current = e.touches[0].screenX;
 	};
@@ -150,15 +149,16 @@ export default function Carousel({
 							id={String(index)}
 						>
 							<Image
-								priority
+								{...(index < 2 && { priority: true })}
 								src={slide}
-								height={637}
-								width={510}
+								fill={true}
 								alt="image"
 								sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-								onTouchStart={onTouchStart}
-								onTouchMove={onTouchMove}
-								onTouchEnd={onTouchEnd}
+								{...(slides.length > 1 && {
+									onTouchStart,
+									onTouchMove,
+									onTouchEnd,
+								})}
 								onLoad={() => {
 									index === 0 && setImgLoaded(true);
 								}}
@@ -167,11 +167,15 @@ export default function Carousel({
 					))}
 				</div>
 				{/* Left Arrow */}
-				<div className="absolute left-5 top-[50%] -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white md:hidden">
+				<div
+					className={`absolute left-5 top-[50%] -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white md:hidden ${slides.length === 1 && "hidden"}`}
+				>
 					<ChevronLeft onClick={prevSlide} size={30} />
 				</div>
 				{/* Right Arrow */}
-				<div className="absolute right-5 top-[50%] -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white md:hidden">
+				<div
+					className={`absolute right-5 top-[50%] -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white md:hidden ${slides.length === 1 && "hidden"}`}
+				>
 					<ChevronRight onClick={nextSlide} size={30} />
 				</div>
 			</div>

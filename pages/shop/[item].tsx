@@ -19,7 +19,7 @@ import logRecentlyViewed from "@/lib/queries/fetchQuery";
 import { ShoppingCart } from "lucide-react";
 import { useRouter } from "next/router";
 import { useToast } from "@/components/base/use-toast";
-import { genericError } from "@/lib/utility/userMessage";
+import { genericError, unAuthorizedError } from "@/lib/utility/userMessage";
 import Check from "@/components/svg/check";
 import { setMobileMessageBoxData, setMobileMessageBoxOpen } from "@/redux/messageSlice";
 import { toggleRegisterForm } from "@/redux/userSlice";
@@ -128,12 +128,13 @@ export default function ListingItem({
 			}
 			clearTimeout(timeoutId.current);
 		},
-		onError: (err) => {
+		onError: (err: Error) => {
 			setAddToCart("ADD TO CART");
 			clearTimeout(timeoutId.current);
 			toast({
 				title: "Failed !",
-				description: genericError,
+				description:
+					err.message === unAuthorizedError.title ? unAuthorizedError.desc : genericError,
 				status: "fail",
 			});
 		},
@@ -327,6 +328,7 @@ export default function ListingItem({
 							product_data={obj}
 							likedListing={liked}
 							className="mb-4 w-[48%] shrink-0 md:w-1/6"
+							isUserLoggedIn={!!username}
 						/>
 					)) ??
 						Array.from({ length: 10 }, (_, i) => i + 1).map((k) => (
@@ -349,6 +351,7 @@ export default function ListingItem({
 							product_data={obj.Product}
 							likedListing={liked}
 							className="mb-4 w-[48%] shrink-0 md:w-1/6"
+							isUserLoggedIn={!!username}
 						/>
 					)) ??
 						Array.from({ length: 10 }, (_, i) => i + 1).map((k) => (
