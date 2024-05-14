@@ -8,13 +8,15 @@ import getMessages from "@/lib/queries/fetchQuery";
 import type { ApiResponse, ChatroomType, MessageNotification } from "@/lib/types/global";
 import { useDispatch, useSelector } from "react-redux";
 import { messageSelector, setChatroom } from "@/redux/messageSlice";
+import { cn } from "@/lib/utility/utils";
 
 interface MessageIconProps {
 	user: string;
 	isMobile: boolean;
+	className?: string;
 }
 
-export default function MessageIcon({ user, isMobile }: MessageIconProps) {
+export default function MessageIcon({ user, isMobile, className }: MessageIconProps) {
 	const dispatch = useDispatch();
 	const [isOpen, setIsOpen] = useState<boolean>(false);
 	const onlineMessageReadMap = useSelector(messageSelector).isOnlineMessageRead;
@@ -74,10 +76,10 @@ export default function MessageIcon({ user, isMobile }: MessageIconProps) {
 
 	return (
 		<Popover open={isOpen} onOpenChange={onToggleMessageIcon}>
-			<PopoverTrigger className="relative flex" onClick={() => fetchChatroomList}>
+			<PopoverTrigger className={cn("relative flex", className)} onClick={() => fetchChatroomList}>
 				{/* Notification Circle */}
 				<div
-					className={`absolute right-[1px] z-50 mb-3 h-2.5 w-2.5 rounded-full bg-red-700 
+					className={`absolute right-px top-px z-50 mb-3 h-2.5 w-2.5 rounded-full bg-red-700 
 					${shouldShowMessageCircle ? "" : "hidden"}`} // Hide on desktop if no new message
 				></div>
 

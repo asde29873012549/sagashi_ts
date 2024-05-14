@@ -3,7 +3,7 @@ import { signOut, useSession } from "next-auth/react";
 import Logo from "./Logo";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { User, Search as SearchIcon, CircleDollarSign, LogIn, LogOut } from "lucide-react";
+import { User, Search as SearchIcon } from "lucide-react";
 import NotificationHeartIcon from "../header/NotificationHeartIcon";
 import MessageIcon from "../messenger/MessageIcon";
 import MenuBar from "../mobile/menu/MenuBar";
@@ -23,8 +23,6 @@ import { useQuery } from "@tanstack/react-query";
 import getNotification from "@/lib/queries/fetchQuery";
 import type { ApiResponse, NotificationType, OnlineNotification } from "@/lib/types/global";
 import { cn } from "@/lib/utility/utils";
-import MessageBoxMobile from "../mobile/MessageBoxMobile";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/base/avatar";
 
 dotenv.config();
 
@@ -39,7 +37,6 @@ export default function Header() {
 	const onToggleRegisterForm = () => dispatch(toggleRegisterForm());
 	const currentActiveChatroom = useSelector(messageSelector).currentActiveChatroom;
 	const currentActiveChatroomRef = useRef(currentActiveChatroom);
-	const isMobileMessageBoxOpen = useSelector(messageSelector).isMobileMessageBoxOpen;
 
 	const user = session?.user?.username ?? "";
 
@@ -125,99 +122,50 @@ export default function Header() {
 	};
 
 	return (
-		<div className="sticky top-0 z-[19] w-full bg-background shadow-md md:flex md:h-20 md:items-center md:justify-between md:px-4 md:py-1 md:shadow-none">
-			<div className="flex h-16 w-full items-center justify-between px-3 py-2 md:h-20 md:px-9 md:py-1">
-				<MenuBar />
-				<div className="hidden w-full justify-between md:flex  md:text-sm lg:text-base">
-					<div className="flex items-center space-x-3 md:space-x-6">
-						<Link className="hidden w-1/4 hover:cursor-pointer md:inline-block" href="/sell">
-							SELL
-						</Link>
-						<Link className="hidden w-1/4 hover:cursor-pointer md:inline-block" href="/shop">
-							SHOP
-						</Link>
-						<div
-							className={cn(
-								"hover:cursor-pointer",
-								status === "loading" ? "invisible opacity-0" : "inline-block",
-							)}
-							onClick={session ? onLogout : onToggleRegisterForm}
-						>
-							{session ? "LOGOUT" : "LOGIN"}
-						</div>
-					</div>
-					<div className="flex w-fit space-x-1 md:space-x-6">
-						<div className="h-[28px] hover:cursor-pointer">
-							<Search>
-								<SearchIcon className="mx-1 h-7 w-7" />
-							</Search>
-						</div>
-						{session && (
-							<NotificationHeartIcon
-								onlineNotification={onlineNotification}
-								offlineNotification={notificationData?.data ?? []}
-								notificationActive={notificationActive}
-								onNotificationHeartIconClick={onNotificationHeartIconClick}
-							/>
-						)}
-						{session && <MessageIcon user={user} isMobile={false} />}
-						{session && <ShoppingCartIcon user={user} />}
-						{session && (
-							<Link className="inline-block hover:cursor-pointer" href="/user">
-								<User className="h-7 w-7" />
-							</Link>
-						)}
-					</div>
-				</div>
-				<Logo className="absolute inset-0 m-auto w-[16vw] md:w-[10vw] lg:w-[7vw]" />
-				{session && <MessageIcon user={user} isMobile={true} className="md:hidden" />}
-			</div>
-			{/* Mobile-specific components */}
-			<div className="text-md fixed bottom-0 right-0 z-8 flex w-full items-center justify-between bg-background px-1 py-1 md:hidden">
-				<div className="flex w-full items-center justify-around">
-					<Link
-						className="flex flex-col items-center hover:cursor-pointer md:hidden"
-						href="/sell/mobile/stageFirst"
-					>
-						<CircleDollarSign />
-						<div className="text-[10px]">SELL</div>
-					</Link>
-					<div
-						className={cn(
-							"flex flex-col items-center hover:cursor-pointer",
-							status === "loading" ? "invisible opacity-0" : "",
-						)}
-						onClick={session ? onLogout : onToggleRegisterForm}
-					>
-						{session ? <LogOut /> : <LogIn />}
-						<div className="text-[10px]">{session ? "LOGOUT" : "LOGIN"}</div>
-					</div>
-					{session && (
-						<Link className="flex flex-col items-center hover:cursor-pointer" href="/user/mobile">
-							<Avatar className="h-7 w-7">
-								<AvatarImage src={session?.user?.avatar} />
-								<AvatarFallback>CN</AvatarFallback>
-							</Avatar>
-							<div className="text-[10px]">PROFILE</div>
-						</Link>
+		<div className="top-0 z-[19] hidden w-full bg-background md:sticky md:flex md:h-20 md:items-center md:justify-between md:px-9 md:py-1 md:shadow-none">
+			<MenuBar />
+			<div className="flex w-1/6 justify-between md:w-1/5 md:text-sm lg:w-1/6 lg:text-base">
+				<Link className="mr-2 inline-block w-1/4 hover:cursor-pointer" href="/sell">
+					SELL
+				</Link>
+				<Link className="inline-block w-1/4 hover:cursor-pointer" href="/shop">
+					SHOP
+				</Link>
+				<div
+					className={cn(
+						"w-1/3 hover:cursor-pointer",
+						status === "loading" ? "invisible opacity-0" : "inline-block",
 					)}
-					<div className="flex flex-col items-center hover:cursor-pointer">
+					onClick={session ? onLogout : onToggleRegisterForm}
+				>
+					{session ? "LOGOUT" : "LOGIN"}
+				</div>
+			</div>
+			<Logo className="m-auto w-[7vw] md:w-[10vw] lg:w-[7vw]" />
+			<div className="text-md flex w-1/6 justify-end">
+				<div className="flex w-fit space-x-6">
+					<div className="inline-block h-[28px]">
 						<Search>
 							<SearchIcon className="mx-1 h-7 w-7" />
 						</Search>
-						<div className="text-[10px]">DISCOVER</div>
 					</div>
 					{session && (
-						<div className="flex flex-col items-center">
-							<ShoppingCartIcon user={user} />
-							<div className="text-[10px]">CART</div>
-						</div>
+						<NotificationHeartIcon
+							onlineNotification={onlineNotification}
+							offlineNotification={notificationData?.data ?? []}
+							notificationActive={notificationActive}
+							onNotificationHeartIconClick={onNotificationHeartIconClick}
+						/>
+					)}
+					{session && <MessageIcon user={user} isMobile={false} />}
+					{session && <ShoppingCartIcon user={user} />}
+					{session && (
+						<Link className="inline-block hover:cursor-pointer" href="/user">
+							<User className="h-7 w-7" />
+						</Link>
 					)}
 				</div>
 			</div>
-			{session && isMobileMessageBoxOpen && (
-				<MessageBoxMobile className="w-full md:hidden" user={user} />
-			)}
 		</div>
 	);
 }

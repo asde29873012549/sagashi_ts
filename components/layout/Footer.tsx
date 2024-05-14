@@ -12,9 +12,9 @@ export default function Footer() {
 		router.replace(`/customerService/${path}`);
 	};
 	return (
-		<div className="relative mb-14 mt-32 flex h-fit w-screen flex-col bg-gray-200/50 px-3 py-4 md:mb-0 md:flex-row md:justify-between md:py-6">
+		<div className="relative mb-12 mt-32 flex h-fit w-screen flex-col bg-gray-200/50 px-3 py-4 md:mb-0 md:flex-row md:justify-between md:py-6">
 			<div className="mb-6 flex w-full flex-col items-start justify-center md:mb-0 md:w-2/5 md:items-start">
-				<Logo className="w-[20vw] md:w-[9vw] lg:w-[6vw]" />
+				<Logo className="w-[16vw] md:w-[9vw] lg:w-[6vw]" />
 				<p className="text-sm">One-stop platform for buying/selling luxury goods.</p>
 				<p className="hidden text-sm md:inline">© 2033 sagashi.com</p>
 			</div>
@@ -89,7 +89,7 @@ export default function Footer() {
 					</Button>
 				</Link>
 			</div>
-			<p className="mt-8 text-sm md:hidden">© 2033 sagashi.com</p>
+			<p className="mt-8 text-sm md:hidden">© 2024 www.sagashi.com</p>
 		</div>
 	);
 }

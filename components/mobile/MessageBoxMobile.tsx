@@ -36,7 +36,10 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 		setVal: React.Dispatch<React.SetStateAction<string>>;
 	}>();
 
-	const chatroom_id = `${messageBoxData?.product_id}-${messageBoxData?.listingOwner}-${messageBoxData?.username}`;
+	const chatroom_id =
+		messageBoxData?.product_id && messageBoxData?.listingOwner && messageBoxData?.username
+			? `${messageBoxData?.product_id}-${messageBoxData?.listingOwner}-${messageBoxData?.username}`
+			: "";
 
 	const {
 		data: messageData,
@@ -143,13 +146,8 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 	};
 
 	useEffect(() => {
-		const [user, listingOwner, productId] = chatroom_id.split("-");
-		if (
-			messageBoxData.username &&
-			messageBoxData.listingOwner &&
-			messageBoxData.product_id &&
-			!socket.connected
-		) {
+		if (chatroom_id && !socket.connected) {
+			console.log(chatroom_id);
 			socketInitializer({
 				queryClient,
 				chatroom_id,
@@ -164,16 +162,16 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 						},
 					}),
 			});
-		}
 
-		// Update socket query parameters
-		socket.io.opts.query = {
-			user,
-			listingOwner,
-			productId,
-		};
+			const [productId, listingOwner, user] = chatroom_id.split("-");
 
-		if (!socket.connected) {
+			// Update socket query parameters
+			socket.io.opts.query = {
+				user,
+				listingOwner,
+				productId,
+			};
+
 			console.log("Socket connecting...");
 			socket.connect();
 		}
@@ -184,13 +182,7 @@ export default function MessageBoxMobile({ className, user }: { className: strin
 				socket.disconnect();
 			}
 		};
-	}, [
-		chatroom_id,
-		queryClient,
-		messageBoxData.product_id,
-		messageBoxData.listingOwner,
-		messageBoxData.username,
-	]);
+	}, [queryClient, chatroom_id, setId]);
 
 	const updateMessageInput = (valStateFromChild: {
 		val: string;

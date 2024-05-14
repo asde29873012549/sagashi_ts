@@ -17,7 +17,7 @@ export default function ShoppingCartIcon({ user }: { user: string }) {
 		<Link href={"/shoppingCart"}>
 			<div className="relative">
 				{shoppingCartData?.data > 0 && (
-					<div className="absolute right-[-6px] top-[-6px] z-50 mb-3 h-5 w-5 animate-opacityTransition rounded-full bg-red-700 text-center text-xs leading-5 text-white">
+					<div className="absolute right-[-4px] top-[-3px] z-50 mb-3 h-4 w-4 animate-opacityTransition rounded-full bg-red-700 text-center text-[10px] leading-4 text-white">
 						{shoppingCartData.data}
 					</div>
 				)}
