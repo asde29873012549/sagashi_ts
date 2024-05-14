@@ -1,6 +1,15 @@
-import Document, { Html, Head, Main, NextScript } from "next/document";
+import Document, {
+	Html,
+	Head,
+	Main,
+	NextScript,
+	DocumentContext,
+	DocumentInitialProps,
+} from "next/document";
 
-export default function CustomDocument({ nonce }: { nonce: string }) {
+export default function PagesDocument(props: DocumentInitialProps & { nonce: string | undefined }) {
+	const { nonce } = props;
+
 	return (
 		<Html lang="en">
 			<Head nonce={nonce} />
@@ -12,11 +21,16 @@ export default function CustomDocument({ nonce }: { nonce: string }) {
 	);
 }
 
-CustomDocument.getInitialProps = async (context: any) => {
-	const initialProps = await Document.getInitialProps(context);
+PagesDocument.getInitialProps = async (
+	ctx: DocumentContext,
+): Promise<DocumentInitialProps & { nonce: string | undefined }> => {
+	// read nonce value from headers
+	const nonce = ctx.req?.headers?.["x-nonce"] as string | undefined;
+
+	const initialProps = await Document.getInitialProps(ctx);
+
 	return {
 		...initialProps,
-		// x-nonce header set in middleware.ts
-		nonce: context.req?.headers["x-nonce"],
+		nonce,
 	};
 };

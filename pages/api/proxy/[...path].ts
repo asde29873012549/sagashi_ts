@@ -19,6 +19,7 @@ export const config = {
 };
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
+	console.log(`proxying request to backend server of ${req.url}`);
 	return new Promise(async (resolve, reject) => {
 		const cookies = new Cookies(req, res);
 		const jwtToken = cookies.get("next-auth.session-token");

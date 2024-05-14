@@ -8,6 +8,7 @@ export default function FeaturedDesigners() {
 		queryFn: () => getTree({ uri: "/tree" }),
 		refetchOnWindowFocus: false,
 	});
+
 	return <ShopPage treeData={OriginTreeData?.data} />;
 }
 
