@@ -57,7 +57,7 @@ export default function MenuBar() {
 	const onTransitionEnd = (e: React.TransitionEvent<HTMLDivElement>) => {
 		if (isTouchActiveRef.current) return;
 		if ((e.target as HTMLElement).role && endingTouchRef.current - initialTouchRef.current > 70) {
-			setOpen(false);
+			setOpen(!open);
 			setCurrentCategory("");
 		}
 
@@ -70,7 +70,7 @@ export default function MenuBar() {
 	};
 
 	const onGoBack = () => {
-		setCurrentCategory("All");
+		setCurrentCategory("");
 	};
 
 	const onNavigatePage = (page: string) => {
@@ -101,16 +101,16 @@ export default function MenuBar() {
 					<Spinner shouldNotCover={true} />
 				) : (
 					<>
-						<div
-							className="h-12 w-full"
-							onTouchStart={onTouchStart}
-							onTouchMove={onTouchMove}
-							onTouchEnd={onTouchEnd}
-						>
+						<div className="h-12 w-full">
 							{currentCategory && (
 								<ChevronLeft className="absolute left-4 top-4 h-4 w-4" onClick={onGoBack} />
 							)}
-							<div className="flex h-full w-full items-center justify-center">
+							<div
+								className="flex h-full w-full items-center justify-center"
+								onTouchStart={onTouchStart}
+								onTouchMove={onTouchMove}
+								onTouchEnd={onTouchEnd}
+							>
 								<span
 									className={cn(
 										"text-base transition-opacity duration-200",

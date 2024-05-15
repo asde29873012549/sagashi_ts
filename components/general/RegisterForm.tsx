@@ -178,6 +178,7 @@ export default function RegisterForm() {
 									type="password"
 									value={formInput.password}
 									onChange={(e) => onFormInput(e, "password")}
+									onKeyDown={(e) => e.key === "Enter" && onSignIn()}
 								/>
 							</div>
 							<Button className="mb-2 w-full" onClick={onSignIn} disabled={loading}>

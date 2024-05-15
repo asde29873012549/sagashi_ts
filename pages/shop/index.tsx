@@ -45,7 +45,7 @@ export default function Shop({
 		if (isMenswear) {
 			return { department: new Set(["Menswear"]) };
 		} else if (isWomenswear) {
-			return { Womenswear: new Set(["Womenswear"]) };
+			return { department: new Set(["Womenswear"]) };
 		} else if (designer) {
 			return { designers: new Set([designer]) };
 		} else if (isNewArrival) {
@@ -136,11 +136,21 @@ export default function Shop({
 
 	const liked = likedListing?.data?.map((obj) => obj.product_id);
 
+	const decideTitle = () => {
+		if (isMenswear) return "Menswear";
+		if (isWomenswear) return "Womenswear";
+		if (isNewArrival) return "New Arrivals";
+		return designer;
+	};
+
 	return (
 		<>
-			<h6 className="my-4 p-2 text-sm font-semibold md:px-6">
-				{productData?.pages?.[0]?.data?.total} Listings
-			</h6>
+			<div className="my-3 flex flex-col items-center justify-center md:items-start">
+				<h3 className="text-lg font-semibold leading-4 text-gray-800 md:hidden">{decideTitle()}</h3>
+				<h6 className="text-sm font-light md:px-6 md:font-semibold">
+					{productData?.pages?.[0]?.data?.total ?? 0} Listings
+				</h6>
+			</div>
 			{!designer && !isMenswear && !isWomenswear && (
 				<FilterSection filter={filter} setFilter={setFilter} />
 			)}

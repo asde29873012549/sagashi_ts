@@ -40,13 +40,14 @@ export default function Banner() {
 							"w-full border-2 border-foreground hover:bg-foreground hover:text-background",
 							buttonVariants({ variant: "outline" }),
 						)}
-						href="/womenswear"
+						//href="/womenswear"
+						href="/"
 					>
 						Staff Pick
 					</Link>
 				</div>
 				<Image
-					src="/banner.webp"
+					src={`/sagashi_banner_2.webp`}
 					alt="Marine Serre"
 					width="2000"
 					height="2500"

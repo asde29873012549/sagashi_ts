@@ -31,7 +31,7 @@ const saveDraftSuccess = {
 
 const submitEmptyDraft = {
 	title: "Warning !",
-	desc: "Saving empty draft is not allowed .",
+	desc: "Saving empty draft is not allowed.",
 	status: "fail",
 };
 
