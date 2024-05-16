@@ -20,7 +20,7 @@ export default function ShoppingCart({ username }: { username: string }) {
 	});
 
 	const subTotal = cartData?.data?.reduce((acc, obj) => Number(acc) + Number(obj.price), 0) ?? 0;
-	const DeleiveryFee = 60;
+	const DeleiveryFee = (cartData?.data?.length ?? 0) > 0 ? 60 : 0;
 
 	return (
 		<div className="relative flex flex-col p-8">

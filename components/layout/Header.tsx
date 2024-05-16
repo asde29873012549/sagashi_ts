@@ -126,9 +126,9 @@ export default function Header() {
 
 	return (
 		<div className="sticky top-0 z-[19] w-full bg-background shadow-md md:flex md:h-20 md:items-center md:justify-between md:px-4 md:py-1 md:shadow-none">
-			<div className="flex h-16 w-full items-center justify-between px-3 py-2 md:h-20 md:px-9 md:py-1">
+			<div className="flex h-14 w-full items-center justify-between px-3 py-2 md:px-9 md:py-0">
 				<MenuBar />
-				<div className="hidden w-full justify-between md:flex  md:text-sm lg:text-base">
+				<div className="hidden w-full justify-between md:flex md:text-sm lg:text-base">
 					<div className="flex items-center space-x-3 md:space-x-6">
 						<Link className="hidden w-1/4 hover:cursor-pointer md:inline-block" href="/sell">
 							SELL
@@ -169,7 +169,7 @@ export default function Header() {
 						)}
 					</div>
 				</div>
-				<Logo className="absolute inset-0 m-auto w-[16vw] md:w-[10vw] lg:w-[7vw]" />
+				<Logo className="absolute inset-0 m-auto h-fit w-[35vw] md:w-[10vw]" />
 				{session && <MessageIcon user={user} isMobile={true} className="md:hidden" />}
 			</div>
 			{/* Mobile-specific components */}

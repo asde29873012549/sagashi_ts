@@ -100,7 +100,7 @@ export default function Search({ children }: { children: React.ReactNode }) {
 			<DialogTrigger className="outline-transparent">
 				<div className="flex">{children}</div>
 			</DialogTrigger>
-			<DialogContent>
+			<DialogContent className="w-[92dvw]">
 				<DialogHeader>
 					<DialogTitle>
 						<div className="md:flex md:h-12 md:w-full md:items-center md:justify-end">

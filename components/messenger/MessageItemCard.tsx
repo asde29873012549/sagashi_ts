@@ -77,7 +77,7 @@ export default function MessageItemCard({
 		<Link href={link || ""} onClick={onToggleSelect} scroll={false}>
 			<Alert>
 				<AlertDescription
-					className={`flex w-[400px] cursor-pointer items-center justify-between rounded-md p-4 hover:bg-slate-100 ${isMessageUnread ? "bg-slate-100" : ""}`}
+					className={`flex w-[92dvw] max-w-[400px] cursor-pointer items-center justify-between rounded-md p-4 hover:bg-slate-100 ${isMessageUnread ? "bg-slate-100" : ""}`}
 				>
 					<div className="flex w-full">
 						<div className="mr-2 w-2/12 items-center">
@@ -104,7 +104,7 @@ export default function MessageItemCard({
 		<div onClick={isDesktop ? onToggleSelect : onToggleMobileChatroomSheet}>
 			<Alert>
 				<AlertDescription
-					className={`flex w-[400px] cursor-pointer items-center justify-between rounded-md p-4 hover:bg-slate-100 ${
+					className={`flex w-[92dvw] max-w-[400px] cursor-pointer items-center justify-between rounded-md p-4 hover:bg-slate-100 ${
 						currentActiveChatroom === chatroom_id ? "bg-slate-200 hover:bg-slate-200" : ""
 						// use chatroom_id_from_url to check if this itemCard is in the User's page Message section
 						// because although hasOnlineMsgSeen will turn off the gray background and the dot in the Header MessageIcon part
